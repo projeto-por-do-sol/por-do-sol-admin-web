@@ -1,0 +1,79 @@
+<div class="bg-primary p-4 md:base-sidebar md:min-h-screen md:flex md:flex-col md:justify-between">
+
+  <div class="md:flex-1">
+
+    <!-- Nome Site -->
+    <div class="flex gap-5 px-2 pt-1">
+      <img src="/assets/images/logo.png" alt="" class="w-10 h-10 self-center">
+      <div>
+        <h1 class="font-poppins text-xl text-creme font-bold">Pôr do Sol</h1>
+        <p class="font-poppins text-sm text-amarelo font-medium">PAINEL DE GESTÃO</p>
+      </div>
+    </div>
+
+    <!-- Links de Navegação -->
+    <div class="my-7 px-2">
+      <p class="text-secondary font-poppins font-medium">QUIOSQUE SELECIONADO</p>
+      <mat-select class="select bg-tertiary p-3 text-creme rounded-2xl mt-2 border border-secondary">
+        <mat-option value="">Teste</mat-option>
+        <mat-option value="">Teste</mat-option>
+        <mat-option value="">Teste</mat-option>
+      </mat-select>
+    </div>
+
+    <div class="flex overflow-scroll md:grid md:overflow-auto">
+      <a class="side-bar-link shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20-px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z" />
+        </svg>
+        <p class="">Visão geral</p>
+      </a>
+
+      <a class="side-bar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M640-160v-280h160v280H640Zm-240 0v-640h160v640H400Zm-240 0v-440h160v440H160Z" />
+        </svg>
+        <p class="">Estatísticas</p>
+      </a>
+
+      <a class="side-bar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M280-120v-248l-44 70-68-42 312-500 312 500-68 42-44-70v248H520v-200h-80v200H280Zm160-280h80v-80h-80v80Z" />
+        </svg>
+        <p class="">Quiosques</p>
+      </a>
+
+      <a class="side-bar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Z" />
+        </svg>
+        <p class="">Funcionários</p>
+      </a>
+
+      <a class="side-bar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M120-80v-800l60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60v800l-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60Zm120-200h480v-80H240v80Zm0-160h480v-80H240v80Zm0-160h480v-80H240v80Z" />
+        </svg>
+        <p class="">Pedidos</p>
+      </a>
+    </div>
+
+  </div>
+
+
+  <!-- Identificação do Usuário -->
+  <div class="flex bg-fundo-escuro rounded-2xl p-4 gap-3 items-center mt-7 md:mt-auto">
+    <div class="flex rounded-full bg-amarelo w-10 h-10 min-w-10 justify-center items-center shrink-0">
+      <p class="font-bold text-lg text-marrom font-poppins">A</p>
+    </div>
+    <div class="min-w-0 flex-1">
+      <p class="font-poppins font-semibold text-creme truncate">
+        Nome Usuário
+      </p>
+      <p class="text-sm text-secondary truncate">
+        Gerente • Nome Quiosque
+      </p>
+    </div>
+  </div>
+
+</div>

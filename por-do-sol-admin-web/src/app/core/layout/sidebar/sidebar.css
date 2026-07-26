@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+
+@utility base-sidebar {
+  @apply h-full max-w-3xs;
+}

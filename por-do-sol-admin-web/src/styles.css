@@ -1,0 +1,79 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import 'tailwindcss';
+
+@theme {
+  /* Cores base */
+  --color-fundo: #FDE8DA;
+  --color-outline: #3A2E2E;
+  --color-surface: #FFFCF5;
+
+  /* Cores principais */
+  --color-primary: #C0420A;
+  --color-secondary: #F5A06A;
+  --color-tertiary: #CB6436;
+
+  /* Cores sobre as principais */
+  --color-on-primary: #FDE8DA;
+  --color-on-secondary: #F5C4A4;
+  --color-on-tertiary: #FFFFFF;
+  --color-on-surface: #FDD06A;
+
+  /* Outras */
+  --color-outline-variant: #575757;
+
+  /* Erro */
+  --color-error: #BA1A1A;
+  --color-on-error: #FFFFFF;
+  --color-error-container: #FFDAD6;
+  --color-on-error-container: #410002;
+
+  /* Cores extras */
+  --color-verde: #4A8C7A;
+  --color-vermelha: #FF5000;
+  --color-creme: #FDE8DA;
+  --color-amarelo: #FDD06A;
+  --color-fundo-escuro: #A83A08;
+  --color-marrom: #7A2200;
+
+  /* Fontes */
+  --font-poppins: "Poppins", sans-serif;
+  --font-nunito: "Nunito", sans-serif;
+}
+
+@layer components {}
+
+/* @utility base-sidebar {
+  @apply h-full max-w-3xs;
+} */
+
+::selection {
+  background-color: var(--color-amarelo);
+  color: var(--color-marrom);
+}
+
+.select {
+  --mat-sys-on-surface: var(--color-creme);
+  --mat-sys-surface-container: var(--color-tertiary);
+  --mat-sys-on-surface-variant: var(--color-creme);
+}
+
+.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
+.mat-mdc-option .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
+  color: var(--color-creme) !important;
+}
+
+.svg {
+  color: var(--color-secondary);
+  fill: currentColor;
+}
+
+@utility side-bar-link {
+  /* Adicionado o ';' no final desta linha */
+  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl;
+
+  &:hover {
+    @apply bg-tertiary text-creme;
+  }
+}
