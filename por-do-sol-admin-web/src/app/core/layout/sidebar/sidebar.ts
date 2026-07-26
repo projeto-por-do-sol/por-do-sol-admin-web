@@ -7,4 +7,6 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar { }
+export class Sidebar {
+  paginaAtual?: string | null
+}

@@ -36,6 +36,7 @@
   --color-amarelo: #FDD06A;
   --color-fundo-escuro: #A83A08;
   --color-marrom: #7A2200;
+  --color-hover-sidebarlink: #cb65366c;
 
   /* Fontes */
   --font-poppins: "Poppins", sans-serif;
@@ -66,14 +67,19 @@
 }
 
 @utility side-bar-link {
-  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative;
-
-  &:hover {
-    @apply bg-tertiary text-creme;
-  }
+  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative transition-colors;
 }
 
-.side-bar-link:hover::before {
+.side-bar-link:hover {
+  @apply bg-hover-sidebarlink text-creme;
+}
+
+.side-bar-link.active {
+  @apply bg-tertiary text-creme;
+}
+
+.side-bar-link:hover::before,
+.side-bar-link.active::before {
   content: "";
   display: inline-block;
   position: absolute;
