@@ -8,5 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-  paginaAtual?: string | null
+  paginaAtual?: string = 'visao-geral'
+  quiosqueSelecionado: string = ''
+  
 }

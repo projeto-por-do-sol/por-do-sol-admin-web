@@ -14,16 +14,16 @@
     <!-- Links de Navegação -->
     <div class="my-7 px-2">
       <p class="text-secondary font-poppins font-medium">QUIOSQUE SELECIONADO</p>
-      <mat-select class="select">
-        <mat-option value="">Teste</mat-option>
-        <mat-option value="">Teste</mat-option>
-        <mat-option value="">Teste</mat-option>
+      <mat-select class="select" [(value)]="quiosqueSelecionado">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="teste">Quiosque 1</mat-option>
+        <mat-option value="teste2">Quiosque 2</mat-option>
       </mat-select>
     </div>
 
     <div class="flex overflow-scroll md:grid md:overflow-visible">
       <a class="side-bar-link shrink-0" [class.active]="paginaAtual === 'visao-geral'" (click)="paginaAtual = 'visao-geral'">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20-px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
           <path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z" />
         </svg>
         <p class="">Visão geral</p>
@@ -36,12 +36,14 @@
         <p class="">Estatísticas</p>
       </a>
 
+      @if(!quiosqueSelecionado){
       <a class="side-bar-link" [class.active]="paginaAtual === 'quiosques'" (click)="paginaAtual = 'quiosques'">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
           <path d="M280-120v-248l-44 70-68-42 312-500 312 500-68 42-44-70v248H520v-200h-80v200H280Zm160-280h80v-80h-80v80Z" />
         </svg>
         <p class="">Quiosques</p>
       </a>
+      }
 
       <a class="side-bar-link" [class.active]="paginaAtual === 'funcionarios'" (click)="paginaAtual = 'funcionarios'">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
