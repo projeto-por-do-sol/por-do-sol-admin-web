@@ -57,6 +57,7 @@
   --mat-sys-on-surface: var(--color-creme);
   --mat-sys-surface-container: var(--color-tertiary);
   --mat-sys-on-surface-variant: var(--color-creme);
+  @apply bg-tertiary p-3 text-creme rounded-2xl mt-2 border border-secondary
 }
 
 .mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
@@ -64,16 +65,21 @@
   color: var(--color-creme) !important;
 }
 
-.svg {
-  color: var(--color-secondary);
-  fill: currentColor;
-}
-
 @utility side-bar-link {
-  /* Adicionado o ';' no final desta linha */
-  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl;
+  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative;
 
   &:hover {
     @apply bg-tertiary text-creme;
   }
+}
+
+.side-bar-link:hover::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 6px;
+  height: 24px;
+  background: var(--color-amarelo);
+  border-radius: 4px;
+  left: -16px;
 }
