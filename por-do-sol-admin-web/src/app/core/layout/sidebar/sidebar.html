@@ -66,14 +66,14 @@
   <!-- Identificação do Usuário -->
   <div class="flex bg-fundo-escuro rounded-2xl p-4 gap-3 items-center mt-7 md:mt-auto">
     <div class="flex rounded-full bg-amarelo w-10 h-10 min-w-10 justify-center items-center shrink-0">
-      <p class="font-bold text-lg text-marrom font-poppins">A</p>
+      <p class="font-bold text-lg text-marrom font-poppins">{{userNameInitials}}</p>
     </div>
     <div class="min-w-0 flex-1">
       <p class="font-poppins font-semibold text-creme truncate">
-        Nome Usuário
+        {{user().name}}
       </p>
       <p class="text-sm text-secondary truncate">
-        Gerente • Nome Quiosque
+        {{user().position}} • {{user().kiosk}}
       </p>
     </div>
   </div>
