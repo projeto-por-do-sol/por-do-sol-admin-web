@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { KpiModel } from '../../../models/kpi-model';
+import { KpiService } from '../../../services/kpi-service';
 
 @Component({
   selector: 'app-kpi-card',
@@ -9,13 +10,12 @@ import { KpiModel } from '../../../models/kpi-model';
 })
 export class KpiCard {
 
-  kpis: KpiModel[] = []
+  kpis!: Signal<KpiModel[]>
+
+  constructor(private kpiService: KpiService){}
 
   ngOnInit() {
-    this.kpis.push(new KpiModel("Pedidos hoje", "42", "12%", true))
-    this.kpis.push(new KpiModel("Faturamento hoje", "R$1.780", "9%", true))
-    this.kpis.push(new KpiModel("Ticket médio", "R$ 42", "3%", true))
-    this.kpis.push(new KpiModel("Tempo médio", "12 min", "2 min", false))
+    this.kpis = this.kpiService.kpi
   }
 
 }
