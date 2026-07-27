@@ -37,6 +37,8 @@
   --color-fundo-escuro: #A83A08;
   --color-marrom: #7A2200;
   --color-hover-sidebarlink: #cb65366c;
+  --color-green: #1A6B55;
+  --color-red: #B23A2E;
 
   /* Fontes */
   --font-poppins: "Poppins", sans-serif;
@@ -55,6 +57,7 @@
 }
 
 body {
+  background-color: var(--color-fundo);
   font-family: var(--font-poppins);
 }
 
@@ -101,6 +104,7 @@ body {
 }
 
 @media (width>=48rem) {
+
   .side-bar-link:hover::before,
   .side-bar-link.active::before {
     content: "";

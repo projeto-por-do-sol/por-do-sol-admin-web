@@ -1,0 +1,2 @@
+Corigir o input de busca do header home (quando diminui a tela, o input não diminui).
+Reposicionar o botão das notificações no mobile.

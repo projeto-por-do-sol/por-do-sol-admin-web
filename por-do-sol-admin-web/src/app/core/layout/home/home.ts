@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { KpiCard } from "../../shared/ui/kpi-card/kpi-card";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, KpiCard],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

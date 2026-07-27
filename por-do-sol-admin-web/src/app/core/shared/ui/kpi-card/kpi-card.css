@@ -1,0 +1,13 @@
+.text-red {
+  color: var(--color-red);
+}
+
+.text-green {
+  color: var(--color-green);
+}
+
+.text-green,
+.text-red {
+  display: flex;
+  gap: 0.4rem;
+}
