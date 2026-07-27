@@ -1,0 +1,29 @@
+<header class="bg-primary w-full px-5 md:px-10 py-5 md:flex justify-between border-t-2 border-tertiary md:border-none overflow-auto">
+  <div class="mb-10 mr-10 md:mb-0">
+    <p class="text-amarelo font-light text-xl mb-2">Boa tarde</p>
+    <h1 class="text-creme font-bold text-3xl">Como está o Quiosque hoje?</h1>
+    <p class="mt-2 text-secondary text-lg">Um resumo rápido de pedidos, equipe e faturamento</p>
+  </div>
+
+  <!-- Campo de busca -->
+  <div class="flex gap-5 items-center self-center mb-10 md:mb-0">
+    <div class="text-creme flex p-3 bg-tertiary rounded-2xl w-full md:max-w-md max-h-12">
+      <label for="busca">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+        </svg>
+      </label>
+      <input name="busca" id="busca" type="text" placeholder="Buscar pedido ou item neste quiosque" class="focus:outline-none ml-2">
+    </div>
+
+    <!-- Notificações -->
+    <button class="flex bg-tertiary min-h-12 min-w-12 justify-center items-center rounded-full">
+      @if(hasNotification){
+      <img src="/assets/icons/notification_unread.svg" alt="">
+      } @else {
+      <img src="/assets/icons/notification_not_fill.svg" alt="">
+      }
+    </button>
+  </div>
+
+</header>

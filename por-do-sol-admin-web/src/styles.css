@@ -10,7 +10,7 @@
   --color-surface: #FFFCF5;
 
   /* Cores principais */
-  --color-primary: #C0420A;
+  --color-primary: #C0420a;
   --color-secondary: #F5A06A;
   --color-tertiary: #CB6436;
 
@@ -54,6 +54,11 @@
   color: var(--color-marrom);
 }
 
+body {
+  font-family: var(--font-poppins);
+}
+
+/* Select */
 .select {
   --mat-sys-on-surface: var(--color-creme);
   --mat-sys-surface-container: var(--color-tertiary);
@@ -61,9 +66,26 @@
   @apply bg-tertiary p-3 text-creme rounded-2xl mt-2 border border-secondary
 }
 
+.quiosque-panel .mat-mdc-option {
+  min-height: 40px;
+}
+
+.quiosque-panel .mat-mdc-option .mdc-list-item__primary-text {
+  display: block;
+  width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 .mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
 .mat-mdc-option .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
   color: var(--color-creme) !important;
+}
+
+/* SideBar */
+@utility base-sidebar {
+  @apply h-full max-w-3xs;
 }
 
 @utility side-bar-link {
@@ -78,14 +100,16 @@
   @apply bg-tertiary text-creme;
 }
 
-.side-bar-link:hover::before,
-.side-bar-link.active::before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  width: 6px;
-  height: 24px;
-  background: var(--color-amarelo);
-  border-radius: 4px;
-  left: -16px;
+@media (width>=48rem) {
+  .side-bar-link:hover::before,
+  .side-bar-link.active::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    width: 6px;
+    height: 24px;
+    background: var(--color-amarelo);
+    border-radius: 4px;
+    left: -16px;
+  }
 }
