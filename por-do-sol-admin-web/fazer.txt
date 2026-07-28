@@ -2,3 +2,4 @@ Mudar o "Como está o quiosque hoje" pelo nome do quiosque selecionado.
 Colocar o routerlink nos links do header.
 Tirar a borda do kpis e colocar um shadow.
 Dropdown na sidebar para o usuário conseguir ser redirecionado para o cadastro de quiosques, funcionários e itens dos quiosques.
+Mudar o último kpi para "Quiosques aberto" quando exibir todos os quiosques
