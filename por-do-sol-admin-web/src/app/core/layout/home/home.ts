@@ -5,6 +5,7 @@ import { Header } from "../header/header";
 import { CardKioskInfo } from "../../feature/card-kiosk-info/card-kiosk-info";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { NavigationService } from '../../services/navigation-service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,11 @@ import { NavigationService } from '../../services/navigation-service';
 })
 export class Home {
 
-  constructor(private navigation: NavigationService) { }
+  constructor(private navigation: NavigationService, private location: Location) { }
+
+  ngOnInit() {
+    this.location.replaceState('/')
+  }
 
   ngAfterViewInit() {
     const sections = document.querySelectorAll('section');

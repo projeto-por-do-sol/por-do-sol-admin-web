@@ -1,17 +1,20 @@
 <!-- Header -->
-<app-header></app-header>
+<section id="inicio">
+  <app-header></app-header>
+</section>
 
 <!-- Conteúdos -->
-<main class="p-8">
+<main class="px-8 pb-8">
 
   <!-- Visão geral -->
   <section id="visao-geral">
+    <app-section-title [lable]="'Resumo'" [section]="'Visão Geral'" [text]="'Resumo geral de seus quiosques'"></app-section-title>
     <app-kpi-card></app-kpi-card>
 
     <!-- @if(){
 
     } -->
-    <app-card-kiosk-info></app-card-kiosk-info>
+    <!-- <app-card-kiosk-info></app-card-kiosk-info> -->
   </section>
 
   <section id="estatisticas">

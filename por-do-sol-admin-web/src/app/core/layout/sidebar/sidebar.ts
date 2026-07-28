@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Signal, NgZone } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '../../models/user-model';
 import { UserService } from '../../services/user-service';

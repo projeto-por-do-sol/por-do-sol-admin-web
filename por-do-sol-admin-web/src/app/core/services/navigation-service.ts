@@ -5,6 +5,6 @@ import { Injectable, signal } from '@angular/core';
 })
 export class NavigationService {
 
-  activeSection = signal('visao-geral')
+  activeSection = signal('inicio')
 
 }
