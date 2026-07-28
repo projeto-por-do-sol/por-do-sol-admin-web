@@ -1,5 +1,6 @@
+import { KioskModel } from "../models/kiosk-model";
 import { KpiModel } from "../models/kpi-model";
-import { User } from "../models/user";
+import { User } from "../models/user-model";
 
 export const MOCK_USER: User = {
   id: "id_mockado",
@@ -31,3 +32,17 @@ export const MOCK_KPI: KpiModel[] = [
     direction: false,
   },
 ]
+
+export const MOCK_KIOSK: KioskModel = {
+  id: "id_kiosk",
+  name: "Quiosque teste",
+  urlImg: "https://www.guiaviagensbrasil.com/imagens/quiosque-praia-monguaga-sp.jpg" ,
+  rating: "4.5",
+  location: "Praia Grande - Santos",
+  startOperation: "08:00",
+  finishOperation: "22:00",
+  todaysOrders: 42,
+  averageTime: 12,
+  invoicing: 1780,
+  categories: ["Frutos do mar", "Caipirinhas"]
+}

@@ -1,6 +1,6 @@
 import { Component, Signal } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
-import { User } from '../../models/user';
+import { User } from '../../models/user-model';
 import { UserService } from '../../services/user-service';
 
 @Component({

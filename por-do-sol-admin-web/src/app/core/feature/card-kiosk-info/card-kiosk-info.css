@@ -1,0 +1,24 @@
+.card-img {
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+}
+
+.open {
+  background-color: var(--color-light-green);
+  color: var(--color-green);
+}
+
+.close {
+  background-color: var(--color-bg-close);
+  color: var(--color-red);
+}
+
+.open,
+.close {
+  width: max-content;
+  height: max-content;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  font-weight: 500;
+}

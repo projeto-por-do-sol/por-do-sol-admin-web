@@ -1,0 +1,53 @@
+<div class="w-full bg-surface rounded-2xl overflow-hidden mt-8">
+
+  <!-- Imagem do Quiosque, indicativo se está aberto/fechado e nota -->
+  <div class="card-img h-50 p-5 flex justify-between" [style.--bg-image]="'url(' + kiosk().urlImg + ')'">
+    <div [class]="true ? 'open' : 'close'">
+      <p>Aberto agora</p>
+    </div>
+    <div class="bg-amarelo h-max w-max py-2 px-4 rounded-2xl font-medium text-outline flex gap-1 items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
+        <path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+      </svg>
+      <p>{{kiosk().rating}}</p>
+    </div>
+  </div>
+
+  <div class="p-6">
+
+    <!-- Nome do Quiosque, localização e funcionamento -->
+    <div class="kioskNameOperation justify-between mb-5overflow-hidden">
+
+      <!-- Nome do quiosque e localização -->
+      <div class="kioskNameLocation  ">
+        <h2 class="font-bold text-2xl text-outline mb-1 truncate mr-5">{{kiosk().name}}</h2>
+        <p class="truncate font-normal text-base text-primary">{{kiosk().location}}</p>
+      </div>
+
+      <!-- Funcionamento -->
+      <div class="">
+        <p class="text-sub-text text-base font-medium truncate">Funcionamento</p>
+        <p class="text-outline font-semibold text-lg truncate">{{kiosk().startOperation}}-{{kiosk().finishOperation}}</p>
+      </div>
+    </div>
+
+    <!-- Categorias -->
+    <div class="flex gap-2 overflow-scroll">
+      @for(cat of kiosk().categories; track cat){
+      <span class="bg-bg-close text-primary rounded-2xl px-4 py-1 text-sm font-medium mt-3 mb-5 h-max">{{cat}}</span>
+      }
+    </div>
+
+    <!-- Kpi do quiosque -->
+    <div class="border-t-2 border-dashed border-sub-text pt-5 text-sub-text grid gap-2 md:flex md:gap-10 overflow-hidden">
+      <p><span class="text-outline font-semibold">{{kiosk().todaysOrders}}</span> pedidos hoje</p>
+      <p><span class="text-outline font-semibold">{{kiosk().averageTime}} min</span> tempo médio</p>
+      <p>
+        <span class="text-outline font-semibold">
+          {{ kiosk().invoicing | currency:'BRL'}}
+        </span>
+        faturamento hoje
+      </p>
+    </div>
+  </div>
+</div>

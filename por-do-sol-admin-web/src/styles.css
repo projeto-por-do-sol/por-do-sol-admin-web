@@ -38,7 +38,11 @@
   --color-marrom: #7A2200;
   --color-hover-sidebarlink: #cb65366c;
   --color-green: #1A6B55;
+  --color-light-green: #EBF5F0;
   --color-red: #B23A2E;
+  --color-bg-close: #FBE8DA;
+  --color-sub-text: #8C7267;
+
 
   /* Fontes */
   --font-poppins: "Poppins", sans-serif;
@@ -101,6 +105,18 @@ body {
 
 .side-bar-link.active {
   @apply bg-tertiary text-creme;
+}
+
+@media (width < 500px){
+  .kioskNameLocation{
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (width >=500px) {
+  .kioskNameOperation {
+    display: flex;
+  }
 }
 
 @media (width>=48rem) {
