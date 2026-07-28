@@ -55,6 +55,10 @@
   @apply h-full max-w-3xs;
 } */
 
+html {
+  scroll-behavior: smooth;
+}
+
 ::selection {
   background-color: var(--color-amarelo);
   color: var(--color-marrom);
@@ -96,7 +100,7 @@ body {
 }
 
 @utility side-bar-link {
-  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative transition-colors;
+  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative transition-colors h-max;
 }
 
 .side-bar-link:hover {
@@ -107,8 +111,8 @@ body {
   @apply bg-tertiary text-creme;
 }
 
-@media (width < 500px){
-  .kioskNameLocation{
+@media (width < 500px) {
+  .kioskNameLocation {
     margin-bottom: 1.5rem;
   }
 }

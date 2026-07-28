@@ -4,6 +4,7 @@ import { KpiCard } from "../../shared/ui/kpi-card/kpi-card";
 import { Header } from "../header/header";
 import { CardKioskInfo } from "../../feature/card-kiosk-info/card-kiosk-info";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-home',
@@ -13,5 +14,23 @@ import { SectionTitle } from "../../shared/ui/section-title/section-title";
 })
 export class Home {
 
+  constructor(private navigation: NavigationService) { }
+
+  ngAfterViewInit() {
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.navigation.activeSection.set(entry.target.id);
+        }
+      });
+
+    }, {
+      rootMargin: '-45% 0px -45% 0px',
+      threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
 
 }

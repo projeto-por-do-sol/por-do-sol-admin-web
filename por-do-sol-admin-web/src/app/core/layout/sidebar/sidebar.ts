@@ -1,22 +1,27 @@
-import { Component, Signal } from '@angular/core';
+import { AfterViewInit, Component, Signal, NgZone } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '../../models/user-model';
 import { UserService } from '../../services/user-service';
+import { RouterLink } from "@angular/router";
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [MatSelectModule],
+  imports: [MatSelectModule, RouterLink],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-  paginaAtual?: string = 'visao-geral'
-  quiosqueSelecionado: string = ''
+  selectedKiosk: string = ''
 
   user!: Signal<User>
   userNameInitials: string = ""
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    public navigation: NavigationService,
+
+  ) { }
 
   ngOnInit() {
     this.user = this.userService.user;
