@@ -6,10 +6,11 @@ import { CardKioskInfo } from "../../feature/card-kiosk-info/card-kiosk-info";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { NavigationService } from '../../services/navigation-service';
 import { Location } from '@angular/common';
+import { StackedColumn } from "../../shared/ui/charts/stacked-column/stacked-column";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

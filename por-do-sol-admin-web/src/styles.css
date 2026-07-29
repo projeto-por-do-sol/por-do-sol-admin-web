@@ -111,6 +111,13 @@ body {
   @apply bg-tertiary text-creme;
 }
 
+.charts {
+  background-color: var(--color-surface);
+  padding: 1.5rem;
+  border: 1px solid var(--color-secondary);
+  border-radius: 1rem;
+}
+
 @media (width < 500px) {
   .kioskNameLocation {
     margin-bottom: 1.5rem;
