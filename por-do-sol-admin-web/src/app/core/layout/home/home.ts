@@ -8,10 +8,11 @@ import { NavigationService } from '../../services/navigation-service';
 import { Location } from '@angular/common';
 import { StackedColumn } from "../../shared/ui/charts/stacked-column/stacked-column";
 import { ZoomableTimeseries } from "../../shared/ui/charts/zoomable-timeseries/zoomable-timeseries";
+import { Donut } from "../../shared/ui/charts/donut/donut";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

@@ -19,9 +19,9 @@
 
   <section id="estatisticas">
     <app-section-title [lable]="'Desempenho'" [section]="'Estatísticas'" [text]="'Pedidos, vendas por categoria e faturamento da semana deste quiosque'"></app-section-title>
-    <div class="grid lg:grid-cols-3 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
       <app-stacked-column class="lg:col-span-2"></app-stacked-column>
-      <div class="bg-amarelo"></div>
+      <app-donut></app-donut>
       <app-zoomable-timeseries class="lg:col-span-2"></app-zoomable-timeseries>
       <div class="bg-amarelo"></div>
     </div>

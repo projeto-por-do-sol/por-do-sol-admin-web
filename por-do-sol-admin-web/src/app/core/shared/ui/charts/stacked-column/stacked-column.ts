@@ -138,10 +138,23 @@ export class StackedColumn {
       title: {
         text: 'Pedidos dos quiosques por dia',
         align: 'left',
+        style: {
+          color: "var(--color-outline)",
+          // fontWeight: "bold",
+          // fontSize: "0.8rem",
+          fontWeight: "semibold",
+          fontFamily: "var(--font-poppins)"
+        }
       },
       subtitle: {
-        text: 'teste',
-        align: 'right',
+        text: 'Últimos 7 dias',
+        align: 'left',
+        style: {
+          color: "var(--color-sub-text)",
+          // fontWeight: "bold",
+          fontSize: "0.8rem",
+          fontFamily: "var(--font-poppins)"
+        }
       },
       xaxis: {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -156,6 +169,9 @@ export class StackedColumn {
       legend: {
         position: 'right',
         offsetY: 40,
+        fontFamily: 'var(--font-poppins)',
+        fontWeight: "semibold",
+        fontSize: "0.8rem"
       },
       fill: {
         opacity: 1,

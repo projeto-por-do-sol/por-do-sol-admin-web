@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -8,16 +8,16 @@ import {
   ApexYAxis,
   ApexTitleSubtitle,
   ApexDataLabels,
-  ApexStroke,
+  // ApexStroke,
   ApexFill,
   ApexLegend,
   ApexTooltip,
   ApexMarkers,
   ApexPlotOptions,
   ApexResponsive,
-  ApexGrid,
-  ApexAnnotations,
-  ApexStates,
+  // ApexGrid,
+  // ApexAnnotations,
+  // ApexStates,
   ApexTheme,
   NgApexchartsModule,
 } from 'ng-apexcharts';
@@ -30,16 +30,16 @@ export type ChartOptions = {
   title?: ApexTitleSubtitle;
   subtitle?: ApexTitleSubtitle;
   dataLabels?: ApexDataLabels;
-  stroke?: ApexStroke;
+  // stroke?: ApexStroke;
   fill?: ApexFill;
   legend?: ApexLegend;
   tooltip?: ApexTooltip;
   markers?: ApexMarkers;
   plotOptions?: ApexPlotOptions;
   responsive?: ApexResponsive[];
-  grid?: ApexGrid;
-  annotations?: ApexAnnotations;
-  states?: ApexStates;
+  // grid?: ApexGrid;
+  // annotations?: ApexAnnotations;
+  // states?: ApexStates;
   theme?: ApexTheme;
   colors?: string[];
   labels?: any;
@@ -121,14 +121,31 @@ export class ZoomableTimeseries {
       title: {
         text: 'Faturamento · 7 dias',
         align: 'left',
+        style: {
+          color: "var(--color-outline)",
+          // fontWeight: "bold",
+          // fontSize: "0.8rem",
+          fontWeight: "semibold",
+          fontFamily: "var(--font-poppins)"
+        }
+      },
+      subtitle: {
+        text: 'Tendência diária, em reais',
+        align: 'left',
+        style: {
+          color: "var(--color-sub-text)",
+          // fontWeight: "bold",
+          fontSize: "0.8rem",
+          fontFamily: "var(--font-poppins)"
+        }
       },
       fill: {
         type: 'gradient',
         gradient: {
           shadeIntensity: 1,
           inverseColors: false,
-          opacityFrom: 0.5,
-          opacityTo: 0,
+          opacityFrom: 0.7,
+          opacityTo: 0.5,
           stops: [0, 90, 100],
         },
       },
@@ -140,6 +157,9 @@ export class ZoomableTimeseries {
         },
         title: {
           text: 'Valor',
+          style: {
+            fontSize: "0.8rem"
+          }
         },
       },
       xaxis: {
