@@ -1,0 +1,5 @@
+<div class="flex overflow-x-auto h-max gap-3">
+  @for(opt of options(); track opt){
+  <button type="button" (click)="choosenOption(opt)" [ngClass]="selectedOption() === opt ? 'selected-chip' : 'chip'">{{opt}}</button>
+  }
+</div>

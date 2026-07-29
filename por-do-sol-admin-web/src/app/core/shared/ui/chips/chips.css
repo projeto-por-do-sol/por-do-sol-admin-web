@@ -1,0 +1,24 @@
+.selected-chip {
+  background-color: var(--color-primary);
+  color: var(--color-creme);
+  border: 1px solid var(--color-primary);
+}
+
+.chip {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-secondary);
+}
+
+.chip,
+.selected-chip {
+  padding: 0.5rem 1.2rem;
+  border-radius: 2rem;
+  width: max-content;
+  height: max-content;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: 0.2s;
+}

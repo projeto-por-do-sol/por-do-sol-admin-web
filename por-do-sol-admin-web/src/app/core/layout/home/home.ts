@@ -10,10 +10,11 @@ import { StackedColumn } from "../../shared/ui/charts/stacked-column/stacked-col
 import { ZoomableTimeseries } from "../../shared/ui/charts/zoomable-timeseries/zoomable-timeseries";
 import { Donut } from "../../shared/ui/charts/donut/donut";
 import { RadialBar } from "../../shared/ui/charts/radial-bar/radial-bar";
+import { KioskGrid } from "../../feature/kiosk-grid/kiosk-grid";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -21,9 +22,9 @@ export class Home {
 
   constructor(private navigation: NavigationService, private location: Location) { }
 
-  ngOnInit() {
-    this.location.replaceState('/')
-  }
+  // ngOnInit() {
+  //   this.location.replaceState('/')
+  // }
 
   ngAfterViewInit() {
     const sections = document.querySelectorAll('section');
