@@ -11,7 +11,7 @@ import {
   // ApexStroke,
   ApexFill,
   ApexLegend,
-  // ApexTooltip,
+  ApexTooltip,
   // ApexMarkers,
   ApexPlotOptions,
   ApexResponsive,
@@ -33,7 +33,7 @@ export type ChartOptions = {
   // stroke?: ApexStroke;
   fill?: ApexFill;
   legend?: ApexLegend;
-  // tooltip?: ApexTooltip;
+  tooltip?: ApexTooltip;
   // markers?: ApexMarkers;
   plotOptions?: ApexPlotOptions;
   responsive?: ApexResponsive[];
@@ -61,7 +61,13 @@ export class Donut {
       chart: {
         type: 'donut',
         width: '100%',
-        height: '350'
+        height: '350',
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        }
       },
       theme: {
         mode: 'light',

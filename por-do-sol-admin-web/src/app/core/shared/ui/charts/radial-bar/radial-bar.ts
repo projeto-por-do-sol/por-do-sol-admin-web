@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -8,17 +8,17 @@ import {
   ApexYAxis,
   ApexTitleSubtitle,
   ApexDataLabels,
-  ApexStroke,
-  ApexFill,
-  ApexLegend,
+  // ApexStroke,
+  // ApexFill,
+  // ApexLegend,
   ApexTooltip,
-  ApexMarkers,
+  // ApexMarkers,
   ApexPlotOptions,
-  ApexResponsive,
-  ApexGrid,
-  ApexAnnotations,
-  ApexStates,
-  ApexTheme,
+  // ApexResponsive,
+  // ApexGrid,
+  // ApexAnnotations,
+  // ApexStates,
+  // ApexTheme,
   NgApexchartsModule,
 } from 'ng-apexcharts';
 
@@ -30,17 +30,17 @@ export type ChartOptions = {
   title?: ApexTitleSubtitle;
   subtitle?: ApexTitleSubtitle;
   dataLabels?: ApexDataLabels;
-  stroke?: ApexStroke;
-  fill?: ApexFill;
-  legend?: ApexLegend;
+  // stroke?: ApexStroke;
+  // fill?: ApexFill;
+  // legend?: ApexLegend;
   tooltip?: ApexTooltip;
-  markers?: ApexMarkers;
+  // markers?: ApexMarkers;
   plotOptions?: ApexPlotOptions;
-  responsive?: ApexResponsive[];
-  grid?: ApexGrid;
-  annotations?: ApexAnnotations;
-  states?: ApexStates;
-  theme?: ApexTheme;
+  // responsive?: ApexResponsive[];
+  // grid?: ApexGrid;
+  // annotations?: ApexAnnotations;
+  // states?: ApexStates;
+  // theme?: ApexTheme;
   colors?: string[];
   labels?: any;
 };
@@ -62,6 +62,12 @@ export class RadialBar {
       chart: {
         height: 350,
         type: 'radialBar',
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        }
       },
       colors: [
         '#D95825',
