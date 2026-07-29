@@ -1,4 +1,4 @@
-import { Component, Signal } from '@angular/core';
+import { Component, input, Signal } from '@angular/core';
 import { KioskModel } from '../../models/kiosk-model';
 import { KioskService } from '../../services/kiosk-service';
 import { CurrencyPipe, NgClass } from '@angular/common';
@@ -11,12 +11,14 @@ import { CurrencyPipe, NgClass } from '@angular/common';
 })
 export class CardKioskInfo {
 
-  kiosk!: Signal<KioskModel>
+  kiosk = input.required<KioskModel>()
 
-  constructor(private kioskService: KioskService) { }
+  constructor(
+    // private kioskService: KioskService,
+  ) { }
 
   ngOnInit() {
-    this.kiosk = this.kioskService.kiosk
+    // this.kiosk = this.kioskService.kiosk
   }
 
   getIsOpen() {
