@@ -28,7 +28,7 @@ export type ChartOptions = {
   xaxis?: ApexXAxis;
   yaxis?: ApexYAxis | ApexYAxis[];
   title?: ApexTitleSubtitle;
-  // subtitle?: ApexTitleSubtitle;
+  subtitle?: ApexTitleSubtitle;
   dataLabels?: ApexDataLabels;
   // stroke?: ApexStroke;
   fill?: ApexFill;
@@ -138,6 +138,10 @@ export class StackedColumn {
       title: {
         text: 'Pedidos dos quiosques por dia',
         align: 'left',
+      },
+      subtitle: {
+        text: 'teste',
+        align: 'right',
       },
       xaxis: {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
