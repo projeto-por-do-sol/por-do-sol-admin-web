@@ -89,7 +89,7 @@ export class StackedColumn {
       },
 
       theme: {
-        mode: 'dark',
+        mode: 'light',
         palette: 'palette1'
       },
 

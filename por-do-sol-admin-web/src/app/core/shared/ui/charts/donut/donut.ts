@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -8,16 +8,16 @@ import {
   ApexYAxis,
   ApexTitleSubtitle,
   ApexDataLabels,
-  ApexStroke,
+  // ApexStroke,
   ApexFill,
   ApexLegend,
-  ApexTooltip,
-  ApexMarkers,
+  // ApexTooltip,
+  // ApexMarkers,
   ApexPlotOptions,
   ApexResponsive,
-  ApexGrid,
-  ApexAnnotations,
-  ApexStates,
+  // ApexGrid,
+  // ApexAnnotations,
+  // ApexStates,
   ApexTheme,
   NgApexchartsModule,
 } from 'ng-apexcharts';
@@ -30,16 +30,16 @@ export type ChartOptions = {
   title?: ApexTitleSubtitle;
   subtitle?: ApexTitleSubtitle;
   dataLabels?: ApexDataLabels;
-  stroke?: ApexStroke;
+  // stroke?: ApexStroke;
   fill?: ApexFill;
   legend?: ApexLegend;
-  tooltip?: ApexTooltip;
-  markers?: ApexMarkers;
+  // tooltip?: ApexTooltip;
+  // markers?: ApexMarkers;
   plotOptions?: ApexPlotOptions;
   responsive?: ApexResponsive[];
-  grid?: ApexGrid;
-  annotations?: ApexAnnotations;
-  states?: ApexStates;
+  // grid?: ApexGrid;
+  // annotations?: ApexAnnotations;
+  // states?: ApexStates;
   theme?: ApexTheme;
   colors?: string[];
   labels?: any;
@@ -54,101 +54,117 @@ export type ChartOptions = {
 export class Donut {
 
   @ViewChild('chart') chart!: ChartComponent;
-  public chartOptions: Partial<ChartOptions> = {
-    series: [128, 96, 74, 52, 38],
-    chart: {
-      type: 'donut',
-      width: '100%',
-      height: '350'
-    },
-    plotOptions: {
-      pie: {
-        startAngle: -90,
-        endAngle: 270,
-        // customScale: 1.25,
-        offsetY: 20,
-        donut: {
-          size: '70%'
-        }
+  public chartOptions!: ChartOptions
+  constructor() {
+    this.chartOptions = {
+      series: [128, 96, 74, 52, 38],
+      chart: {
+        type: 'donut',
+        width: '100%',
+        height: '350'
       },
-    },
-    labels: ['Compute', 'Storage', 'Database', 'Networking', 'Analytics'],
-    dataLabels: {
-      enabled: false,
-    },
-    // fill: {
-    //   type: 'gradient',
-    // },
-    legend: {
-      formatter: (val, opts) => {
-        return val + ' - $' + opts.w.globals.series[opts.seriesIndex] + 'k'
+      theme: {
+        mode: 'light',
+        palette: 'palette1'
       },
-      position: 'bottom',
-    },
-    title: {
-      text: 'Vendas por categoria',
-      style: {
-        color: "var(--color-outline)",
-        // fontWeight: "bold",
-        // fontSize: "0.8rem",
-        fontWeight: "semibold",
-        fontFamily: "var(--font-poppins)"
-      }
-    },
-    subtitle: {
-      text: "Participação nos pedidos da semana",
-      align: 'left',
-      style: {
-        color: "var(--color-sub-text)",
-        // fontWeight: "bold",
-        fontSize: "0.8rem",
-        fontFamily: "var(--font-poppins)"
-      }
-    },
-    responsive: [
-      {
-        breakpoint: 1213,
-        options: {
-          chart: {
-            type: 'donut',
-            width: '60%',
-            height: 300
-          },
-          legend: {
-            position: 'bottom',
-            // width: 200
-          }
-        }
-      },
-      {
-        breakpoint: 1020,
-        options: {
-          chart: {
-            type: 'donut',
-            width: '100%',
-            height: 350
-          },
-          legend: {
-            position: 'bottom',
-            // width: 200
-          }
-        }
-      },
-      {
-        breakpoint: 450,
-        options: {
-          chart: {
-            type: 'donut',
-            width: '100%',
-            height: 350
-          },
-          legend: {
-            position: 'bottom',
-            // width: 200
-          }
-        }
-      }
-    ]
-  };
 
+      colors: [
+        '#E8754A',
+        '#D95825',
+        '#C0420A',
+        '#A63708',
+        '#852C06',
+        '#632004',
+        '#3D1302'
+      ],
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270,
+          // customScale: 1.25,
+          offsetY: 20,
+          donut: {
+            size: '70%'
+          }
+        },
+      },
+      labels: ['Compute', 'Storage', 'Database', 'Networking', 'Analytics'],
+      dataLabels: {
+        enabled: false,
+      },
+      // fill: {
+      //   type: 'gradient',
+      // },
+      legend: {
+        formatter: (val, opts) => {
+          return val + ' - $' + opts.w.globals.series[opts.seriesIndex] + 'k'
+        },
+        position: 'bottom',
+      },
+      title: {
+        text: 'Vendas por categoria',
+        style: {
+          color: "var(--color-outline)",
+          // fontWeight: "bold",
+          // fontSize: "0.8rem",
+          fontWeight: "semibold",
+          fontFamily: "var(--font-poppins)"
+        }
+      },
+      subtitle: {
+        text: "Participação nos pedidos da semana",
+        align: 'left',
+        style: {
+          color: "var(--color-sub-text)",
+          // fontWeight: "bold",
+          fontSize: "0.8rem",
+          fontFamily: "var(--font-poppins)"
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 1213,
+          options: {
+            chart: {
+              type: 'donut',
+              width: '60%',
+              height: 300
+            },
+            legend: {
+              position: 'bottom',
+              // width: 200
+            }
+          }
+        },
+        {
+          breakpoint: 1020,
+          options: {
+            chart: {
+              type: 'donut',
+              width: '100%',
+              height: 350
+            },
+            legend: {
+              position: 'bottom',
+              // width: 200
+            }
+          }
+        },
+        {
+          breakpoint: 450,
+          options: {
+            chart: {
+              type: 'donut',
+              width: '100%',
+              height: 350
+            },
+            legend: {
+              position: 'bottom',
+              // width: 200
+            }
+          }
+        }
+      ]
+    };
+  }
 }

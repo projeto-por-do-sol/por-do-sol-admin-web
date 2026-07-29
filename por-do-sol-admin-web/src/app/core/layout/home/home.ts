@@ -9,10 +9,11 @@ import { Location } from '@angular/common';
 import { StackedColumn } from "../../shared/ui/charts/stacked-column/stacked-column";
 import { ZoomableTimeseries } from "../../shared/ui/charts/zoomable-timeseries/zoomable-timeseries";
 import { Donut } from "../../shared/ui/charts/donut/donut";
+import { RadialBar } from "../../shared/ui/charts/radial-bar/radial-bar";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
