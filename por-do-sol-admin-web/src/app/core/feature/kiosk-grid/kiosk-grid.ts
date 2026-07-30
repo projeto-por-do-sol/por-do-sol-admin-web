@@ -13,6 +13,7 @@ import { KioskService } from '../../services/kiosk-service';
 export class KioskGrid {
 
   kiosks!: Signal<KioskModel[]>
+  selectedKiosk: KioskModel[] = []
 
   constructor(
     private kioskService: KioskService,
@@ -20,11 +21,22 @@ export class KioskGrid {
 
   ngOnInit() {
     this.kiosks = this.kioskService.kiosks
+    this.selectedKiosk = this.kiosks()
   }
 
   onSelectedOption(option: string) {
-    console.log(option);
+    switch (option) {
+      case "Abertos":
+        this.selectedKiosk = this.kiosks().filter(kiosk => kiosk.isOpen);
+        break;
 
+      case "Fechados":
+        this.selectedKiosk = this.kiosks().filter(kiosk => !kiosk.isOpen);
+        break;
+
+      default:
+        this.selectedKiosk = this.kiosks();
+    }
   }
 
 }

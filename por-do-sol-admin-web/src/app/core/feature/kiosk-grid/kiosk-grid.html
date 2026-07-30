@@ -1,6 +1,6 @@
 <app-chips [options]="['Todos', 'Abertos', 'Fechados']" [standardOption]="'Todos'" (outputSelected)="onSelectedOption($event)"></app-chips>
 <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-7">
-  @for(kiosk of kiosks(); track kiosk.id){
+  @for(kiosk of selectedKiosk; track kiosk.id){
   <app-card-kiosk-info [kiosk]="kiosk"></app-card-kiosk-info>
   }
 </div>

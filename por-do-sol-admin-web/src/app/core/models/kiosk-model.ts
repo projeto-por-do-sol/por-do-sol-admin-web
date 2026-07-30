@@ -11,7 +11,7 @@ export class KioskModel {
   averageTime?: number
   invoicing?: number
   categories?: string[]
-
+  isOpen?: boolean
   // Dps colocar os dias da semana que o quiosque abre
 
 }

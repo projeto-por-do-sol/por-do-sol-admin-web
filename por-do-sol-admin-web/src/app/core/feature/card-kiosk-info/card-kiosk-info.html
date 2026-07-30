@@ -2,8 +2,12 @@
 
   <!-- Imagem do Quiosque, indicativo se está aberto/fechado e nota -->
   <div class="card-img h-50 p-5 flex justify-between" [style.--bg-image]="'url(' + kiosk().urlImg + ')'">
-    <div [class]="true ? 'open' : 'close'">
-      <p>Aberto agora</p>
+    <div [ngClass]="kiosk().isOpen ? 'open' : 'close'">
+      @if(kiosk().isOpen){
+      <p>Aberto</p>
+      } @else {
+      <p>Fechado</p>
+      }
     </div>
     <div class="bg-amarelo h-max w-max py-2 px-4 rounded-2xl font-medium text-outline flex gap-1 items-center">
       <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
