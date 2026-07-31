@@ -11,10 +11,11 @@ import { ZoomableTimeseries } from "../../shared/ui/charts/zoomable-timeseries/z
 import { Donut } from "../../shared/ui/charts/donut/donut";
 import { RadialBar } from "../../shared/ui/charts/radial-bar/radial-bar";
 import { KioskGrid } from "../../feature/kiosk-grid/kiosk-grid";
+import { Table } from "../../shared/ui/table/table";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

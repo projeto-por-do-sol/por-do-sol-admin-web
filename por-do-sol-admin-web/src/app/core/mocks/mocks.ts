@@ -1,3 +1,4 @@
+import { Employee } from "../models/employee";
 import { KioskModel } from "../models/kiosk-model";
 import { KpiModel } from "../models/kpi-model";
 import { User } from "../models/user-model";
@@ -87,3 +88,69 @@ export const MOCK_KIOSKS: KioskModel[] = [
     categories: ["Sorvetes", "Petiscos", "Água de coco"]
   },
 ];
+
+export const MOCK_EMPLOYEE: Employee[] = [
+  {
+    id: "employee1",
+    name: "Rodolfo da Silva",
+    role: "Gerente",
+    kiosk: "Praia Quiosque",
+    startShift: "08:00",
+    finishShift: "18:00",
+    status: true
+  },
+  {
+    id: "employee2",
+    name: "Mariana Costa",
+    role: "Funcionario",
+    kiosk: "Praia Quiosque",
+    startShift: "08:00",
+    finishShift: "16:00",
+    status: true
+  },
+  {
+    id: "employee3",
+    name: "Lucas Oliveira",
+    role: "Funcionario",
+    kiosk: "Quiosque Sol & Mar",
+    startShift: "09:00",
+    finishShift: "17:00",
+    status: true
+  },
+  {
+    id: "employee4",
+    name: "Fernanda Souza",
+    role: "Funcionario",
+    kiosk: "Praia Quiosque",
+    startShift: "10:00",
+    finishShift: "18:00",
+    status: false
+  },
+  {
+    id: "employee5",
+    name: "Gabriel Santos",
+    role: "Funcionario",
+    kiosk: "Quiosque Sol & Mar",
+    startShift: "12:00",
+    finishShift: "20:00",
+    status: true
+  },
+  {
+    id: "employee6",
+    name: "Camila Rodrigues",
+    role: "Funcionario",
+    kiosk: "Quiosque Tropical",
+    startShift: "14:00",
+    finishShift: "22:00",
+    status: true
+  },
+  {
+    id: "employee7",
+    name: "Thiago Almeida",
+    role: "Gerente",
+    kiosk: "Quiosque Tropical",
+    startShift: "16:00",
+    finishShift: "00:00",
+    status: false
+  }
+]
