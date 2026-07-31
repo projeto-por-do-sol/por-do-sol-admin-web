@@ -6,3 +6,4 @@ Mudar o último kpi para "Quiosques aberto" quando exibir todos os quiosques
 Arrumar o posicionamento do gráfico radial, colocar ele centralizado verticalmente
 Talvez colocar um pagination na seção de quiosques. Usuário pode ter muitos quiosques.
 Colocar filtros na tabela de equipe. Filtrar: Quiosques, cargos e status.
+verificar se o funcionários está em turno.

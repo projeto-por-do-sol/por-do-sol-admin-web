@@ -44,4 +44,8 @@ export class Home {
     sections.forEach(section => observer.observe(section));
   }
 
+  aa(){
+    console.log('aa')
+  }
+
 }
