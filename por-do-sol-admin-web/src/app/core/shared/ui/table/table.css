@@ -1,0 +1,102 @@
+.table-container {
+  background: var(--color-surface);
+  /* border: 2px solid var(--color-on-secondary); */
+  border-radius: 1rem;
+  overflow: hidden;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.employee-table {
+  width: 100%;
+  background: var(--color-surface);
+}
+
+/* Cabeçalho */
+
+.mat-mdc-header-row {
+  background: var(--color-light-gray);
+  height: 3.7rem;
+}
+
+.mat-mdc-header-cell {
+  color: var(--color-sub-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: .2rem;
+  border-bottom: 1px solid var(--color-fundo);
+}
+
+/* Linhas */
+
+.mat-mdc-row {
+  height: 72px;
+}
+
+.mat-mdc-row:hover {
+  background: var(--color-on-secondary);
+}
+
+.mat-mdc-cell {
+  border-bottom: 1px solid #f3e0d1;
+  color: var(--color-outline);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+/* Funcionário */
+
+.employee {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-bg-close);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.employee-name {
+  font-weight: 600;
+  color: var(--color-outline);
+}
+
+/* Status */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.status.active {
+  background: var(--color-light-green);
+  color: var(--color-green);
+}
+
+.status.inactive {
+  background: var(--color-light-gray);
+  color: var(--color-sub-text);
+}
+
+/* Paginação */
+
+mat-paginator {
+  width: 100%;
+  border-top: 1px solid var(--color-fundo);
+}
