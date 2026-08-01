@@ -11,15 +11,18 @@ import { Component, effect, input, output, signal } from '@angular/core';
 export class Chips {
   options = input.required<string[]>()
   standardOption = input.required<string>()
-  selectedOption = signal("")
+  // selectedOption = signal("")
+  selectedOption: string = ""
   outputSelected = output<string>()
 
   ngOnInit() {
-    this.selectedOption.set(this.standardOption())
+    // this.selectedOption.set(this.standardOption())
+    this.selectedOption = this.standardOption()
   }
 
   choosenOption(option: string) {
-    this.selectedOption.set(option)
+    // this.selectedOption.set(option)
+    this.selectedOption = option
     this.outputSelected.emit(option)
   }
 }

@@ -74,7 +74,7 @@
 
 /* Status */
 
-.status {
+.status, .status_active, .status_inactive {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -84,12 +84,12 @@
   font-weight: 600;
 }
 
-.status.active {
+.status_active {
   background: var(--color-light-green);
   color: var(--color-green);
 }
 
-.status.inactive {
+.status_inactive {
   background: var(--color-light-gray);
   color: var(--color-sub-text);
 }

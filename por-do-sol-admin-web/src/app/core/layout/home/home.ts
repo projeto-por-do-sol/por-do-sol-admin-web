@@ -12,10 +12,12 @@ import { Donut } from "../../shared/ui/charts/donut/donut";
 import { RadialBar } from "../../shared/ui/charts/radial-bar/radial-bar";
 import { KioskGrid } from "../../feature/kiosk-grid/kiosk-grid";
 import { Table } from "../../shared/ui/table/table";
+import { Orders } from '../../feature/orders/orders';
+import { Team } from "../../feature/team/team";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -44,7 +46,7 @@ export class Home {
     sections.forEach(section => observer.observe(section));
   }
 
-  aa(){
+  aa() {
     console.log('aa')
   }
 

@@ -1,6 +1,7 @@
 import { Employee } from "../models/employee";
 import { KioskModel } from "../models/kiosk-model";
 import { KpiModel } from "../models/kpi-model";
+import { Order } from "../models/order";
 import { User } from "../models/user-model";
 
 export const MOCK_USER: User = {
@@ -152,5 +153,74 @@ export const MOCK_EMPLOYEE: Employee[] = [
     startShift: "16:00",
     finishShift: "00:00",
     status: false
+  }
+]
+
+export const MOCK_ORDERS: Order[] = [
+  {
+    id: 'order1',
+    items: ['Porção de Peixe Frito', 'Cerveja Gelada (600ml)'],
+    kioskName: 'Barraca do Zé',
+    kioskId: 'kiosk1',
+    clientName: "Osvaldo Cunha",
+    clientId: 'client1',
+    value: 42.00,
+    time: '12:38',
+    status: 'Novo'
+  },
+  {
+    id: 'order2',
+    items: ['Pastel de Carne com Queijo', 'Pastel de Vento', 'Caldo de Cana (500ml)'],
+    kioskName: 'Pastelaria da Maria',
+    kioskId: 'kiosk2',
+    clientName: 'Ana Souza',
+    clientId: 'client2',
+    value: 27.50,
+    time: '12:45',
+    status: 'Em Preparo'
+  },
+  {
+    id: 'order3',
+    items: ['Água de Coco Gelada'],
+    kioskName: 'Quiosque da Praia',
+    kioskId: 'kiosk3',
+    clientName: 'Carlos Eduardo',
+    clientId: 'client3',
+    value: 15.00,
+    time: '13:02',
+    status: 'Novo'
+  },
+  {
+    id: 'order4',
+    items: ['Açaí 500ml com Leite em Pó', 'Adicional de Banana', 'Adicional de Granola', 'Sucos de Laranja'],
+    kioskName: 'Açaí do Beto',
+    kioskId: 'kiosk4',
+    clientName: 'Mariana Lima',
+    clientId: 'client4',
+    value: 58.90,
+    time: '13:15',
+    status: 'Pronto'
+  },
+  {
+    id: 'order5',
+    items: ['Cerveja Gelada (600ml)', 'Isca de Frango à Passarinho'],
+    kioskName: 'Barraca do Zé',
+    kioskId: 'kiosk1',
+    clientName: 'Roberto Alves',
+    clientId: 'client5',
+    value: 31.00,
+    time: '13:22',
+    status: 'Entregue'
+  },
+  {
+    id: 'order6',
+    items: ['Churros de Doce de Leite com Confeito'],
+    kioskName: 'Churros do Chaves',
+    kioskId: 'kiosk5',
+    clientName: 'Fernanda Rocha',
+    clientId: 'client6',
+    value: 12.00,
+    time: '13:30',
+    status: 'Cancelado'
   }
 ]

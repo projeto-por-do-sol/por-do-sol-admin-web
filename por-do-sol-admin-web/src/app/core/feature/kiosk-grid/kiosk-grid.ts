@@ -14,6 +14,8 @@ export class KioskGrid {
 
   kiosks!: Signal<KioskModel[]>
   selectedKiosk: KioskModel[] = []
+  chipOptions: string[] = ['Todos', 'Abertos', 'Fechados']
+  standardOption: string = this.chipOptions[0]
 
   constructor(
     private kioskService: KioskService,

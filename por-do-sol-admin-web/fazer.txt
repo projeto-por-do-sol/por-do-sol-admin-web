@@ -7,3 +7,31 @@ Arrumar o posicionamento do gráfico radial, colocar ele centralizado verticalme
 Talvez colocar um pagination na seção de quiosques. Usuário pode ter muitos quiosques.
 Colocar filtros na tabela de equipe. Filtrar: Quiosques, cargos e status.
 verificar se o funcionários está em turno.
+
+
+Tela para cadastro de proprietário
+Tela para adicionar funcionários
+Tela para adicionar quiosques
+Tela para criar pedidos
+Tela para adicionar item ao quiosque
+Tela de login
+Botões na sidebar para adicionar quiosque, funcionários e pedidos
+Tela de descrição de pedidos
+Tela de recuperação de senha
+Alterar dados do proprietário
+Logout
+Apagar conta
+Modal de notificações
+Tela de ajuda
+Skeleton Screen para carregamento das telas
+Snackbar para confirmações/erros
+Guards para acesso nas telas
+Tela com valores pendentes para resgate do quiosque
+Modal para criar cupons de desconto
+Modal para criar promoções
+Tela para alterar localização dos quiosques
+Tela para alterar informação dos funcionários
+Tela para alterar informação dos quiosques
+Firebase Cloud Messaging para criação de novos pedidos
+Seleção dos dias da semana que os quiosque abrem
+Opção para abrir ou fechar o quiosque antes/depois do esperado (talvez um modal que, quando chega a hora de fechar, pergute se o usuário deseja fechar ou n)
