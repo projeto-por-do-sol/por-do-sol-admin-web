@@ -29,6 +29,14 @@
         </span>
         }
 
+        @case ('statusOrder'){
+        <span [ngClass]="orderStatus(item.status)">
+
+          {{ item.status }}
+
+        </span>
+        }
+
         @case ('list') {
         <div class="grid grid-cols-1 gap-3 my-2">
           @for (subItem of item[column.key]; track $index) {

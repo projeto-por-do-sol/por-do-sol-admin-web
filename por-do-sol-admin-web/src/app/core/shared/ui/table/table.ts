@@ -52,6 +52,14 @@ export class Table implements AfterViewInit {
     return `${firtInitial}${secondInitial}`
   }
 
+  orderStatus(status: string): string {
+    status = status.toLowerCase()
+    if (status != 'em preparo') {
+      return status
+    }
+    return 'em_preparo'
+  }
+
 }
 
 export interface TableColumn<T = any> {

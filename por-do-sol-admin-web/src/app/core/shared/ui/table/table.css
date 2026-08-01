@@ -74,8 +74,16 @@
 
 /* Status */
 
-.status, .status_active, .status_inactive {
-  display: inline-flex;
+.status,
+.novo,
+.em_preparo,
+.pronto,
+.entregue,
+.atrasado,
+.cancelado,
+.status_active,
+.status_inactive {
+  display: block;
   align-items: center;
   justify-content: center;
   padding: 0.5rem 0.8rem;
@@ -84,7 +92,8 @@
   font-weight: 600;
 }
 
-.status_active {
+.status_active,
+.entregue {
   background: var(--color-light-green);
   color: var(--color-green);
 }
@@ -99,4 +108,25 @@
 mat-paginator {
   width: 100%;
   border-top: 1px solid var(--color-fundo);
+}
+
+.novo {
+  background: #D6EFFF;
+  color: #355C82;
+}
+
+.em_preparo {
+  background: #FFF3D6;
+  color: #824F35;
+}
+
+.pronto {
+  background: #FFECD6;
+  color: #BA6323;
+}
+
+.atrasado,
+.cancelado {
+  background: #FFD6D6;
+  color: #BA2323;
 }

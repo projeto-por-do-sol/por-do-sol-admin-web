@@ -7,6 +7,7 @@ Arrumar o posicionamento do gráfico radial, colocar ele centralizado verticalme
 Talvez colocar um pagination na seção de quiosques. Usuário pode ter muitos quiosques.
 Colocar filtros na tabela de equipe. Filtrar: Quiosques, cargos e status.
 verificar se o funcionários está em turno.
+Mudar a exibição dos adicionais/ingredientes removidos na tabela de pedidos
 
 
 Tela para cadastro de proprietário
