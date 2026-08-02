@@ -82,6 +82,8 @@
 .atrasado,
 .cancelado,
 .status_active,
+.entregando,
+.finalizado,
 .status_inactive {
   display: block;
   align-items: center;
@@ -92,8 +94,7 @@
   font-weight: 600;
 }
 
-.status_active,
-.entregue {
+.status_active {
   background: var(--color-light-green);
   color: var(--color-green);
 }
@@ -121,12 +122,26 @@ mat-paginator {
 }
 
 .pronto {
-  background: #FFECD6;
-  color: #BA6323;
+  background-color: #EDE7F6;
+  color: #4A148C;
 }
 
-.atrasado,
+.atrasado {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
 .cancelado {
-  background: #FFD6D6;
-  color: #BA2323;
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.entregando {
+  background-color: #E0F7FA;
+  color: #006064;
+}
+
+.finalizado {
+  background-color: #E8F5E9;
+  color: #1B5E20;
 }

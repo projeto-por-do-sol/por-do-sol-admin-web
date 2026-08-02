@@ -157,12 +157,13 @@ export const MOCK_EMPLOYEE: Employee[] = [
 ]
 
 export const MOCK_ORDERS: Order[] = [
+
   {
     id: 'order1',
     items: ['Porção de Peixe Frito', 'Cerveja Gelada (600ml)'],
     kioskName: 'Barraca do Zé',
     kioskId: 'kiosk1',
-    clientName: "Osvaldo Cunha",
+    clientName: 'Osvaldo Cunha',
     clientId: 'client1',
     value: 42.00,
     time: '12:38',
@@ -192,7 +193,7 @@ export const MOCK_ORDERS: Order[] = [
   },
   {
     id: 'order4',
-    items: ['Açaí 500ml com Leite em Pó', 'Adicional de Banana', 'Adicional de Granola', 'Sucos de Laranja'],
+    items: ['Açaí 500ml com Leite em Pó', 'Adicional de Banana', 'Adicional de Granola', 'Suco de Laranja'],
     kioskName: 'Açaí do Beto',
     kioskId: 'kiosk4',
     clientName: 'Mariana Lima',
@@ -210,7 +211,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client5',
     value: 31.00,
     time: '13:22',
-    status: 'Entregue'
+    status: 'Finalizado' // Adaptado de Entregue para Finalizado
   },
   {
     id: 'order6',
@@ -221,6 +222,105 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client6',
     value: 12.00,
     time: '13:30',
+    status: 'Cancelado'
+  },
+  {
+    id: 'order7',
+    items: ['Porção de Camarão Alho e Óleo', 'Caipirinha de Limão'],
+    kioskName: 'Quiosque da Praia',
+    kioskId: 'kiosk3',
+    clientName: 'Julia Mendes',
+    clientId: 'client7',
+    value: 85.00,
+    time: '13:40',
+    status: 'Entregando'
+  },
+  {
+    id: 'order8',
+    items: ['Milho Verde com Manteiga'],
+    kioskName: 'Milho Bom',
+    kioskId: 'kiosk6',
+    clientName: 'Thiago Costa',
+    clientId: 'client8',
+    value: 8.00,
+    time: '13:42',
+    status: 'Atrasado'
+  },
+  {
+    id: 'order9',
+    items: ['Isca de Peixe', 'Refrigerante Lata'],
+    kioskName: 'Barraca do Zé',
+    kioskId: 'kiosk1',
+    clientName: 'Luiz Fernando',
+    clientId: 'client9',
+    value: 55.00,
+    time: '13:50',
+    status: 'Em Preparo'
+  },
+  {
+    id: 'order10',
+    items: ['Sanduíche Natural de Frango', 'Suco de Abacaxi com Hortelã'],
+    kioskName: 'Saúde na Praia',
+    kioskId: 'kiosk7',
+    clientName: 'Beatriz Silva',
+    clientId: 'client10',
+    value: 28.50,
+    time: '13:55',
+    status: 'Pronto'
+  },
+  {
+    id: 'order11',
+    items: ['Casquinha de Siri', 'Cerveja Artesanal IPA'],
+    kioskName: 'Quiosque da Praia',
+    kioskId: 'kiosk3',
+    clientName: 'Rafael Almeida',
+    clientId: 'client11',
+    value: 45.00,
+    time: '14:00',
+    status: 'Entregando'
+  },
+  {
+    id: 'order12',
+    items: ['Açaí 300ml', 'Água Mineral sem gás'],
+    kioskName: 'Açaí do Beto',
+    kioskId: 'kiosk4',
+    clientName: 'Camila Dias',
+    clientId: 'client12',
+    value: 22.00,
+    time: '14:05',
+    status: 'Finalizado'
+  },
+  {
+    id: 'order13',
+    items: ['Porção de Batata Frita M', 'Guaraná 2L'],
+    kioskName: 'Pastelaria da Maria',
+    kioskId: 'kiosk2',
+    clientName: 'Marcelo Oliveira',
+    clientId: 'client13',
+    value: 35.00,
+    time: '14:10',
+    status: 'Atrasado'
+  },
+  {
+    id: 'order14',
+    items: ['Espetinho de Queijo Coalho', 'Espetinho de Carne'],
+    kioskName: 'Espetinho do João',
+    kioskId: 'kiosk8',
+    clientName: 'Larissa Moura',
+    clientId: 'client14',
+    value: 24.00,
+    time: '14:15',
+    status: 'Novo'
+  },
+  {
+    id: 'order15',
+    items: ['Porção de Lula à Dorê'],
+    kioskName: 'Barraca do Zé',
+    kioskId: 'kiosk1',
+    clientName: 'Gustavo Santos',
+    clientId: 'client15',
+    value: 65.00,
+    time: '14:20',
     status: 'Cancelado'
   }
 ]

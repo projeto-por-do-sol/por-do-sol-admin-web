@@ -1,2 +1,2 @@
-<app-chips [options]="chipOptions" [standardOption]="standardOption"></app-chips>
-<app-table [columns]="orderColumns" [ELEMENT_DATA]="orders"></app-table>
+<app-chips [options]="chipOptions" [standardOption]="standardOption" (outputSelected)="onSelectedOption($event)"></app-chips>
+<app-table [columns]="orderColumns" [ELEMENT_DATA]="tableOrders"></app-table>
