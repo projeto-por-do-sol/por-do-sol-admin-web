@@ -1,0 +1,5 @@
+@if(!isMobile()){
+<app-table [columns]="columns()" [ELEMENT_DATA]="ELEMENT_DATA()"></app-table>
+} @else{
+<app-card-table [ELEMENT_DATA]="ELEMENT_DATA()" [cardTemplate]="cardTemplate()"></app-card-table>
+}

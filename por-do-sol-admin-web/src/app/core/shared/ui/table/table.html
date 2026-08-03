@@ -1,5 +1,5 @@
 <div class="table-container">
-  <table mat-table [dataSource]="dataSource" class="employee-table">
+  <table mat-table [dataSource]="dataSource" class="table">
 
     @for(column of columns(); track column.key){
     <ng-container [matColumnDef]="column.key">
@@ -8,7 +8,7 @@
       <td mat-cell *matCellDef="let item">
         @switch (column.type) {
         @case ('avatar'){
-        <div class="employee">
+        <div class="name">
           <div class="avatar">
             @if(item.name){
             {{ getNameInitials(item.name) }}

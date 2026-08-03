@@ -1,2 +1,32 @@
 <app-chips [options]="chipOptions" [standardOption]="standardOption" (outputSelected)="onSelectedOption($event)"></app-chips>
-<app-table [columns]="orderColumns" [ELEMENT_DATA]="tableOrders"></app-table>
+
+<ng-template #orderCard let-order>
+  <div class="cardTemplate overflow-hidden">
+    <p class="mb-3 font-semibold text-lg truncate border-b border-outline">{{order.kioskName}}</p>
+    <div class="margin-bottom flex justify-between">
+      <div class="name overflow-hidden">
+        <div class="avatar">
+          {{getNameInitials(order.clientName)}}
+        </div>
+        <p class="font-semibold truncate">{{order.clientName}}</p>
+      </div>
+      <p class="infoTemplate font-medium">{{order.time}}</p>
+    </div>
+
+    <p class="infoTemplate font-semibold">Valor total: R${{order.value.toFixed(2)}}</p>
+    <p class="infoTemplate">{{order.kiosk}}</p>
+
+    <div class="grid grid-cols-1 gap-1 mb-5">
+
+      <ul class="list-disc ml-5">
+        @for(item of order.items; track item){
+        <li class="">{{item}}</li>
+        }
+      </ul>
+    </div>
+
+    <p [ngClass]="orderStatus(order.status)">{{order.status}}</p>
+  </div>
+</ng-template>
+
+<app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders" [cardTemplate]="orderCard"></app-table-or-card>
