@@ -18,7 +18,7 @@ export class TableOrCard {
   isMobile = signal(false)
 
   constructor(private breakpoint: BreakpointObserver) {
-    breakpoint.observe('(max-width: 1050px').subscribe(result => {
+    breakpoint.observe('(max-width: 1050px)').subscribe(result => {
       this.isMobile.set(result.matches)
     })
   }

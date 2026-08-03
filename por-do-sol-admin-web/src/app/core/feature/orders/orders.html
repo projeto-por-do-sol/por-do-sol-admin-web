@@ -19,7 +19,7 @@
     <div class="grid grid-cols-1 gap-1 mb-5">
 
       <ul class="list-disc ml-5">
-        @for(item of order.items; track item){
+        @for(item of order.items; track $index){
         <li class="">{{item}}</li>
         }
       </ul>
