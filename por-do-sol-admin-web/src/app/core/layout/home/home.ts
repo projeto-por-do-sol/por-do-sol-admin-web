@@ -14,10 +14,12 @@ import { KioskGrid } from "../../feature/kiosk-grid/kiosk-grid";
 import { Table } from "../../shared/ui/table/table";
 import { Orders } from '../../feature/orders/orders';
 import { Team } from "../../feature/team/team";
+import { Statistics } from "../../feature/statistics/statistics";
+import { Overview } from "../../feature/overview/overview";
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team, Statistics, Overview],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

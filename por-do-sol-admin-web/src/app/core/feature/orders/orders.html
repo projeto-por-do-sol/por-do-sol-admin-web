@@ -1,3 +1,5 @@
+<app-section-title [lable]="'Fila em tempo real'" [section]="'Pedidos'" [text]="'Acompanhe cada pedido da cozinha até a entrega na cadeira de praia.'" [labelButton]="'Criar pedido'" (onClickButton)="aa()" [icon]="'add'" [prefix]="true"></app-section-title>
+
 <app-chips [options]="chipOptions" [standardOption]="standardOption" (outputSelected)="onSelectedOption($event)"></app-chips>
 
 <ng-template #orderCard let-order>

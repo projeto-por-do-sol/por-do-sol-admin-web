@@ -7,10 +7,11 @@ import { TableOrCard } from "../table-or-card/table-or-card";
 import { NgClass } from '@angular/common';
 import { UserInitials } from '../../utils/user-initials';
 import { StatusStyle } from '../../utils/status-style';
+import { SectionTitle } from "../../shared/ui/section-title/section-title";
 
 @Component({
   selector: 'app-orders',
-  imports: [Chips, Table, TableOrCard, NgClass],
+  imports: [Chips, Table, TableOrCard, NgClass, SectionTitle],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -95,4 +96,6 @@ export class Orders {
       type: 'statusOrder'
     }
   ];
+
+  aa() { }
 }

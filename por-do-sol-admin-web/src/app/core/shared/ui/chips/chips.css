@@ -7,7 +7,7 @@
 .chip {
   background-color: var(--color-surface);
   color: var(--color-primary);
-  border: 1px solid var(--color-secondary);
+  border: 1px solid var(--color-primary);
 }
 
 .chip,

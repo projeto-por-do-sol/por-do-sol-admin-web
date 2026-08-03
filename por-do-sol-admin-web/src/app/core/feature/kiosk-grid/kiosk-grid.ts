@@ -3,10 +3,12 @@ import { Chips } from "../../shared/ui/chips/chips";
 import { CardKioskInfo } from "../card-kiosk-info/card-kiosk-info";
 import { KioskModel } from '../../models/kiosk-model';
 import { KioskService } from '../../services/kiosk-service';
+import { SectionTitle } from "../../shared/ui/section-title/section-title";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-kiosk-grid',
-  imports: [Chips, CardKioskInfo],
+  imports: [Chips, CardKioskInfo, SectionTitle],
   templateUrl: './kiosk-grid.html',
   styleUrl: './kiosk-grid.css',
 })
@@ -19,11 +21,16 @@ export class KioskGrid {
 
   constructor(
     private kioskService: KioskService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.kiosks = this.kioskService.kiosks
     this.selectedKiosk = this.kiosks()
+  }
+
+  goToKioskRegister() {
+    this.router.navigate(['kioskRegister'])
   }
 
   onSelectedOption(option: string) {
@@ -40,5 +47,7 @@ export class KioskGrid {
         this.selectedKiosk = this.kiosks();
     }
   }
+
+  aa() { }
 
 }

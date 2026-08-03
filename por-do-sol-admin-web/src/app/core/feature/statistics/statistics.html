@@ -1,0 +1,7 @@
+<app-section-title [lable]="'Desempenho'" [section]="'Estatísticas'" [text]="'Pedidos, vendas por categoria e faturamento da semana deste quiosque'"></app-section-title>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+  <app-stacked-column class="lg:col-span-2"></app-stacked-column>
+  <app-donut></app-donut>
+  <app-zoomable-timeseries class="lg:col-span-2"></app-zoomable-timeseries>
+  <app-radial-bar></app-radial-bar>
+</div>
