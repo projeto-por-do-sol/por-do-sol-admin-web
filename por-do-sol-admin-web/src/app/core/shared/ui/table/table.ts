@@ -4,7 +4,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Employee } from '../../../models/employee';
 import { MOCK_EMPLOYEE } from '../../../mocks/mocks';
 import { NgClass } from '@angular/common';
-import { UserInitial } from '../../../utils/user-initials';
+import { UserInitials } from '../../../utils/user-initials';
 import { StatusStyle } from '../../../utils/status-style';
 
 
@@ -46,7 +46,7 @@ export class Table implements AfterViewInit {
 
   // Pega as iniciais do usuário logado para colocar na sidebar
   getNameInitials(name: string): string {
-    return UserInitial.getNameInitials(name)
+    return UserInitials.getNameInitials(name)
   }
 
   orderStatus(status: string): string {

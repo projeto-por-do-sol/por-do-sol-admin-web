@@ -4,14 +4,13 @@ import { Table, TableColumn } from "../../shared/ui/table/table";
 import { Order } from '../../models/order';
 import { MOCK_ORDERS } from '../../mocks/mocks';
 import { TableOrCard } from "../table-or-card/table-or-card";
-import { CdkNoDataRow } from "@angular/cdk/table";
 import { NgClass } from '@angular/common';
-import { UserInitial } from '../../utils/user-initials';
+import { UserInitials } from '../../utils/user-initials';
 import { StatusStyle } from '../../utils/status-style';
 
 @Component({
   selector: 'app-orders',
-  imports: [Chips, Table, TableOrCard, CdkNoDataRow, NgClass],
+  imports: [Chips, Table, TableOrCard, NgClass],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -59,7 +58,7 @@ export class Orders {
   }
 
   getNameInitials(name: string) {
-    return UserInitial.getNameInitials(name)
+    return UserInitials.getNameInitials(name)
   }
 
   orderStatus(status: string): string {

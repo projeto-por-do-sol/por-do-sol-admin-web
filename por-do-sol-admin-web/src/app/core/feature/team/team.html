@@ -1,2 +1,22 @@
 <app-section-title [lable]="'Equipe'" [section]="'Funcionários'" [text]="'Quem está em turno agora, em qual quiosque e em que horário.'" [labelButton]="'Adicionar funcionário'" (onClickButton)="aa()" [icon]="'add'" [prefix]="true"></app-section-title>
-<app-table [columns]="employeeColumns" [ELEMENT_DATA]="employees"></app-table>
+<!-- <app-table [columns]="employeeColumns" [ELEMENT_DATA]="employees"></app-table> -->
+
+<ng-template #teamCard let-employee>
+  <div class="cardTemplate overflow-hidden">
+    <div class="name overflow-hidden">
+      <div class="avatar">
+        {{getNameInitials(employee.name)}}
+      </div>
+      <p class="font-semibold truncate">{{employee.name}}</p>
+    </div>
+    <p class="mt-2 font-medium text-base text-sub-text">{{employee.role}}</p>
+
+    <div class="flex justify-between overflow-hidden mb-3">
+      <p class="font-normal text-base">{{employee.kioskName}}</p>
+      <p class="font-normal text-base truncate">{{employee.startShift}}-{{employee.finishShift}}</p>
+    </div>
+
+    <p [ngClass]="employee.status ? 'status_active' : 'status_inactive'">{{employee.status ? 'Em turno' : 'Fora de turno'}}</p>
+  </div>
+</ng-template>
+<app-table-or-card [columns]="employeeColumns" [ELEMENT_DATA]="employees" [cardTemplate]="teamCard"></app-table-or-card>

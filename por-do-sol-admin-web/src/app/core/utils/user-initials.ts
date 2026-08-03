@@ -1,4 +1,4 @@
-export class UserInitial {
+export class UserInitials {
   // Pega as iniciais do usuário logado para colocar na sidebar
   static getNameInitials(name: string): string {
     const firtInitial = name.charAt(0) || "!"

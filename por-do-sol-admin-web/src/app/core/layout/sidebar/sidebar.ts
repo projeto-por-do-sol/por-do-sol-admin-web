@@ -4,7 +4,7 @@ import { User } from '../../models/user-model';
 import { UserService } from '../../services/user-service';
 import { RouterLink } from "@angular/router";
 import { NavigationService } from '../../services/navigation-service';
-import { UserInitial } from '../../utils/user-initials';
+import { UserInitials } from '../../utils/user-initials';
 
 @Component({
   selector: 'app-sidebar',
@@ -31,7 +31,7 @@ export class Sidebar {
 
   // Pega as iniciais do usuário logado para colocar na sidebar
   getNameInitials() {
-    this.userNameInitials = UserInitial.getNameInitials(this.user().name!)
+    this.userNameInitials = UserInitials.getNameInitials(this.user().name!)
   }
 
 }
