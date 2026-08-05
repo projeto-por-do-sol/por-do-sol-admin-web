@@ -1,2 +1,6 @@
-<p>kiosk-register-page works!</p>
-<app-kiosk-register-form></app-kiosk-register-form>
+<main class="m-8 overflow-hidden">
+  <app-section-title [lable]="'Quiosques'" [section]="'Cadastrar novo quiosque'" [text]="'Adicione um novo quiosque à rede, defina sua localização e horário de funcionamento, e crie o acesso do gestor responsável ao painel.'"></app-section-title>
+  <div class="grid lg:grid-cols-3">
+    <app-kiosk-register-form class="col-span-2"></app-kiosk-register-form>
+  </div>
+</main>

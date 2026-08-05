@@ -1,6 +1,10 @@
 <div class="grid">
-  <label for="id" class="mb-2 font-semibold text-base capitalize">teste</label>
-  <input type="text" id="id" name="name" placeholder="teste" class="bg-fundo border border-border px-4 py-2 rounded-2xl text-input-text text-base placeholder:text-input-placeholder 
-  placeholder:text-base
-  focus:outline-none focus:ring-2 focus:bg-white focus:ring-primary transition-all">
+  <div class="flex gap-1">
+    <label for="{{id()}}" class="mb-2 font-semibold text-base capitalize">{{label()}}</label>
+    @if(isObrigatory()){
+    <p class="text-xl text-primary">*</p>
+    }
+  </div>
+  <input type="{{type()}}" id="{{id()}}" name="{{name()}}" placeholder="{{placeholder()}}" class="bg-fundo w-full border-2 border-border px-4 py-2 rounded-2xl text-input-text text-base placeholder:text-input-placeholder 
+  placeholder:text-base focus:outline-none focus:ring-2 focus:bg-surface focus:ring-primary transition-all" [value]="value()">
 </div>
