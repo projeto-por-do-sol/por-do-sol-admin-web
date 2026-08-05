@@ -1,0 +1,22 @@
+.topics {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  font-size: 1rem;
+  gap: 1rem
+}
+
+.topics-title {
+  color: var(--color-sub-text);
+}
+
+.topics-info {
+  color: var(--color-outline);
+}
+
+.topics-status {
+  background-color: var(--color-light-green);
+  padding: 0.5rem 1.3rem;
+  border-radius: 1rem;
+}

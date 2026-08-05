@@ -10,6 +10,13 @@ Mudar a exibição dos adicionais/ingredientes removidos na tabela de pedidos
 Colocar campo de busca de pedidos por nome do cliente (e por item pedido [talvez])
 
 
+
+Input para adicionar o banner do quiosque (kioskRegister)
+TEM QUE COLOCAR O MINIMAP PARA O USUÁRIO INFORMAR A LATITUDE E LONGITUDE (kioskRegister)
+Colocar um select com os funcionários já cadastrados (talvez) (kioskRegister)
+
+
+
 Tela para cadastro de proprietário
 Tela para adicionar funcionários
 Tela para adicionar quiosques

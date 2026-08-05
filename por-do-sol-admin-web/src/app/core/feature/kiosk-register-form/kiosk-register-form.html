@@ -5,8 +5,10 @@
       <h2>Dados do quiosque</h2>
       <p class="text-tertiary">Input para adicionar o banner do quiosque</p>
       <app-input [id]="'kioskName'" [label]="'Nome do quiosque'" [name]="'kioskName'" [placeholder]="'Ex.: Cantinho da Maré'"></app-input>
-      <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" [placeholder]="'contato@pordosol.com.br'"></app-input>
-      <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" [placeholder]="'(11) 99999-9999'"></app-input>
+      <div class="grid md:flex gap-10">
+        <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
+        <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" [placeholder]="'(11) 99999-9999'" class="flex-1"></app-input>
+      </div>
     </div>
 
     <!-- Localização -->
