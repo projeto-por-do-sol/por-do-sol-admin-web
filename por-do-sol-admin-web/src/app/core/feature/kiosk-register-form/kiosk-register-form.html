@@ -28,12 +28,15 @@
         <app-input [id]="'openTime'" [label]="'Abertura'" [name]="'openTime'" [type]="'time'" [isObrigatory]="false" [value]="'08:00'"></app-input>
         <app-input [id]="'closeTime'" [label]="'Fechamento'" [name]="'closeTime'" [type]="'time'" [isObrigatory]="false" [value]="'23:00'"></app-input>
       </div>
-      <p class="text-tertiary">TEM QUE COLOCAR UM INPUT PARA OS DIAS DA SEMANA QUE O QUIOSQUE IRÁ ABRIR</p>
+
+      <app-chip-multi-choice [options]="['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado', 'Domingo']" (outputSelected)="setDaysOpen($event)"></app-chip-multi-choice>
+
     </div>
 
     <!-- Cadastro de Gerente -->
     <div class="sectionCard">
       <h2>Gestor responsável</h2>
+      <p class="text-tertiary">Colocar um select com os funcionários já cadastrados (talvez)</p>
       <app-input [id]="'managerName'" [label]="'Nome completo'" [name]="'managerName'" [placeholder]="'Ex.: Andedigmon da Silva'"></app-input>
       <app-input [id]="'managerEmail'" [label]="'E-mail'" [name]="'managerEmail'" [placeholder]="'gerente@pordosol.com.br'" class="w-full"></app-input>
       <app-input [id]="'managerPhone'" [label]="'Telefone'" [name]="'managerPhone'" [placeholder]="'(11) 99999-9999'" class="w-full"></app-input>
@@ -41,8 +44,8 @@
     </div>
 
     <div class="grid md:flex md:justify-end gap-5">
-      <app-cancel-button></app-cancel-button>
-      <app-button [labelButton]="'Cadastrar quiosque'" [icon]="'add'" (onClickButton)="aa()"></app-button>
+      <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
+      <app-button [labelButton]="'Cadastrar quiosque'" [icon]="'add'" type="submit"></app-button>
     </div>
 
   </form>

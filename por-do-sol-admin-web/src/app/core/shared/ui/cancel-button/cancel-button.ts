@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-cancel-button',
@@ -9,5 +9,6 @@ import { Component, input } from '@angular/core';
 export class CancelButton {
 
   labelButton = input<string>('Cancelar')
+  onClickButton = output<MouseEvent>()
 
 }

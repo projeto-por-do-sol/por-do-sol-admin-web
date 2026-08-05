@@ -1,0 +1,5 @@
+<div class="flex flex-wrap justify-center gap-3">
+  @for(opt of options(); track opt){
+  <button type="button" (click)="choosenOption(opt)" [ngClass]="containsOption(opt) ? 'selected-chip' : 'chip'">{{opt}}</button>
+  }
+</div>
