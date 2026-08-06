@@ -1,25 +1,26 @@
 <div class="bg-surface p-8 rounded-2xl border border-border grid grid-cols-1">
-  <form action="">
+  <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
     <!-- Dados do quiosque -->
     <div class="sectionCard">
       <h2>Dados do quiosque</h2>
       <p class="text-tertiary">Input para adicionar o banner do quiosque</p>
-      <app-input [id]="'kioskName'" [label]="'Nome do quiosque'" [name]="'kioskName'" [placeholder]="'Ex.: Cantinho da Maré'"></app-input>
+      <app-input [id]="'kioskName'" [label]="'Nome do quiosque'" [name]="'kioskName'" formControlName="kioskName" [placeholder]="'Ex.: Cantinho da Maré'"></app-input>
+
       <div class="grid md:flex gap-10">
-        <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
-        <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" [placeholder]="'(11) 99999-9999'" class="flex-1"></app-input>
+        <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" type="e-mail" formControlName="kioskEmail" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
+        <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" formControlName="kioskPhone" [placeholder]="'(11) 99999-9999'" class="flex-1"></app-input>
       </div>
     </div>
 
     <!-- Localização -->
     <div class="sectionCard">
       <h2>Localização</h2>
-      <app-input [id]="'kioskCep'" [label]="'CEP'" [name]="'kioskCep'" [placeholder]="'00000-00'"></app-input>
-      <app-input [id]="'kioskState'" [label]="'Estado'" [name]="'kioskState'" [placeholder]="'São Paulo'"></app-input>
-      <app-input [id]="'kioskCity'" [label]="'Cidade'" [name]="'kioskCity'" [placeholder]="'Santos'"></app-input>
-      <app-input [id]="'kioskStreet'" [label]="'Rua'" [name]="'kioskStreet'" [placeholder]="'Av. Vicent de Carvalho'" [isObrigatory]="false"></app-input>
-      <app-input [id]="'kioskNumber'" [label]="'Número'" [name]="'kioskNumber'" [placeholder]="'200'" [isObrigatory]="false"></app-input>
-      <app-input [id]="'kioskCep'" [label]="'Ponto de referência'" [name]="'kioskCep'" [placeholder]="'Ex.: Em frente ao posto 3'" [isObrigatory]="false"></app-input>
+      <app-input [id]="'kioskCep'" [label]="'CEP'" [name]="'kioskCep'" formControlName="kioskCep" [placeholder]="'00000-00'"></app-input>
+      <app-input [id]="'kioskState'" [label]="'Estado'" [name]="'kioskState'" formControlName="kioskState" [placeholder]="'São Paulo'"></app-input>
+      <app-input [id]="'kioskCity'" [label]="'Cidade'" [name]="'kioskCity'" formControlName="kioskCity" [placeholder]="'Santos'"></app-input>
+      <app-input [id]="'kioskStreet'" [label]="'Rua'" [name]="'kioskStreet'" formControlName="kioskStreet" [placeholder]="'Av. Vicent de Carvalho'" [isObrigatory]="false"></app-input>
+      <app-input [id]="'kioskNumber'" [label]="'Número'" [name]="'kioskNumber'" formControlName="kioskNumber" [placeholder]="'200'" [isObrigatory]="false"></app-input>
+      <app-input [id]="'kioskReference'" [label]="'Ponto de referência'" [name]="'kioskReference'" formControlName="kioskReference" [placeholder]="'Ex.: Em frente ao posto 3'" [isObrigatory]="false"></app-input>
       <p class="text-tertiary">TEM QUE COLOCAR O MINIMAP PARA O USUÁRIO INFORMAR A LATITUDE E LONGITUDE</p>
     </div>
 
@@ -27,8 +28,8 @@
     <div class="sectionCard">
       <h2>Funcionamento</h2>
       <div class="openTime">
-        <app-input [id]="'openTime'" [label]="'Abertura'" [name]="'openTime'" [type]="'time'" [isObrigatory]="false" [value]="'08:00'"></app-input>
-        <app-input [id]="'closeTime'" [label]="'Fechamento'" [name]="'closeTime'" [type]="'time'" [isObrigatory]="false" [value]="'23:00'"></app-input>
+        <app-input [id]="'openTime'" [label]="'Abertura'" [name]="'openTime'" [type]="'time'" formControlName="openTime" [isObrigatory]="false"></app-input>
+        <app-input [id]="'closeTime'" [label]="'Fechamento'" [name]="'closeTime'" [type]="'time'" formControlName="closeTime" [isObrigatory]="false"></app-input>
       </div>
 
       <app-chip-multi-choice [options]="['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado', 'Domingo']" (outputSelected)="setDaysOpen($event)"></app-chip-multi-choice>
@@ -39,9 +40,9 @@
     <div class="sectionCard">
       <h2>Gestor responsável</h2>
       <p class="text-tertiary">Colocar um select com os funcionários já cadastrados (talvez)</p>
-      <app-input [id]="'managerName'" [label]="'Nome completo'" [name]="'managerName'" [placeholder]="'Ex.: Andedigmon da Silva'"></app-input>
-      <app-input [id]="'managerEmail'" [label]="'E-mail'" [name]="'managerEmail'" [placeholder]="'gerente@pordosol.com.br'" class="w-full"></app-input>
-      <app-input [id]="'managerPhone'" [label]="'Telefone'" [name]="'managerPhone'" [placeholder]="'(11) 99999-9999'" class="w-full"></app-input>
+      <app-input [id]="'managerName'" [label]="'Nome completo'" [name]="'managerName'" formControlName="managerName" [placeholder]="'Ex.: Andedigmon da Silva'"></app-input>
+      <app-input [id]="'managerEmail'" [label]="'E-mail'" [name]="'managerEmail'" formControlName="managerEmail" [placeholder]="'gerente@pordosol.com.br'" class="w-full"></app-input>
+      <app-input [id]="'managerPhone'" [label]="'Telefone'" [name]="'managerPhone'" formControlName="managerPhone" [placeholder]="'(11) 99999-9999'" class="w-full"></app-input>
 
     </div>
 
