@@ -1,0 +1,35 @@
+<div class="bg-surface border border-border rounded-2xl p-8 w-full mt-7 lg:mt-0">
+  <h2 class="text-sub-text font-semibold tracking-wider uppercase text-[1.3rem]">Como vai aparecer na {{contextLabel()}}</h2>
+  <div class="flex my-4 items-center gap-5">
+    <div class="w-14 h-14 flex rounded-full bg-bg-close items-center justify-center shrink-0">
+      <p class="text-primary font-bold text-lg">{{getNameInitials(name())}}</p>
+    </div>
+    <div class="grid grid-cols-1 gap-1.5">
+      <p class="text-input-placeholder font-semibold text-xl line-clamp-3">{{name()}}</p>
+      <p class="text-sub-text font-medium text-lg">{{role()}}</p>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 border-y-2 border-border border-dashed py-4 gap-4">
+    @for (item of items(); track item.label) {
+    @if (item.type === 'status') {
+    <div class="topics">
+      <p class="topics-title">{{item.label}}</p>
+      <p class="topics-status">{{item.value}}</p>
+    </div>
+    } @else {
+    <div class="topics">
+      <p class="topics-title">{{item.label}}</p>
+      <p class="topics-info">{{item.value}}</p>
+    </div>
+    }
+    }
+
+  </div>
+
+  <div class="mt-4">
+    <p class="text-sub-text font-medium text-base" [innerHTML]="lastText()"></p>
+  </div>
+
+</div>

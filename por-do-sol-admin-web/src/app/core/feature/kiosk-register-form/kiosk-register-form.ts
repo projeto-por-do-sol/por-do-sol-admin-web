@@ -1,9 +1,11 @@
-import { Component, output } from '@angular/core';
+import { Component, computed, output, Signal } from '@angular/core';
 import { Input } from "../../shared/ui/input/input";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
 import { Button } from "../../shared/ui/button/button";
 import { ChipMultiChoice } from "../../shared/ui/chip-multi-choice/chip-multi-choice";
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
 
 @Component({
   selector: 'app-kiosk-register-form',
@@ -16,7 +18,25 @@ export class KioskRegisterForm {
   daysOpen: string[] = []
   onClickCancelButton = output<void>()
 
+
+
+  previewItems = computed<PreviewItem[]>(() => {
+    const d = this.formValue();
+    return [
+      { label: 'Endereço', value: `${d.kioskState || 'Estado'}, ${d.kioskCity || 'cidade'}` },
+      { label: 'Horário', value: `${d.openTime}-${d.closeTime}` },
+      { label: 'Gestor', value: `${d.managerName || '-'}` },
+    ];
+  });
+
+  previewName = computed(() => this.formValue().kioskName || 'Novo quiosque');
+
+  previewLastText = "Esse será o card exibido na aba <span class='text-outline'>Quiosques</span> do painel administrativo assim que o cadastro for concluído."
+
+
+
   formFields: FormGroup
+  formValue: Signal<any>
 
   constructor() {
     this.formFields = new FormGroup({
@@ -36,6 +56,10 @@ export class KioskRegisterForm {
       managerEmail: new FormControl("", [Validators.required, Validators.email]),
       managerPhone: new FormControl("", Validators.required),
     })
+
+    this.formValue = toSignal(this.formFields.valueChanges, {
+      initialValue: this.formFields.value,
+    });
   }
 
   ngOnInit() {

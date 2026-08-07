@@ -13,6 +13,9 @@
 
 .topics-info {
   color: var(--color-outline);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .topics-status {
