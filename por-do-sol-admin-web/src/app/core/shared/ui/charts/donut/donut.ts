@@ -133,7 +133,7 @@ export class Donut {
           options: {
             chart: {
               type: 'donut',
-              width: '60%',
+              width: '100%',
               height: 300
             },
             legend: {
@@ -142,34 +142,34 @@ export class Donut {
             }
           }
         },
-        {
-          breakpoint: 1020,
-          options: {
-            chart: {
-              type: 'donut',
-              width: '100%',
-              height: 350
-            },
-            legend: {
-              position: 'bottom',
-              // width: 200
-            }
-          }
-        },
-        {
-          breakpoint: 450,
-          options: {
-            chart: {
-              type: 'donut',
-              width: '100%',
-              height: 350
-            },
-            legend: {
-              position: 'bottom',
-              // width: 200
-            }
-          }
-        }
+        // {
+        //   breakpoint: 1020,
+        //   options: {
+        //     chart: {
+        //       type: 'donut',
+        //       width: '100%',
+        //       height: 350
+        //     },
+        //     legend: {
+        //       position: 'bottom',
+        //       // width: 200
+        //     }
+        //   }
+        // },
+        // {
+        //   breakpoint: 450,
+        //   options: {
+        //     chart: {
+        //       type: 'donut',
+        //       width: '100%',
+        //       height: 350
+        //     },
+        //     legend: {
+        //       position: 'bottom',
+        //       // width: 200
+        //     }
+        //   }
+        // }
       ]
     };
   }

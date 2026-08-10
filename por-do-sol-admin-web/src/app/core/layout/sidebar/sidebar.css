@@ -108,3 +108,17 @@
   background-color: var(--color-tertiary);
   color: var(--color-creme);
 }
+
+.buttonModal{
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-outline);
+  border-radius: 1rem;
+  height: max-content;
+}
+
+.buttonModal:hover{
+  background-color: var(--color-secondary);
+}

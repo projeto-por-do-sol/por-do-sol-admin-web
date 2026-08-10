@@ -1,4 +1,4 @@
-<div class="bg-primary p-4 md:base-sidebar md:h-screen md:flex md:flex-col md:justify-between overflow-auto">
+<div class="bg-primary p-4 md:base-sidebar md:h-screen md:flex md:flex-col md:justify-between ">
 
   <div class="md:flex-1">
 
@@ -6,7 +6,7 @@
     <div class="flex gap-5 px-2 pt-1">
       <img src="/assets/images/logo.png" alt="" class="w-10 h-10 self-center">
       <div>
-        <h1 class="font-poppins text-xl text-creme font-bold">Pôr do Sol</h1>
+        <h1 class="font-poppins text-xl text-creme font-bold">Apollo</h1>
         <p class="font-poppins text-sm text-amarelo font-medium">PAINEL DE GESTÃO</p>
       </div>
     </div>
@@ -58,6 +58,22 @@
         </svg>
         <p class="">Pedidos</p>
       </a>
+    </div>
+
+    <!-- links de cadastro -->
+    <div class="justify-items-center mt-3 relative">
+      <button class="cursor-pointer block text-secondary text-base font-medium w-full py-2 rounded-2xl hover:bg-hover-sidebarlink hover:outline" (click)="setViewModal()">
+        Cadastros
+      </button>
+
+      @if(viewModalRegister){
+      <div class="fixed cursor-pointer inset-0 z-40 flex justify-center items-center" (click)="setViewModal()">
+        <div class="md:absolute md:left-64 md:top-128 z-50 bg-surface border border-border grid rounded-2xl h-max">
+          <button class="buttonModal" (click)="goToKioskRegister()">Quiosque</button>
+          <button class="buttonModal" (click)="goToEmployeeRegister()">Funcionários</button>
+        </div>
+      </div>
+      }
     </div>
 
   </div>
