@@ -1,0 +1,50 @@
+/* Select */
+.select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  --mat-sys-on-surface: var(--color-outline);
+  --mat-sys-surface-container: var(--color-fundo);
+  --mat-sys-on-surface-variant: var(--color-outline);
+
+  background-color: var(--color-fundo);
+  padding: 0.75rem;
+  color: var(--color-outline);
+  border-radius: 1rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.select .mat-mdc-select-value {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.select .mat-mdc-select-value-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quiosque-panel .mat-mdc-option {
+  min-height: 40px;
+}
+
+.quiosque-panel .mat-mdc-option .mdc-list-item__primary-text {
+  display: block;
+  width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
+.mat-mdc-option .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
+  color: var(--color-outline) !important;
+}

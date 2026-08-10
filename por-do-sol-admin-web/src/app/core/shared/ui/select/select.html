@@ -1,0 +1,8 @@
+<div class="w-full flex-1 min-w-0">
+  <p class="text-outline font-poppins font-semibold text-base capitalize">{{selectTitle()}}</p>
+  <mat-select class="select w-full" panelClass="quiosque-panel" [value]="options()[0]" (selectionChange)="onSelectionChange($event)">
+    @for(opt of options(); track opt){
+    <mat-option [value]="opt">{{opt}}</mat-option>
+    }
+  </mat-select>
+</div>

@@ -6,10 +6,11 @@ import { Employee } from '../../models/employee';
 import { TableOrCard } from "../table-or-card/table-or-card";
 import { UserInitials } from '../../utils/user-initials';
 import { NgClass } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-team',
-  imports: [SectionTitle, Table, TableOrCard, NgClass],
+  imports: [SectionTitle, TableOrCard, NgClass],
   templateUrl: './team.html',
   styleUrl: './team.css',
 })
@@ -42,12 +43,14 @@ export class Team {
     }
   ];
 
+  constructor(private router: Router) { }
+
   getNameInitials(name: string) {
     return UserInitials.getNameInitials(name)
   }
 
-  aa() {
-    console.log('aaa')
+  goToEmployeeRegister() {
+    this.router.navigate(['employeeRegister'])
   }
 
 }

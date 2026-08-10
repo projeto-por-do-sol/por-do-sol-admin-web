@@ -55,9 +55,9 @@
 
 @layer components {}
 
-/* @utility base-sidebar {
+@utility base-sidebar {
   @apply h-full max-w-3xs;
-} */
+}
 
 html {
   scroll-behavior: smooth;
@@ -73,47 +73,7 @@ body {
   font-family: var(--font-poppins);
 }
 
-/* Select */
-.select {
-  --mat-sys-on-surface: var(--color-creme);
-  --mat-sys-surface-container: var(--color-tertiary);
-  --mat-sys-on-surface-variant: var(--color-creme);
-  @apply bg-tertiary p-3 text-creme rounded-2xl mt-2 border border-secondary
-}
 
-.quiosque-panel .mat-mdc-option {
-  min-height: 40px;
-}
-
-.quiosque-panel .mat-mdc-option .mdc-list-item__primary-text {
-  display: block;
-  width: 100%;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
-.mat-mdc-option .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
-  color: var(--color-creme) !important;
-}
-
-/* SideBar */
-@utility base-sidebar {
-  @apply h-full max-w-3xs;
-}
-
-@utility side-bar-link {
-  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative transition-colors h-max;
-}
-
-.side-bar-link:hover {
-  @apply bg-hover-sidebarlink text-creme;
-}
-
-.side-bar-link.active {
-  @apply bg-tertiary text-creme;
-}
 
 .charts {
   background-color: var(--color-surface);
@@ -231,6 +191,50 @@ body {
 
 .infoTemplate {
   margin-bottom: 1rem;
+}
+
+/* Formulários */
+.sectionCard {
+  display: grid;
+  grid-template-columns: 1;
+  gap: 2rem;
+  border-bottom: 2px dashed var(--color-border);
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  color: var(--color-sub-text);
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+}
+
+.openTime {
+  display: flex;
+  justify-content: space-between;
+  gap: 2.5rem;
+}
+
+.openTime app-input {
+  flex: 1;
+}
+
+@media (width < 470px) {
+  .openTime {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .allocation {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    width: 100%;
+  }
 }
 
 @media (width < 500px) {

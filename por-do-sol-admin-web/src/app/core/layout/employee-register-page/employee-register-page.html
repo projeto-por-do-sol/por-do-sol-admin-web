@@ -1,0 +1,12 @@
+<main class="m-8 relative">
+  <app-return-link [text]="'Voltar para home'"></app-return-link>
+  <app-section-title [lable]="'Equipe'" [section]="'Cadastrar novo funcionário'" [text]="'Adicione os dados do funcionário, escolha o quiosque e o turno, e crie o acesso dele ao painel.'"></app-section-title>
+  <div class="grid grid-cols-1 lg:grid-cols-5 lg:gap-8 relative items-start">
+    <app-employee-register-form #employeeForm class="col-span-3" (onClickCancelButton)="goToHome()"></app-employee-register-form>
+
+    <app-card-preview class="col-span-2 sticky top-8" [contextLabel]="'equipe'" [name]="employeeForm.previewName()" [items]="employeeForm.previewItems()" [role]="employeeForm.previewRole()()" [lastText]="employeeForm.previewLastText"></app-card-preview>
+  </div>
+
+  <p class="text-input-placeholder font-medium text-base mt-12 mb-4">Painel administrativo Pôr do Sol · cadastro de funcionários</p>
+
+</main>

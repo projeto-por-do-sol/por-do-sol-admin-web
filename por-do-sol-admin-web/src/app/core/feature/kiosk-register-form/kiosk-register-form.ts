@@ -26,10 +26,10 @@ export class KioskRegisterForm {
       { label: 'Endereço', value: `${d.kioskState || 'Estado'}, ${d.kioskCity || 'cidade'}` },
       { label: 'Horário', value: `${d.openTime}-${d.closeTime}` },
       { label: 'Gestor', value: `${d.managerName || '-'}` },
-    ];
-  });
+    ]
+  })
 
-  previewName = computed(() => this.formValue().kioskName || 'Novo quiosque');
+  previewName = computed(() => this.formValue().kioskName || 'Novo quiosque')
 
   previewLastText = "Esse será o card exibido na aba <span class='text-outline'>Quiosques</span> do painel administrativo assim que o cadastro for concluído."
 

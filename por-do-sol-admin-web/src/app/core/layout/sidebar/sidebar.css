@@ -1,0 +1,110 @@
+/* Select */
+/* .select {
+  --mat-sys-on-surface: var(--color-creme);
+  --mat-sys-surface-container: var(--color-tertiary);
+  --mat-sys-on-surface-variant: var(--color-creme);
+  @apply bg-tertiary p-3 text-creme rounded-2xl mt-2 border border-secondary
+}
+
+.quiosque-panel .mat-mdc-option {
+  min-height: 40px;
+}
+
+.quiosque-panel .mat-mdc-option .mdc-list-item__primary-text {
+  display: block;
+  width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
+.mat-mdc-option .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
+  color: var(--color-creme) !important;
+} */
+
+/* SideBar */
+/* @utility base-sidebar {
+  @apply h-full max-w-3xs;
+}
+
+@utility side-bar-link {
+  @apply flex gap-3 mt-1 cursor-pointer text-base text-secondary font-poppins font-medium p-4 rounded-2xl relative transition-colors h-max;
+}
+
+.side-bar-link:hover {
+  @apply bg-hover-sidebarlink text-creme;
+}
+
+.side-bar-link.active {
+  @apply bg-tertiary text-creme;
+} */
+
+
+
+
+/* Select */
+.select {
+  --mat-sys-on-surface: var(--color-creme);
+  --mat-sys-surface-container: var(--color-tertiary);
+  --mat-sys-on-surface-variant: var(--color-creme);
+
+  background-color: var(--color-tertiary);
+  padding: 0.75rem;
+  color: var(--color-creme);
+  border-radius: 1rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-secondary);
+}
+
+.quiosque-panel .mat-mdc-option {
+  min-height: 40px;
+}
+
+.quiosque-panel .mat-mdc-option .mdc-list-item__primary-text {
+  display: block;
+  width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox-minimal::after,
+.mat-mdc-option .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
+  color: var(--color-creme) !important;
+}
+
+/* SideBar */
+.base-sidebar {
+  height: 100%;
+  max-width: 12rem;
+}
+
+.side-bar-link {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--color-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  padding: 1rem;
+  border-radius: 1rem;
+  position: relative;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  height: max-content;
+}
+
+.side-bar-link:hover {
+  background-color: var(--color-hover-sidebarlink);
+  color: var(--color-creme);
+}
+
+.side-bar-link.active {
+  background-color: var(--color-tertiary);
+  color: var(--color-creme);
+}
