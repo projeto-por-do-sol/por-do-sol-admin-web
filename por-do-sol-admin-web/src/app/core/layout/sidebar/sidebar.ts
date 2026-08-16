@@ -1,10 +1,12 @@
-import { Component, Signal } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '../../models/user-model';
 import { UserService } from '../../services/user-service';
 import { Router, RouterLink } from "@angular/router";
 import { NavigationService } from '../../services/navigation-service';
 import { UserInitials } from '../../utils/user-initials';
+import { KioskSelectionService } from '../../services/kiosk-selection-service';
+import { KioskService } from '../../services/kiosk-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,6 +15,8 @@ import { UserInitials } from '../../utils/user-initials';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+  readonly kioskService = inject(KioskService);
+  readonly selectionService = inject(KioskSelectionService);
   selectedKiosk: string = ''
   viewModalRegister: boolean = false
 
@@ -31,21 +35,28 @@ export class Sidebar {
     this.getNameInitials()
   }
 
+  onSelectionChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectionService.selectKiosk(value === 'all' ? null : value);
+  }
+
   // Pega as iniciais do usuário logado para colocar na sidebar
   getNameInitials() {
     this.userNameInitials = UserInitials.getNameInitials(this.user().name!)
   }
 
-  setViewModal(){
+  setViewModal() {
     this.viewModalRegister = !this.viewModalRegister
   }
 
-  goToKioskRegister(){
+  goToKioskRegister() {
     this.router.navigate(['kioskRegister'])
+    this.setViewModal()
   }
 
-  goToEmployeeRegister(){
+  goToEmployeeRegister() {
     this.router.navigate(['employeeRegister'])
+    this.setViewModal()
   }
 
 }

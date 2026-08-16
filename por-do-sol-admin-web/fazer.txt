@@ -1,7 +1,5 @@
 Mudar o "Como está o quiosque hoje" pelo nome do quiosque selecionado.
-Dropdown na sidebar para o usuário conseguir ser redirecionado para o cadastro de quiosques, funcionários e itens dos quiosques.
-Mudar o último kpi para "Quiosques aberto" quando exibir todos os quiosques
-Arrumar o posicionamento do gráfico radial, colocar ele centralizado verticalmente
+*Dropdown na sidebar para o usuário conseguir ser redirecionado para o cadastro de quiosques, funcionários e itens dos quiosques.
 Talvez colocar um pagination na seção de quiosques. Usuário pode ter muitos quiosques.
 Colocar filtros na tabela de equipe. Filtrar: Quiosques, cargos e status.
 verificar se o funcionários está em turno.
@@ -22,7 +20,7 @@ Tela para cadastro de proprietário
 Tela para criar pedidos
 Tela para adicionar item ao quiosque
 Tela de login
-Botões na sidebar para adicionar quiosque, funcionários e pedidos
+*Botões na sidebar para adicionar quiosque, funcionários e pedidos
 Tela de descrição de pedidos
 Tela de recuperação de senha
 Alterar dados do proprietário
