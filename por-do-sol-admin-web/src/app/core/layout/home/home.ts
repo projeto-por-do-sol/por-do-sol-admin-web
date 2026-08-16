@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { KpiCard } from "../../shared/ui/kpi-card/kpi-card";
 import { Header } from "../header/header";
@@ -16,6 +16,7 @@ import { Orders } from '../../feature/orders/orders';
 import { Team } from "../../feature/team/team";
 import { Statistics } from "../../feature/statistics/statistics";
 import { Overview } from "../../feature/overview/overview";
+import { KioskSelectionService } from '../../services/kiosk-selection-service';
 
 @Component({
   selector: 'app-home',
@@ -24,12 +25,13 @@ import { Overview } from "../../feature/overview/overview";
   styleUrl: './home.css',
 })
 export class Home {
+  readonly selectionService = inject(KioskSelectionService)
 
   constructor(private navigation: NavigationService, private location: Location) { }
 
-  // ngOnInit() {
-  //   this.location.replaceState('/')
-  // }
+  ngOnInit() {
+    this.location.replaceState('/')
+  }
 
   ngAfterViewInit() {
     const sections = document.querySelectorAll('section');

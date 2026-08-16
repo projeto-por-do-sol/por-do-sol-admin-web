@@ -19,7 +19,7 @@ export class TeamService {
     }
 
     return this._team().filter(
-      (employee) => employee.kioskId === selectedKiosk.id
+      (employee) => employee.kioskName === selectedKiosk.name
     )
   })
 
