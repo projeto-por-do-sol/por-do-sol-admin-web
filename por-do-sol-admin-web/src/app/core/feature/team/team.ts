@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SectionTitle } from '../../shared/ui/section-title/section-title';
 import { Table, TableColumn } from '../../shared/ui/table/table';
 import { MOCK_EMPLOYEE } from '../../mocks/mocks';
@@ -7,6 +7,7 @@ import { TableOrCard } from "../table-or-card/table-or-card";
 import { UserInitials } from '../../utils/user-initials';
 import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
+import { TeamService } from '../../services/team-service';
 
 @Component({
   selector: 'app-team',
@@ -15,7 +16,8 @@ import { Router } from '@angular/router';
   styleUrl: './team.css',
 })
 export class Team {
-  employees = MOCK_EMPLOYEE;
+  readonly teamService = inject(TeamService)
+  
 
   employeeColumns: TableColumn<Employee>[] = [
     {

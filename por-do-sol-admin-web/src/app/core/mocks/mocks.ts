@@ -95,7 +95,7 @@ export const MOCK_EMPLOYEE: Employee[] = [
     id: "employee1",
     name: "Rodolfo da Silva",
     role: "Gerente",
-    kioskName: "Praia Quiosque",
+    kioskName: "Quiosque teste",
     startShift: "08:00",
     finishShift: "18:00",
     status: true
@@ -104,7 +104,7 @@ export const MOCK_EMPLOYEE: Employee[] = [
     id: "employee2",
     name: "Mariana Costa",
     role: "Funcionario",
-    kioskName: "Praia Quiosque",
+    kioskName: "Quiosque teste",
     startShift: "08:00",
     finishShift: "16:00",
     status: true
@@ -113,7 +113,7 @@ export const MOCK_EMPLOYEE: Employee[] = [
     id: "employee3",
     name: "Lucas Oliveira",
     role: "Funcionario",
-    kioskName: "Quiosque Sol & Mar",
+    kioskName: "Praia Quiosque",
     startShift: "09:00",
     finishShift: "17:00",
     status: true
@@ -131,7 +131,7 @@ export const MOCK_EMPLOYEE: Employee[] = [
     id: "employee5",
     name: "Gabriel Santos",
     role: "Funcionario",
-    kioskName: "Quiosque Sol & Mar",
+    kioskName: "Santos Quiosque",
     startShift: "12:00",
     finishShift: "20:00",
     status: true
@@ -140,7 +140,7 @@ export const MOCK_EMPLOYEE: Employee[] = [
     id: "employee6",
     name: "Camila Rodrigues",
     role: "Funcionario",
-    kioskName: "Quiosque Tropical",
+    kioskName: "Beira Mar Quiosque",
     startShift: "14:00",
     finishShift: "22:00",
     status: true
@@ -149,20 +149,19 @@ export const MOCK_EMPLOYEE: Employee[] = [
     id: "employee7",
     name: "Thiago Almeida",
     role: "Gerente",
-    kioskName: "Quiosque Tropical",
+    kioskName: "Beira Mar Quiosque",
     startShift: "16:00",
     finishShift: "00:00",
     status: false
   }
-]
+];
 
 export const MOCK_ORDERS: Order[] = [
-
   {
     id: 'order1',
     items: ['Porção de Peixe Frito', 'Cerveja Gelada (600ml)'],
-    kioskName: 'Barraca do Zé',
-    kioskId: 'kiosk1',
+    kioskName: 'Quiosque teste',
+    kioskId: 'kiosk_01',
     clientName: 'Osvaldo Cunha',
     clientId: 'client1',
     value: 42.00,
@@ -172,8 +171,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order2',
     items: ['Pastel de Carne com Queijo', 'Pastel de Vento', 'Caldo de Cana (500ml)'],
-    kioskName: 'Pastelaria da Maria',
-    kioskId: 'kiosk2',
+    kioskName: 'Santos Quiosque',
+    kioskId: 'kiosk_03',
     clientName: 'Ana Souza',
     clientId: 'client2',
     value: 27.50,
@@ -183,8 +182,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order3',
     items: ['Água de Coco Gelada'],
-    kioskName: 'Quiosque da Praia',
-    kioskId: 'kiosk3',
+    kioskName: 'Beira Mar Quiosque',
+    kioskId: 'kiosk_04',
     clientName: 'Carlos Eduardo',
     clientId: 'client3',
     value: 15.00,
@@ -194,8 +193,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order4',
     items: ['Açaí 500ml com Leite em Pó', 'Adicional de Banana', 'Adicional de Granola', 'Suco de Laranja'],
-    kioskName: 'Açaí do Beto',
-    kioskId: 'kiosk4',
+    kioskName: 'Santos Quiosque',
+    kioskId: 'kiosk_03',
     clientName: 'Mariana Lima',
     clientId: 'client4',
     value: 58.90,
@@ -205,19 +204,19 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order5',
     items: ['Cerveja Gelada (600ml)', 'Isca de Frango à Passarinho'],
-    kioskName: 'Barraca do Zé',
-    kioskId: 'kiosk1',
+    kioskName: 'Quiosque teste',
+    kioskId: 'kiosk_01',
     clientName: 'Roberto Alves',
     clientId: 'client5',
     value: 31.00,
     time: '13:22',
-    status: 'Finalizado' // Adaptado de Entregue para Finalizado
+    status: 'Finalizado'
   },
   {
     id: 'order6',
     items: ['Churros de Doce de Leite com Confeito'],
-    kioskName: 'Churros do Chaves',
-    kioskId: 'kiosk5',
+    kioskName: 'Praia Quiosque',
+    kioskId: 'kiosk_02',
     clientName: 'Fernanda Rocha',
     clientId: 'client6',
     value: 12.00,
@@ -227,8 +226,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order7',
     items: ['Porção de Camarão Alho e Óleo', 'Caipirinha de Limão'],
-    kioskName: 'Quiosque da Praia',
-    kioskId: 'kiosk3',
+    kioskName: 'Praia Quiosque',
+    kioskId: 'kiosk_02',
     clientName: 'Julia Mendes',
     clientId: 'client7',
     value: 85.00,
@@ -238,8 +237,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order8',
     items: ['Milho Verde com Manteiga'],
-    kioskName: 'Milho Bom',
-    kioskId: 'kiosk6',
+    kioskName: 'Beira Mar Quiosque',
+    kioskId: 'kiosk_04',
     clientName: 'Thiago Costa',
     clientId: 'client8',
     value: 8.00,
@@ -249,8 +248,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order9',
     items: ['Isca de Peixe', 'Refrigerante Lata'],
-    kioskName: 'Barraca do Zé',
-    kioskId: 'kiosk1',
+    kioskName: 'Quiosque teste',
+    kioskId: 'kiosk_01',
     clientName: 'Luiz Fernando',
     clientId: 'client9',
     value: 55.00,
@@ -260,8 +259,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order10',
     items: ['Sanduíche Natural de Frango', 'Suco de Abacaxi com Hortelã'],
-    kioskName: 'Saúde na Praia',
-    kioskId: 'kiosk7',
+    kioskName: 'Santos Quiosque',
+    kioskId: 'kiosk_03',
     clientName: 'Beatriz Silva',
     clientId: 'client10',
     value: 28.50,
@@ -271,8 +270,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order11',
     items: ['Casquinha de Siri', 'Cerveja Artesanal IPA'],
-    kioskName: 'Quiosque da Praia',
-    kioskId: 'kiosk3',
+    kioskName: 'Quiosque teste',
+    kioskId: 'kiosk_01',
     clientName: 'Rafael Almeida',
     clientId: 'client11',
     value: 45.00,
@@ -282,8 +281,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order12',
     items: ['Açaí 300ml', 'Água Mineral sem gás'],
-    kioskName: 'Açaí do Beto',
-    kioskId: 'kiosk4',
+    kioskName: 'Santos Quiosque',
+    kioskId: 'kiosk_03',
     clientName: 'Camila Dias',
     clientId: 'client12',
     value: 22.00,
@@ -293,8 +292,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order13',
     items: ['Porção de Batata Frita M', 'Guaraná 2L'],
-    kioskName: 'Pastelaria da Maria',
-    kioskId: 'kiosk2',
+    kioskName: 'Praia Quiosque',
+    kioskId: 'kiosk_02',
     clientName: 'Marcelo Oliveira',
     clientId: 'client13',
     value: 35.00,
@@ -304,8 +303,8 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order14',
     items: ['Espetinho de Queijo Coalho', 'Espetinho de Carne'],
-    kioskName: 'Espetinho do João',
-    kioskId: 'kiosk8',
+    kioskName: 'Beira Mar Quiosque',
+    kioskId: 'kiosk_04',
     clientName: 'Larissa Moura',
     clientId: 'client14',
     value: 24.00,
@@ -315,12 +314,12 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: 'order15',
     items: ['Porção de Lula à Dorê'],
-    kioskName: 'Barraca do Zé',
-    kioskId: 'kiosk1',
+    kioskName: 'Quiosque teste',
+    kioskId: 'kiosk_01',
     clientName: 'Gustavo Santos',
     clientId: 'client15',
     value: 65.00,
     time: '14:20',
     status: 'Cancelado'
   }
-]
+];

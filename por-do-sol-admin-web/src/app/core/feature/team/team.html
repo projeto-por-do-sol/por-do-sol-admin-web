@@ -19,4 +19,4 @@
     <p [ngClass]="employee.status ? 'status_active' : 'status_inactive'">{{employee.status ? 'Em turno' : 'Fora de turno'}}</p>
   </div>
 </ng-template>
-<app-table-or-card [columns]="employeeColumns" [ELEMENT_DATA]="employees" [cardTemplate]="teamCard"></app-table-or-card>
+<app-table-or-card [columns]="employeeColumns" [ELEMENT_DATA]="teamService.team()" [cardTemplate]="teamCard"></app-table-or-card>
