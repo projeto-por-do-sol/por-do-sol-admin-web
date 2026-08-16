@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { Chips } from "../../shared/ui/chips/chips";
 import { Table, TableColumn } from "../../shared/ui/table/table";
 import { Order } from '../../models/order';
-import { MOCK_ORDERS } from '../../mocks/mocks';
 import { TableOrCard } from "../table-or-card/table-or-card";
-import { NgClass } from '@angular/common';
 import { UserInitials } from '../../utils/user-initials';
 import { StatusStyle } from '../../utils/status-style';
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
+import { OrderService } from '../../services/order-service';
 
 @Component({
   selector: 'app-orders',
@@ -16,46 +16,26 @@ import { SectionTitle } from "../../shared/ui/section-title/section-title";
   styleUrl: './orders.css',
 })
 export class Orders {
+  readonly ordersService = inject(OrderService)
 
-  chipOptions: string[] = ["todos", "novo", "Em preparo", "pronto", "Entregando", "Finalizado", "atrasado", "cancelado"]
-  standardOption: string = this.chipOptions[0]
+  readonly chipOptions: string[] = ["todos", "novo", "Em preparo", "pronto", "Entregando", "Finalizado", "atrasado", "cancelado"]
+  readonly standardOption: string = this.chipOptions[0]
 
-  allOrders = MOCK_ORDERS
-  tableOrders = this.allOrders
+  readonly selectedFilter = signal<string>("todos")
+
+  readonly tableOrders = computed(() => {
+    const orders = this.ordersService.orders()
+    const filter = this.selectedFilter().toLowerCase()
+
+    if (filter === 'todos') {
+      return orders;
+    }
+
+    return orders.filter(order => order.status?.toLowerCase() === filter)
+  })
 
   onSelectedOption(option: string) {
-    switch (option.toLowerCase()) {
-      case "novo":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'novo');
-        break;
-
-      case "em preparo":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'em preparo');
-        break;
-
-      case "pronto":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'pronto');
-        break;
-
-      case "entregando":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'entregando');
-        break;
-
-      case "finalizado":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'finalizado');
-        break;
-
-      case "atrasado":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'atrasado');
-        break;
-
-      case "cancelado":
-        this.tableOrders = this.allOrders.filter(order => order.status?.toLowerCase() === 'cancelado');
-        break;
-
-      default:
-        this.tableOrders = this.allOrders;
-    }
+    this.selectedFilter.set(option)
   }
 
   getNameInitials(name: string) {
@@ -66,7 +46,7 @@ export class Orders {
     return StatusStyle.orderStatus(status)
   }
 
-  orderColumns: TableColumn<Order>[] = [
+  readonly orderColumns: TableColumn<Order>[] = [
     {
       key: 'clientName',
       header: 'Cliente',
@@ -95,7 +75,7 @@ export class Orders {
       header: 'Status',
       type: 'statusOrder'
     }
-  ];
+  ]
 
-  aa() { }
+  aa(){}
 }
