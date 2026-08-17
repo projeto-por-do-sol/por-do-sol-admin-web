@@ -7,17 +7,22 @@
 <main class="px-8 pb-8">
 
   <!-- Visão geral -->
-  <section id="visao-geral">
+  <section id="visao-geral" class="grid grid-cols-1 gap-8">
     <app-overview></app-overview>
+    @if(selectionService.selectedKiosk()){
+    <app-card-kiosk-info [kiosk]="selectionService.selectedKiosk()!"></app-card-kiosk-info>
+    }
   </section>
 
   <section id="estatisticas">
     <app-statistics></app-statistics>
   </section>
 
+  @if(!selectionService.selectedKiosk()){
   <section id="quiosques">
     <app-kiosk-grid></app-kiosk-grid>
   </section>
+  }
 
   <section id="equipe">
     <app-team></app-team>
