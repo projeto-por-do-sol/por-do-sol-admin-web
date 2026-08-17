@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { KpiCard } from "../../shared/ui/kpi-card/kpi-card";
 import { Header } from "../header/header";
@@ -17,38 +17,39 @@ import { Team } from "../../feature/team/team";
 import { Statistics } from "../../feature/statistics/statistics";
 import { Overview } from "../../feature/overview/overview";
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
+import { SectionObserverDirective } from '../../utils/section-observer-directive';
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team, Statistics, Overview],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team, Statistics, Overview, SectionObserverDirective],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class Home {
   readonly selectionService = inject(KioskSelectionService)
 
-  constructor(private navigation: NavigationService, private location: Location) { }
+  constructor(private navigation: NavigationService, private location: Location) {}
 
   ngOnInit() {
     this.location.replaceState('/')
   }
 
-  ngAfterViewInit() {
-    const sections = document.querySelectorAll('section');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          this.navigation.activeSection.set(entry.target.id);
-        }
-      });
+  // ngAfterViewInit() {
+  //   const sections = document.querySelectorAll('section');
+  //   const observer = new IntersectionObserver(entries => {
+  //     entries.forEach(entry => {
+  //       if (entry.isIntersecting) {
+  //         this.navigation.activeSection.set(entry.target.id);
+  //       }
+  //     });
 
-    }, {
-      rootMargin: '-45% 0px -45% 0px',
-      threshold: 0
-    });
+  //   }, {
+  //     rootMargin: '-45% 0px -45% 0px',
+  //     threshold: 0
+  //   });
 
-    sections.forEach(section => observer.observe(section));
-  }
+  //   sections.forEach(section => observer.observe(section));
+  // }
 
   aa() {
     console.log('aa')
