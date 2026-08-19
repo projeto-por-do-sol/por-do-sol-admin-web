@@ -84,6 +84,9 @@
 
   </div>
 
+  <!-- Botão logout -->
+  <button class="buttonModal" (click)="logout()">Logout</button>
+
 
   <!-- Identificação do Usuário -->
   <div class="flex bg-fundo-escuro rounded-2xl p-4 gap-3 items-center mt-7 md:mt-5">
@@ -91,11 +94,11 @@
       <p class="font-bold text-lg text-marrom font-poppins">{{userNameInitials}}</p>
     </div>
     <div class="min-w-0 flex-1">
-      <p [title]="user().name" class="font-poppins font-semibold text-creme truncate">
-        {{user().name}}
+      <p [title]="user()!.name" class="font-poppins font-semibold text-creme truncate">
+        {{user()!.name}}
       </p>
       <p class="text-sm text-secondary truncate">
-        <span [title]="user().position">{{user().position}}</span> • <span [title]="user().kiosk">{{user().kiosk}}</span>
+        <span [title]="user()!.position">{{user()!.position}}</span> • <span [title]="user()!.kiosk">{{user()!.kiosk}}</span>
       </p>
     </div>
   </div>

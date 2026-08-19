@@ -26,12 +26,12 @@ export class Team {
       type: 'avatar'
     },
     {
-      key: 'role',
-      header: 'Cargo'
-    },
-    {
       key: 'kioskName',
       header: 'Quiosque'
+    },
+    {
+      key: 'role',
+      header: 'Cargo'
     },
     {
       key: 'startShift',

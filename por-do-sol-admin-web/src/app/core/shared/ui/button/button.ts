@@ -12,6 +12,7 @@ export class Button {
   prefix = input<boolean>()
   icon = input<string>()
   onClickButton = output<MouseEvent>()
+  fullWidth = input<boolean>(false);
 
   iconPath: string = ''
 

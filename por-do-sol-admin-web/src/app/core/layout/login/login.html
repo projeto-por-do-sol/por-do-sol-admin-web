@@ -1,0 +1,43 @@
+<!-- Botão logout -->
+<!-- <button class="buttonModal" (click)="login()">Login</button> -->
+
+<main class="flex h-full w-full md:justify-center md:items-center">
+  <!-- card -->
+  <div class="bg-surface w-full h-full md:max-w-100 md:h-max md:rounded-2xl overflow-auto">
+
+    <!-- Imagem -->
+    <div class="bg-primary flex justify-center p-5"><img src="./assets/images/logo.png" alt="Apollo logo" class="w-35 drop-shadow-2xl"></div>
+
+    <!-- Informações -->
+    <div class="p-5">
+      <h1 class="font-bold text-outline text-lg mb-1">Bem Vindo(a) ao Apollo!</h1>
+      <p class="text-sub-text mb-7">Entre com suas credenciais para acessar o Painel Administrativo</p>
+      <form action="">
+        <div class="grid grid-cols-1 gap-5 mb-5">
+          <app-input label="Credenciais" id="login" name="login" type="email"></app-input>
+          <app-input label="Senha" id="password" name="password" type="password"></app-input>
+        </div>
+
+        <div class="flex justify-between mb-7">
+          <div class="flex gap-2">
+            <input type="checkbox" id="check" name="check" class="accent-primary w-4 cursor-pointer">
+            <label for="check" class="text-outline text-base cursor-pointer">Lembrar de mim</label>
+          </div>
+
+          <a href="" class="text-base text-primary hover:underline">Esqueci minha senha</a>
+        </div>
+
+        <app-button labelButton="Entrar" icon="arrow-right" (onClickButton)="login()" [fullWidth]="true"></app-button>
+
+      </form>
+
+      <div class="mt-3 text-center">
+        <p class="text-outline text-base">Novo por aqui? <a href="" class="text-primary cursor-pointer hover:underline">Crie sua conta!</a></p>
+      </div>
+
+      <!-- /Informações -->
+    </div>
+
+    <!-- /Card -->
+  </div>
+</main>

@@ -20,7 +20,7 @@ export class Sidebar {
   selectedKiosk: string = ''
   viewModalRegister: boolean = false
 
-  user!: Signal<User>
+  user!: Signal<User | null>
   userNameInitials: string = ""
 
   constructor(
@@ -42,7 +42,7 @@ export class Sidebar {
 
   // Pega as iniciais do usuário logado para colocar na sidebar
   getNameInitials() {
-    this.userNameInitials = UserInitials.getNameInitials(this.user().name!)
+    this.userNameInitials = UserInitials.getNameInitials(this.user()!.name!)
   }
 
   setViewModal() {
@@ -57,6 +57,10 @@ export class Sidebar {
   goToEmployeeRegister() {
     this.router.navigate(['employeeRegister'])
     this.setViewModal()
+  }
+
+  logout() {
+    this.userService.logout()
   }
 
 }

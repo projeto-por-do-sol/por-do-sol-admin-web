@@ -1,8 +1,5 @@
-<div class="md:flex h-screen">
-  <aside class="md:h-screen shrink-0">
-    <app-sidebar></app-sidebar>
-  </aside>
-  <main #mainContent class="flex-1 overflow-y-auto">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+@if(user()){
+<app-logged-user></app-logged-user>
+} @else {
+<app-login></app-login>
+}
