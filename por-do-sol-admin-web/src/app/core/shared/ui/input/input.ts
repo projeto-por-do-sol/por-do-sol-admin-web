@@ -15,6 +15,7 @@ export class Input implements ControlValueAccessor {
   name = input.required<string>()
   placeholder = input<string>()
   isObrigatory = input<boolean>(true)
+  viewPassword = false
 
   value: string = ""
   disabled = false
@@ -62,5 +63,16 @@ export class Input implements ControlValueAccessor {
 
   handleBlur() {
     this.onTouched()
+  }
+
+  toggleViewPassword(){
+    this.viewPassword = !this.viewPassword
+  }
+
+  inputType(){
+    if (this.type() === "password"){
+      return this.viewPassword ? "text" : "password"
+    }
+    return this.type()
   }
 }
