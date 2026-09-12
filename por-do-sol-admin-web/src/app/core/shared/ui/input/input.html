@@ -10,7 +10,7 @@
     placeholder:text-base focus:outline-none focus:ring-2 focus:bg-surface focus:ring-primary transition-all">
 
     @if(type().toLowerCase() === "password"){
-    <button (click)="toggleViewPassword()" type="button" class="absolute right-2 top-1.5  p-1 rounded-2xl border border-transparent hover:bg-outline/20 hover:border-border  hover:cursor-pointer w-max">
+    <button (click)="toggleViewPassword()" (mousedown)="$event.preventDefault()" type="button" class="absolute right-2 top-1.5  p-1 rounded-2xl border border-transparent hover:bg-outline/20 hover:border-border  hover:cursor-pointer w-max">
       <img src="{{viewPassword ? 'assets/icons/visibility.svg' : 'assets/icons/visibility_off.svg'}}" alt="">
     </button>
     }

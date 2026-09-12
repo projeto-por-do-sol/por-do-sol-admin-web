@@ -1,8 +1,8 @@
-<div class="md:flex h-screen">
-  <aside class="md:h-screen shrink-0">
+<div class="md:flex h-dvh">
+  <aside class="md:h-dvh shrink-0">
     <app-sidebar></app-sidebar>
   </aside>
-  <main #mainContent class="flex-1 overflow-y-auto">
+  <main #mainContent class="flex-1 min-w-0 overflow-y-auto">
     <router-outlet></router-outlet>
   </main>
 </div>

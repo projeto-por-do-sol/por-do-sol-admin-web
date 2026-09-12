@@ -243,6 +243,17 @@ h2 {
   }
 }
 
+@media (width < 48rem) {
+  .register-menu-overlay {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: calc(100dvh - 2rem) !important;
+  }
+}
+
 @media (width >=500px) {
   .kioskNameOperation {
     display: flex;
