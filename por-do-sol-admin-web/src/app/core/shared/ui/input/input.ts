@@ -1,5 +1,6 @@
 import { Component, input, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl, ReactiveFormsModule } from '@angular/forms';
+import { formatCnpj } from '../../../utils/cnpj';
 
 @Component({
   selector: 'app-input',
@@ -15,6 +16,7 @@ export class Input implements ControlValueAccessor {
   name = input.required<string>()
   placeholder = input<string>()
   isObrigatory = input<boolean>(true)
+  mask = input<'cnpj' | 'phone' | null>(null)
   viewPassword = false
 
   value: string = ""
@@ -31,11 +33,17 @@ export class Input implements ControlValueAccessor {
 
   get errorMessage(): string | null {
     const control = this.ngControl?.control
-    if (!control || !control.touched || !control.errors) return null
+    if (!control || !control.touched) return null
+    if (this.name() === 'passwordConfirmation' && control.parent?.errors?.['passwordMismatch']) {
+      return 'As senhas não coincidem'
+    }
+    if (!control.errors) return null
 
     if (control.errors['required']) return 'Campo obrigatório'
     if (control.errors['email']) return 'E-mail inválido'
+    if (control.errors['cnpj']) return 'CNPJ inválido'
     if (control.errors['minlength']) return `Mínimo de ${control.errors['minlength'].requiredLength} caracteres`
+    if (control.errors['pattern']) return 'Formato inválido'
 
     return 'Campo inválido'
   }
@@ -57,8 +65,27 @@ export class Input implements ControlValueAccessor {
   }
 
   handleInput(value: string) {
-    this.value = value
-    this.onChange(value)
+    if (this.mask() === 'cnpj') {
+      this.value = formatCnpj(value)
+    } else if (this.mask() === 'phone') {
+      this.value = this.formatPhone(value)
+    } else {
+      this.value = value
+    }
+    this.onChange(this.value)
+  }
+
+  private formatPhone(value: string): string {
+    const digits = value.replace(/\D/g, '').slice(0, 11)
+    if (!digits) return ''
+    if (digits.length < 3) return `(${digits}`
+
+    const areaCode = digits.slice(0, 2)
+    const phoneNumber = digits.slice(2)
+    const separatorIndex = phoneNumber.length > 8 ? 5 : 4
+    const firstPart = phoneNumber.slice(0, separatorIndex)
+    const lastPart = phoneNumber.slice(separatorIndex)
+    return `(${areaCode}) ${firstPart}${lastPart ? `-${lastPart}` : ''}`
   }
 
   handleBlur() {

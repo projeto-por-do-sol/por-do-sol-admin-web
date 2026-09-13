@@ -6,8 +6,7 @@
     }
   </div>
   <div class="relative">
-    <input type="{{inputType()}}" id="{{id()}}" name="{{name()}}" placeholder="{{placeholder()}}" [disabled]="disabled" [value]="value" (input)="handleInput($any($event.target).value)" (blur)="handleBlur()" [class.border-red-500]="errorMessage" [class.border-border]="!errorMessage" class="bg-fundo w-full border-2 px-4 py-2 rounded-2xl text-input-text text-base placeholder:text-input-placeholder 
-    placeholder:text-base focus:outline-none focus:ring-2 focus:bg-surface focus:ring-primary transition-all">
+    <input type="{{inputType()}}" id="{{id()}}" name="{{name()}}" placeholder="{{placeholder()}}" [disabled]="disabled" [value]="value" (input)="handleInput($any($event.target).value); $any($event.target).value = value" (blur)="handleBlur()" [attr.inputmode]="mask() === 'phone' ? 'numeric' : (mask() === 'cnpj' ? 'text' : null)" [attr.maxlength]="mask() === 'cnpj' ? 18 : (mask() === 'phone' ? 15 : null)" [attr.autocapitalize]="mask() === 'cnpj' ? 'characters' : null" [class.border-red-500]="errorMessage" [class.border-border]="!errorMessage" class="bg-fundo w-full border-2 px-4 py-2 rounded-2xl text-input-text text-base placeholder:text-input-placeholder placeholder:text-base focus:outline-none focus:ring-2 focus:bg-surface focus:ring-primary transition-all">
 
     @if(type().toLowerCase() === "password"){
     <button (click)="toggleViewPassword()" (mousedown)="$event.preventDefault()" type="button" class="absolute right-2 top-1.5  p-1 rounded-2xl border border-transparent hover:bg-outline/20 hover:border-border  hover:cursor-pointer w-max">

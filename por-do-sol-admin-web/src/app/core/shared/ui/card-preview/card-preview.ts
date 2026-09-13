@@ -21,6 +21,7 @@ export class CardPreview {
   role = input<string>()
   items = input<PreviewItem[]>([])
   lastText = input<string>('')
+  imageUrl = input<string | null>(null)
 
   getNameInitials(name: string) {
     return UserInitials.getNameInitials(name.toUpperCase())

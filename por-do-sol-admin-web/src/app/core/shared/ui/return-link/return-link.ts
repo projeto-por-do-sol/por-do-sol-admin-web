@@ -10,6 +10,6 @@ import { RouterLink } from "@angular/router";
 export class ReturnLink {
 
   text = input.required<string>()
-  pageToReturn = input<string>('/')
+  pageToReturn = input<string>('/home')
 
 }

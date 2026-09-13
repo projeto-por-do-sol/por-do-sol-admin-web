@@ -1,1 +1,64 @@
-<p>owner-registration works!</p>
+<main class="relative min-h-dvh overflow-x-clip px-4 pt-10 pb-5 md:px-8 md:pt-14">
+  <div class="pointer-events-none fixed right-0 bottom-0 left-0 z-0" aria-hidden="true">
+    <svg class="block h-36 w-full md:h-52 xl:h-72" viewBox="0 0 1440 260" preserveAspectRatio="none">
+      <path d="M0,90 C240,165 460,35 720,105 C990,175 1200,45 1440,95 L1440,260 L0,260 Z" fill="var(--color-tertiary)" opacity=".12" />
+      <path d="M0,145 C260,205 490,90 735,155 C980,220 1205,95 1440,145 L1440,260 L0,260 Z" fill="var(--color-primary)" opacity=".2" />
+    </svg>
+  </div>
+
+  <div class="relative z-1 mx-auto w-full max-w-7xl">
+    <app-return-link text="Voltar para o login" pageToReturn="/login"></app-return-link>
+
+    <app-section-title
+      lable="Primeiro acesso"
+      section="Cadastre sua empresa"
+      text="Crie a conta principal para começar a gerenciar sua operação no Apollo.">
+    </app-section-title>
+
+    <div class="relative grid grid-cols-1 items-start lg:grid-cols-5 lg:gap-8">
+      <section class="rounded-2xl border border-border bg-surface shadow-[0_18px_45px_#7a22000d] lg:col-span-3">
+        <form class="p-5 sm:p-8" [formGroup]="formFields" (ngSubmit)="onSubmit()">
+          <div class="grid grid-cols-1 gap-6 border-b-2 border-dashed border-border pb-8">
+            <div class="flex items-start gap-3.5">
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-on-secondary text-xs font-extrabold text-primary">01</span>
+              <div><h2 class="text-lg font-bold tracking-wider text-outline">Dados da empresa</h2><p class="mt-1 text-sm text-sub-text">Informações usadas para identificar e contatar sua empresa.</p></div>
+            </div>
+
+            <app-image-input formControlName="profileImage" (imageSelected)="imagePreview.set($event)"></app-image-input>
+            <app-input id="companyName" label="Nome da empresa" name="companyName" formControlName="companyName" placeholder="Ex.: Quiosque Pôr do Sol"></app-input>
+
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <app-input id="cnpj" label="CNPJ" name="cnpj" formControlName="cnpj" mask="cnpj" placeholder="00.000.000/0000-00"></app-input>
+              <app-input id="email" label="E-mail" name="email" type="email" formControlName="email" placeholder="contato@empresa.com.br"></app-input>
+            </div>
+
+            <app-input id="phone" label="Telefone" name="phone" type="tel" formControlName="phone" mask="phone" placeholder="(11) 99999-9999"></app-input>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 border-b-2 border-dashed border-border py-8">
+            <div class="flex items-start gap-3.5">
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-on-secondary text-xs font-extrabold text-primary">02</span>
+              <div><h2 class="text-lg font-bold tracking-wider text-outline">Credenciais de acesso</h2><p class="mt-1 text-sm text-sub-text">Use pelo menos 8 caracteres para proteger sua conta.</p></div>
+            </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <app-input id="password" label="Senha" name="password" type="password" formControlName="password" placeholder="Mínimo de 8 caracteres"></app-input>
+              <app-input id="passwordConfirmation" label="Confirmação de senha" name="passwordConfirmation" type="password" formControlName="passwordConfirmation" placeholder="Digite a senha novamente"></app-input>
+            </div>
+          </div>
+
+          <div class="flex flex-col-reverse gap-4 pt-8 md:flex-row md:justify-end">
+            <app-cancel-button labelButton="Cancelar" (onClickButton)="goToLogin()"></app-cancel-button>
+            <app-button labelButton="Cadastrar empresa" icon="arrow-right" type="submit"></app-button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="lg:sticky lg:top-8 lg:col-span-2">
+        <app-card-preview contextLabel="sua conta" [name]="previewName()" role="Empresa" [items]="previewItems()" [imageUrl]="imagePreview()" lastText="Esta será a identificação da sua empresa no <span class='text-outline'>Painel Administrativo</span>."></app-card-preview>
+        <p class="mx-2 mt-4 text-center text-sm leading-6 text-sub-text">A prévia é atualizada automaticamente conforme você preenche os dados.</p>
+      </aside>
+    </div>
+
+    <p class="relative my-12 text-sm font-semibold text-sub-text">Painel administrativo Pôr do Sol · cadastro de empresa</p>
+  </div>
+</main>
