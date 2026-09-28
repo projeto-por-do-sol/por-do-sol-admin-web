@@ -13,6 +13,7 @@ export class Button {
   icon = input<string>()
   onClickButton = output<MouseEvent>()
   fullWidth = input<boolean>(false);
+  disabled = input<boolean>(false);
 
   iconPath: string = ''
 

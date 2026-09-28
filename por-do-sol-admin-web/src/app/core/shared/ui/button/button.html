@@ -1,4 +1,4 @@
-<button (click)="onClickButton.emit($event)" type="{{type()}}" [class]="'bg-primary text-creme text-base font-medium px-4 py-2 cursor-pointer rounded-2xl hover:bg-marrom flex gap-2 justify-center transition-all ' + (fullWidth() ? 'w-full' : 'w-full md:w-max')">
+<button (click)="onClickButton.emit($event)" type="{{type()}}" [disabled]="disabled()" [class]="'bg-primary text-creme text-base font-medium px-4 py-2 cursor-pointer rounded-2xl hover:bg-marrom flex gap-2 justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ' + (fullWidth() ? 'w-full' : 'w-full md:w-max')">
   @if(icon() && prefix()){
   <img [src]="iconPath" alt="">
   }
