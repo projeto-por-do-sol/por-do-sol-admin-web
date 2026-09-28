@@ -101,6 +101,19 @@ describe('PasswordRecovery', () => {
     expect(component.codeErrorMessage()).toContain('quatro caracteres')
   })
 
+  it('confirms the code when the form is submitted', () => {
+    component.code.splice(0, 4, '1', '2', '3', '4')
+    fixture.detectChanges()
+
+    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement
+    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement
+    expect(button).toBeTruthy()
+
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+
+    expect(component.codeSuccessMessage()).toBe('Código confirmado.')
+  })
+
   it('shows an error when the code is incorrect', () => {
     component.code.splice(0, 4, 'A', 'B', 'C', 'D')
 

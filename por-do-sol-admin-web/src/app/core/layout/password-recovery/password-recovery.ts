@@ -1,10 +1,11 @@
 import { Component, computed, DestroyRef, ElementRef, inject, signal, viewChildren } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 import { ReturnLink } from '../../shared/ui/return-link/return-link'
 import { Button } from '../../shared/ui/button/button';
 
 @Component({
   selector: 'app-password-recovery',
-  imports: [ReturnLink, Button],
+  imports: [FormsModule, ReturnLink, Button],
   templateUrl: './password-recovery.html'
 })
 export class PasswordRecovery {
