@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { provideRouter } from '@angular/router'
+import { provideRouter, Router } from '@angular/router'
 
 import { PasswordRecovery } from './password-recovery'
 
@@ -102,7 +102,9 @@ describe('PasswordRecovery', () => {
   })
 
   it('confirms the code when the form is submitted', () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl')
     component.code.splice(0, 4, '1', '2', '3', '4')
+    fixture.changeDetectorRef.markForCheck()
     fixture.detectChanges()
 
     const form = fixture.nativeElement.querySelector('form') as HTMLFormElement
@@ -112,6 +114,7 @@ describe('PasswordRecovery', () => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
 
     expect(component.codeSuccessMessage()).toBe('Código confirmado.')
+    expect(navigate).toHaveBeenCalledWith('/passwordReset')
   })
 
   it('shows an error when the code is incorrect', () => {

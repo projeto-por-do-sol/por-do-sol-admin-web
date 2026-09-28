@@ -2,6 +2,7 @@ import { Component, computed, DestroyRef, ElementRef, inject, signal, viewChildr
 import { FormsModule } from '@angular/forms'
 import { ReturnLink } from '../../shared/ui/return-link/return-link'
 import { Button } from '../../shared/ui/button/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-password-recovery',
@@ -11,6 +12,7 @@ import { Button } from '../../shared/ui/button/button';
 export class PasswordRecovery {
   private readonly storageKey = 'password-recovery-state-v2'
   private readonly destroyRef = inject(DestroyRef)
+  private readonly router = inject(Router)
   readonly code = ['', '', '', '']
   readonly codeErrorMessage = signal('')
   readonly codeSuccessMessage = signal('')
@@ -93,6 +95,7 @@ export class PasswordRecovery {
     this.saveState()
     this.codeErrorMessage.set('')
     this.codeSuccessMessage.set('Código confirmado.')
+    this.router.navigateByUrl('/passwordReset')
   }
 
   requestNewCode(): void {

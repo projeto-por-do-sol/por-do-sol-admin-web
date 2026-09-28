@@ -1,4 +1,4 @@
-import { Component, input, Optional, Self } from '@angular/core';
+import { Component, ElementRef, input, Optional, Self, viewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { formatCnpj } from '../../../utils/cnpj';
 
@@ -18,6 +18,15 @@ export class Input implements ControlValueAccessor {
   isObrigatory = input<boolean>(true)
   mask = input<'cnpj' | 'phone' | null>(null)
   viewPassword = false
+  private readonly inputElement = viewChild<ElementRef<HTMLInputElement>>('inputElement')
+
+  get inputId(): string {
+    return `input-${this.id()}`
+  }
+
+  focusInput(): void {
+    this.inputElement()?.nativeElement.focus()
+  }
 
   value: string = ""
   disabled = false

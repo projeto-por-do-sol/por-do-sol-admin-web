@@ -1,4 +1,4 @@
-<main class="relative min-h-dvh overflow-x-clip px-4 pt-10 pb-5 md:px-8 md:pt-14">
+<main class="relative min-h-dvh overflow-x-clip px-4 pt-10 pb-5 md:px-8 md:pt-8">
   <div class="pointer-events-none fixed right-0 bottom-0 left-0 z-0" aria-hidden="true">
     <svg class="block h-36 w-full md:h-52 xl:h-72" viewBox="0 0 1440 260" preserveAspectRatio="none">
       <path d="M0,90 C240,165 460,35 720,105 C990,175 1200,45 1440,95 L1440,260 L0,260 Z" fill="var(--color-tertiary)" opacity=".12" />
@@ -6,8 +6,9 @@
     </svg>
   </div>
 
+  <app-return-link text="Voltar para o login" pageToReturn="/login" class="relative z-10 hidden md:block mb-4"></app-return-link>
+
   <div class="relative z-1 mx-auto w-full max-w-7xl">
-    <app-return-link text="Voltar para o login" pageToReturn="/login"></app-return-link>
 
     <app-section-title
       lable="Primeiro acesso"
