@@ -3,7 +3,7 @@
   <app-section-title [lable]="'Quiosques'" [section]="'Cadastrar novo quiosque'" [text]="'Adicione um novo quiosque à rede, defina sua localização e horário de funcionamento, e crie o acesso do gestor responsável ao painel.'"></app-section-title>
   <div class="grid lg:grid-cols-5 lg:gap-8 relative items-start">
     <app-kiosk-register-form #kioskForm class="col-span-3" (onClickCancelButton)="goToHome()"></app-kiosk-register-form>
-    <app-card-preview class="col-span-2 sticky top-8" [contextLabel]="'rede'" [name]="kioskForm.previewName()" [items]="kioskForm.previewItems()" [lastText]="kioskForm.previewLastText">></app-card-preview>
+    <app-card-preview class="col-span-2 sticky top-8" [contextLabel]="'rede'" [name]="kioskForm.previewName()" [items]="kioskForm.previewItems()" [lastText]="kioskForm.previewLastText" [imageUrl]="kioskForm.imagePreview()"></app-card-preview>
   </div>
 
   <p class="text-input-placeholder font-medium text-base mt-12 mb-4">Painel administrativo Pôr do Sol · cadastro de quiosques</p>

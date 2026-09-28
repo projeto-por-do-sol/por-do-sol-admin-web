@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { KioskRegisterForm } from "../../feature/kiosk-register-form/kiosk-register-form";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { Router } from '@angular/router';
@@ -18,5 +18,7 @@ export class KioskRegisterPage {
   goToHome() {
     this.router.navigate(['/home'])
   }
+
+
 
 }

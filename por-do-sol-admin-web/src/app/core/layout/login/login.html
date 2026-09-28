@@ -3,10 +3,10 @@
 
 <main class="relative flex h-full w-full md:justify-center md:items-center">
   <!-- card -->
-  <div class="bg-surface w-full h-full md:max-w-120 md:h-max md:rounded-2xl overflow-auto z-10 shadow-2xl" >
+  <div class="bg-surface w-full h-full md:max-w-120 md:h-max md:rounded-2xl overflow-auto z-10 shadow-2xl">
 
     <!-- Imagem -->
-    <div class="bg-primary flex justify-center p-5"><img src="./assets/images/logo.png" alt="Apollo logo" class="w-35 drop-shadow-2xl"></div>
+    <div class="bg-linear-to-br from-primary to-tertiary flex justify-center p-5"><img src="./assets/images/logo.png" alt="Apollo logo" class="w-35 drop-shadow-2xl"></div>
 
     <!-- Informações -->
     <div class="p-8">
@@ -24,7 +24,7 @@
             <label for="check" class="text-outline text-base cursor-pointer">Lembrar de mim</label>
           </div>
 
-          <a href="" class="text-base text-primary hover:underline">Esqueci minha senha</a>
+          <a routerLink="/passwordRecovery" class="text-base text-primary hover:underline">Esqueci minha senha</a>
         </div>
 
         <app-button labelButton="Entrar" icon="arrow-right" (onClickButton)="login()" [fullWidth]="true"></app-button>

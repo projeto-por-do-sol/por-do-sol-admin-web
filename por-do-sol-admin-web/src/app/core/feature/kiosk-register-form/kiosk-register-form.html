@@ -3,12 +3,12 @@
     <!-- Dados do quiosque -->
     <div class="sectionCard">
       <h2>Dados do quiosque</h2>
-      <p class="text-tertiary">Input para adicionar o banner do quiosque</p>
+      <app-image-input label="Banner do Quiosque" formControlName="profileImage" (imageSelected)="imagePreview.set($event)"></app-image-input>
       <app-input [id]="'kioskName'" [label]="'Nome do quiosque'" [name]="'kioskName'" formControlName="kioskName" [placeholder]="'Ex.: Cantinho da Maré'"></app-input>
 
       <div class="grid md:flex gap-10">
         <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" type="e-mail" formControlName="kioskEmail" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
-        <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" formControlName="kioskPhone" [placeholder]="'(11) 99999-9999'" class="flex-1"></app-input>
+        <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" formControlName="kioskPhone" [placeholder]="'(11) 99999-9999'" class="flex-1" mask="phone"></app-input>
       </div>
     </div>
 
@@ -42,7 +42,7 @@
       <p class="text-tertiary">Colocar um select com os funcionários já cadastrados (talvez)</p>
       <app-input [id]="'managerName'" [label]="'Nome completo'" [name]="'managerName'" formControlName="managerName" [placeholder]="'Ex.: Andedigmon da Silva'"></app-input>
       <app-input [id]="'managerEmail'" [label]="'E-mail'" [name]="'managerEmail'" formControlName="managerEmail" [placeholder]="'gerente@pordosol.com.br'" class="w-full"></app-input>
-      <app-input [id]="'managerPhone'" [label]="'Telefone'" [name]="'managerPhone'" formControlName="managerPhone" [placeholder]="'(11) 99999-9999'" class="w-full"></app-input>
+      <app-input [id]="'managerPhone'" [label]="'Telefone'" [name]="'managerPhone'" formControlName="managerPhone" [placeholder]="'(11) 99999-9999'" class="w-full" mask="phone"></app-input>
 
     </div>
 

@@ -1,4 +1,4 @@
-import { Component, computed, output, Signal } from '@angular/core';
+import { Component, computed, output, signal, Signal } from '@angular/core';
 import { Input } from "../../shared/ui/input/input";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
 import { Button } from "../../shared/ui/button/button";
@@ -6,10 +6,11 @@ import { ChipMultiChoice } from "../../shared/ui/chip-multi-choice/chip-multi-ch
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
+import { ImageInput } from '../../shared/ui/image-input/image-input';
 
 @Component({
   selector: 'app-kiosk-register-form',
-  imports: [Input, CancelButton, Button, ChipMultiChoice, ReactiveFormsModule],
+  imports: [Input, CancelButton, Button, ChipMultiChoice, ReactiveFormsModule, ImageInput],
   templateUrl: './kiosk-register-form.html',
   styleUrl: './kiosk-register-form.css',
 })
@@ -18,7 +19,7 @@ export class KioskRegisterForm {
   daysOpen: string[] = []
   onClickCancelButton = output<void>()
 
-
+  readonly imagePreview = signal<string | null>(null);
 
   previewItems = computed<PreviewItem[]>(() => {
     const d = this.formValue();
@@ -32,8 +33,6 @@ export class KioskRegisterForm {
   previewName = computed(() => this.formValue().kioskName || 'Novo quiosque')
 
   previewLastText = "Esse será o card exibido na aba <span class='text-outline'>Quiosques</span> do painel administrativo assim que o cadastro for concluído."
-
-
 
   formFields: FormGroup
   formValue: Signal<any>
@@ -55,6 +54,7 @@ export class KioskRegisterForm {
       managerName: new FormControl("", Validators.required),
       managerEmail: new FormControl("", [Validators.required, Validators.email]),
       managerPhone: new FormControl("", Validators.required),
+      profileImage: new FormControl<File | null>(null),
     })
 
     this.formValue = toSignal(this.formFields.valueChanges, {
