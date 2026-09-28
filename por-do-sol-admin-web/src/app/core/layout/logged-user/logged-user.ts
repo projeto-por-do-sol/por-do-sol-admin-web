@@ -12,6 +12,7 @@ import { Sidebar } from '../sidebar/sidebar';
 })
 export class LoggedUser {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLElement>;
+  isRegisterMenuOpen = false;
 
   constructor(private readonly router: Router) {
     this.router.events

@@ -1,0 +1,4 @@
+.register-menu-open > aside,
+.register-menu-open > main {
+  filter: blur(1px);
+}

@@ -1,4 +1,4 @@
-import { Component, inject, Signal } from '@angular/core';
+import { Component, inject, output, Signal } from '@angular/core';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { MatSelectModule } from '@angular/material/select';
 import { User } from '../../models/user-model';
@@ -20,6 +20,7 @@ export class Sidebar {
   readonly selectionService = inject(KioskSelectionService);
   selectedKiosk: string = ''
   viewModalRegister: boolean = false
+  readonly registerMenuOpenChange = output<boolean>()
 
   readonly registerMenuPositions: ConnectedPosition[] = [
     {
@@ -73,6 +74,7 @@ export class Sidebar {
 
   setViewModal() {
     this.viewModalRegister = !this.viewModalRegister
+    this.registerMenuOpenChange.emit(this.viewModalRegister)
   }
 
   goToKioskRegister() {
