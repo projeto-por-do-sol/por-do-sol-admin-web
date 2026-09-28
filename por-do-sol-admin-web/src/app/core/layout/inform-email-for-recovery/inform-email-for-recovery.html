@@ -1,2 +1,30 @@
-<p>inform-email-for-recovery works!</p>
-<a routerLink="/passwordRecovery">a</a>
+<div class="min-h-dvh md:p-8 flex flex-col">
+  <app-return-link text="Voltar para login" pageToReturn="/login" class="z-10 hidden md:block mb-4"></app-return-link>
+
+  <main class="z-10 flex-1 w-full flex justify-center items-center">
+    <div class="bg-surface w-full min-w-0 min-h-dvh md:min-h-0 md:max-w-130 md:h-max md:rounded-2xl overflow-hidden shadow-2xl">
+      <div class="bg-linear-to-br from-primary to-tertiary flex items-center justify-center p-5 md:h-50">
+        <img src="assets/images/logo.png" alt="Logo Apollo" class="w-35 md:w-40 rounded-full shadow-2xl">
+      </div>
+
+      <div class="p-8 md:p-6 grid min-w-0">
+        <app-return-link text="Voltar para login" pageToReturn="/login" class="block md:hidden mb-5"></app-return-link>
+        <h1 class="text-outline text-2xl font-bold">Recuperar senha</h1>
+        <p class="text-outline text-lg font-medium mb-3">INFORME SEU E-MAIL</p>
+        <p class="text-sub-text text-base mb-6">Digite o e-mail da sua conta para continuar com a recuperação de senha.</p>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <app-input id="recovery-email" name="email" label="E-mail" type="email" placeholder="seu@email.com" formControlName="email"></app-input>
+          <app-button labelButton="Continuar" icon="arrow-right" type="submit" [fullWidth]="true" class="block mt-7"></app-button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div class="absolute bottom-0 left-0 z-0 w-full pointer-events-none" aria-hidden="true">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,90 C240,140 480,60 720,95 C960,130 1200,55 1440,90 L1440,200 L0,200 Z" fill="#CB6436" opacity="0.1"></path>
+      <path d="M0,120 C240,160 480,100 720,130 C960,160 1200,95 1440,125 L1440,200 L0,200 Z" fill="#C0420a" opacity="0.2"></path>
+    </svg>
+  </div>
+</div>

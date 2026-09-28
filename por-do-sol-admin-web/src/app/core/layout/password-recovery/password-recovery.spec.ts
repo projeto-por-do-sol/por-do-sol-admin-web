@@ -116,10 +116,12 @@ describe('PasswordRecovery', () => {
     expect(component.remainingAttempts()).toBe(5)
 
     component.code.splice(0, 4, 'A', 'B', 'C', 'D')
-    for (let attempt = 0; attempt < 5; attempt++) component.confirmCode()
+    for (let attempt = 0; attempt < 4; attempt++) component.confirmCode()
+    component.now.set(Date.now() - 2_000)
+    component.confirmCode()
 
     expect(component.isLocked()).toBe(true)
-    expect(component.lockSeconds()).toBeGreaterThan(0)
+    expect(component.lockSeconds()).toBe(600)
     expect(component.remainingAttempts()).toBe(0)
 
     component.code.splice(0, 4, '1', '2', '3', '4')
@@ -128,12 +130,13 @@ describe('PasswordRecovery', () => {
   })
 
   it('starts another one-minute countdown after a simulated resend request', () => {
-    expect(component.resendSeconds()).toBeGreaterThan(0)
+    expect(component.resendSeconds()).toBe(60)
     component.resendAvailableAt.set(0)
+    component.now.set(Date.now() - 2_000)
 
     component.requestNewCode()
 
-    expect(component.resendSeconds()).toBeGreaterThan(0)
+    expect(component.resendSeconds()).toBe(60)
     expect(component.resendMessage()).toContain('simulada')
     expect(component.remainingRequests()).toBe(4)
     expect(component.remainingAttempts()).toBe(5)
@@ -147,7 +150,7 @@ describe('PasswordRecovery', () => {
 
     expect(component.remainingRequests()).toBe(0)
     expect(component.areRequestsLocked()).toBe(true)
-    expect(component.requestLockSeconds()).toBeGreaterThan(0)
+    expect(component.requestLockSeconds()).toBe(600)
     expect(component.remainingAttempts()).toBe(5)
     expect(component.isLocked()).toBe(false)
     component.resendAvailableAt.set(0)

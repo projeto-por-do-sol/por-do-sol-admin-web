@@ -19,7 +19,7 @@ export class PasswordRecovery {
   readonly lockedUntil = signal(0)
   readonly usedRequests = signal(0)
   readonly requestsLockedUntil = signal(0)
-  readonly resendAvailableAt = signal(Date.now() + 60_000)
+  readonly resendAvailableAt = signal(this.now() + 60_000)
   readonly lockSeconds = computed(() => Math.max(0, Math.ceil((this.lockedUntil() - this.now()) / 1000)))
   readonly requestLockSeconds = computed(() => Math.max(0, Math.ceil((this.requestsLockedUntil() - this.now()) / 1000)))
   readonly resendSeconds = computed(() => Math.max(0, Math.ceil((this.resendAvailableAt() - this.now()) / 1000)))
@@ -98,9 +98,11 @@ export class PasswordRecovery {
     if (this.areRequestsLocked() || this.resendSeconds() > 0) return
 
     // TODO: Integrar o envio real por e-mail quando houver um serviço de recuperação.
+    const currentTime = Date.now()
+    this.now.set(currentTime)
     this.resendMessage.set('Solicitação simulada: o envio por e-mail ainda não está configurado.')
-    this.resendAvailableAt.set(Date.now() + 60_000)
-    this.consumeRequest()
+    this.resendAvailableAt.set(currentTime + 60_000)
+    this.consumeRequest(currentTime)
   }
 
   formatTime(seconds: number): string {
@@ -138,15 +140,19 @@ export class PasswordRecovery {
   private consumeAttempt(): number {
     const used = this.usedAttempts() + 1
     this.usedAttempts.set(used)
-    if (used >= 5) this.lockedUntil.set(Date.now() + 10 * 60_000)
+    if (used >= 5) {
+      const currentTime = Date.now()
+      this.now.set(currentTime)
+      this.lockedUntil.set(currentTime + 10 * 60_000)
+    }
     this.saveState()
     return Math.max(0, 5 - used)
   }
 
-  private consumeRequest(): void {
+  private consumeRequest(currentTime: number): void {
     const used = this.usedRequests() + 1
     this.usedRequests.set(used)
-    if (used >= 5) this.requestsLockedUntil.set(Date.now() + 10 * 60_000)
+    if (used >= 5) this.requestsLockedUntil.set(currentTime + 10 * 60_000)
     this.saveState()
   }
 
