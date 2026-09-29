@@ -18,10 +18,11 @@ import { Statistics } from "../../feature/statistics/statistics";
 import { Overview } from "../../feature/overview/overview";
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
 import { SectionObserverDirective } from '../../utils/section-observer-directive';
+import { KioskItems } from '../../feature/kiosk-items/kiosk-items';
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team, Statistics, Overview, SectionObserverDirective],
+  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

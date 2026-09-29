@@ -1,5 +1,6 @@
 import { Employee } from "../models/employee";
 import { KioskModel } from "../models/kiosk-model";
+import { KioskItem } from "../models/kiosk-item";
 import { KpiModel } from "../models/kpi-model";
 import { Order } from "../models/order";
 import { User } from "../models/user-model";
@@ -87,6 +88,88 @@ export const MOCK_KIOSKS: KioskModel[] = [
     averageTime: 14,
     invoicing: 980,
     categories: ["Sorvetes", "Petiscos", "Água de coco"]
+  },
+];
+
+export const MOCK_KIOSK_ITEMS: KioskItem[] = [
+  {
+    id: 'item1', 
+    kioskId: 'kiosk_01', 
+    kioskName: 'Quiosque teste',
+    name: 'Porção de Peixe Frito', 
+    category: 'Frutos do mar',
+    description: 'Peixe fresco empanado e frito, servido com limão, molho da casa e uma porção generosa de batatas crocantes.',  
+    imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=240&h=240&fit=crop', 
+    value: 42,
+  },
+  {
+    id: 'item2', 
+    kioskId: 'kiosk_01', 
+    kioskName: 'Quiosque teste',
+    name: 'Casquinha de Siri', 
+    category: 'Frutos do mar',
+    description: 'Carne de siri temperada com ervas frescas, gratinada e servida na casquinha com farofa.',
+    imageUrl: 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=240&h=240&fit=crop', 
+    value: 25,
+  },
+  {
+    id: 'item3', 
+    kioskId: 'kiosk_02', 
+    kioskName: 'Praia Quiosque',
+    name: 'Pastel de Carne com Queijo', 
+    category: 'Lanches',
+    description: 'Pastel frito na hora, com recheio de carne moída bem temperada e queijo derretido.',
+    imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=240&h=240&fit=crop', value: 14,
+  },
+  {
+    id: 'item4', 
+    kioskId: 'kiosk_02', 
+    kioskName: 'Praia Quiosque',
+    name: 'Caipirinha de Limão', 
+    category: 'Caipirinhas',
+    description: 'Cachaça, limão fresco, açúcar e gelo, preparada na hora para acompanhar o dia na praia.',
+    imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=240&h=240&fit=crop', 
+    value: 22,
+  },
+  {
+    id: 'item5', 
+    kioskId: 'kiosk_03', 
+    kioskName: 'Santos Quiosque',
+    name: 'Açaí 500ml com Leite em Pó', 
+    category: 'Açaí',
+    description: 'Açaí cremoso servido com leite em pó e opções de banana e granola para complementar.',
+    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=240&h=240&fit=crop', 
+    value: 28.9,
+  },
+  {
+    id: 'item6', 
+    kioskId: 'kiosk_03', 
+    kioskName: 'Santos Quiosque',
+    name: 'Sanduíche Natural de Frango', 
+    category: 'Lanches',
+    description: 'Pão integral com frango desfiado, alface, tomate e um leve creme de ervas.',
+    imageUrl: 'https://images.unsplash.com/photo-1553909489-cd47e0ef937f?w=240&h=240&fit=crop', 
+    value: 19.5,
+  },
+  {
+    id: 'item7', 
+    kioskId: 'kiosk_04', 
+    kioskName: 'Beira Mar Quiosque',
+    name: 'Água de Coco Gelada', 
+    category: 'Água de coco',
+    description: 'Água de coco natural, servida bem gelada no próprio coco.',
+    imageUrl: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=240&h=240&fit=crop', 
+    value: 15,
+  },
+  {
+    id: 'item8', 
+    kioskId: 'kiosk_04', 
+    kioskName: 'Beira Mar Quiosque',
+    name: 'Milho Verde com Manteiga', 
+    category: 'Petiscos',
+    description: 'Espiga de milho cozida na hora, finalizada com manteiga e uma pitada de sal.',
+    imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=240&h=240&fit=crop', 
+    value: 8,
   },
 ];
 

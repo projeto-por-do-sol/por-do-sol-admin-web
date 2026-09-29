@@ -44,10 +44,17 @@
   font-weight: 400;
 }
 
+.item-image {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  margin: 0.5rem 0;
+}
+
 /* Paginação */
 
 mat-paginator {
   width: 100%;
   border-top: 1px solid var(--color-fundo);
 }
-

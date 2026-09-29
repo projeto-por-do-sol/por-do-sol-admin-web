@@ -58,7 +58,6 @@ export class Table implements AfterViewInit {
 export interface TableColumn<T = any> {
   key: keyof T & string
   header: string
-  type?: 'avatar' | 'statusEmployee' | 'statusOrder' | 'list'
+  type?: 'avatar' | 'statusEmployee' | 'statusOrder' | 'list' | 'image'
   formatter?: (item: T) => string
 }
-

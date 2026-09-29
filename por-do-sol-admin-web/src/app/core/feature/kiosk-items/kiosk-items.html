@@ -1,0 +1,26 @@
+<app-section-title
+  [lable]="'Cardápio'"
+  [section]="'Itens dos quiosques'"
+  [text]="'Confira os itens cadastrados no cardápio de cada quiosque.'">
+</app-section-title>
+
+<ng-template #itemCard let-item>
+  <div class="cardTemplate">
+    <div class="item-card-header">
+      <img class="item-card-image" [src]="item.imageUrl" [alt]="item.name" loading="lazy">
+      <div class="item-card-heading">
+        <p class="font-semibold text-lg">{{ item.name }}</p>
+        <p class="text-sub-text">{{ item.category }}</p>
+        <p class="text-sub-text">{{ item.kioskName }}</p>
+      </div>
+    </div>
+    <p class="item-card-description">{{ shortDescription(item.description) }}</p>
+    <p class="font-semibold text-primary">{{ formatValue(item.value) }}</p>
+  </div>
+</ng-template>
+
+<app-table-or-card
+  [columns]="itemColumns"
+  [ELEMENT_DATA]="kioskItemService.items()"
+  [cardTemplate]="itemCard">
+</app-table-or-card>

@@ -87,6 +87,10 @@ export class Sidebar {
     this.setViewModal()
   }
 
+  scrollToSection(sectionId: string) {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   logout() {
     this.userService.logout()
     this.router.navigateByUrl('/login')
