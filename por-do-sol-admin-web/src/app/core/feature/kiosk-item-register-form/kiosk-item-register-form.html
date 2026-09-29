@@ -1,0 +1,101 @@
+<div class="bg-surface p-8 rounded-2xl border border-border">
+  <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
+    <div class="sectionCard">
+      <h2>Dados do item</h2>
+      <app-image-input label="Imagem do item" formControlName="image" (imageSelected)="imagePreview.set($event)"></app-image-input>
+      <app-input id="itemName" label="Nome do item" name="name" formControlName="name" placeholder="Ex.: Porção de peixe frito"></app-input>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <app-input id="itemCategory" label="Categoria" name="category" formControlName="category" placeholder="Ex.: Frutos do mar"></app-input>
+        <div class="grid content-start gap-2">
+          <app-select selectTitle="Quiosque" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
+          @if (formFields.controls.kioskId.invalid && formFields.controls.kioskId.touched) {
+            <span class="text-error text-sm">Selecione um quiosque</span>
+          }
+        </div>
+      </div>
+
+      <div class="grid gap-2">
+        <label for="itemDescription" class="font-semibold text-base">Descrição <span class="text-primary">*</span></label>
+        <textarea id="itemDescription" formControlName="description" rows="4" placeholder="Descreva o item do cardápio" class="item-field resize-y" [class.border-error]="formFields.controls.description.invalid && formFields.controls.description.touched"></textarea>
+        @if (formFields.controls.description.invalid && formFields.controls.description.touched) {
+          <span class="text-error text-sm">Campo obrigatório</span>
+        }
+      </div>
+
+      <div class="w-full">
+        <app-input id="itemValue" label="Valor (R$)" name="value" mask="currency" formControlName="value" placeholder="0,00"></app-input>
+        @if (formFields.controls.value.hasError('min') && formFields.controls.value.touched) {
+          <span class="text-error text-sm">Informe um valor maior que zero</span>
+        }
+      </div>
+    </div>
+
+    <div class="sectionCard">
+      <h2>Ingredientes</h2>
+      <p class="text-sub-text">Adicione os ingredientes que compõem o item.</p>
+      <div class="grid sm:grid-cols-[minmax(0,1fr)_14rem] gap-x-4 gap-y-2 items-end">
+        <app-input id="ingredientName" label="Ingrediente" name="ingredientName" [formControl]="ingredientDraft" placeholder="Ex.: Queijo coalho"></app-input>
+        <app-button [labelButton]="editingIngredientIndex() === null ? 'Adicionar ingrediente' : 'Salvar ingrediente'" [fullWidth]="true" (onClickButton)="saveIngredient()"></app-button>
+        @if (editingIngredientIndex() !== null) {
+          <button type="button" class="item-text-button text-center sm:col-start-2" (click)="cancelIngredientEdit()">Cancelar edição</button>
+        }
+      </div>
+
+      @if (ingredients().length) {
+        <ul class="item-list" aria-label="Ingredientes adicionados">
+          @for (ingredient of ingredients(); track $index) {
+            <li class="item-list-row">
+              <span class="font-medium">{{ ingredient }}</span>
+              <div class="item-list-actions">
+                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Editar ' + ingredient" (click)="editIngredient($index)"><span class="item-action-icon item-action-edit" aria-hidden="true"></span></button>
+                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Remover ' + ingredient" (click)="removeIngredient($index)"><span class="item-action-icon item-action-delete" aria-hidden="true"></span></button>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-sub-text">Nenhum ingrediente adicionado.</p>
+      }
+    </div>
+
+    <div class="sectionCard">
+      <h2>Complementos</h2>
+      <p class="text-sub-text">Adicione opções extras e informe o preço de cada uma.</p>
+      <div class="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_16rem] md:items-end gap-x-4 gap-y-8 md:gap-y-2">
+        <app-input class="min-w-0" id="complementName" label="Nome do complemento" name="complementName" [isObrigatory]="false" [formControl]="complementNameDraft" placeholder="Ex.: Queijo extra"></app-input>
+        <div class="min-w-0">
+          <app-input id="complementValue" label="Valor (R$)" name="complementValue" mask="currency" [isObrigatory]="false" [formControl]="complementValueDraft" placeholder="0,00"></app-input>
+          @if (complementValueDraft.hasError('min') && complementValueDraft.touched) {
+            <span class="text-error text-sm">Informe um valor maior que zero</span>
+          }
+        </div>
+        <app-button class="whitespace-nowrap" [labelButton]="editingComplementIndex() === null ? 'Adicionar complemento' : 'Salvar complemento'" [fullWidth]="true" (onClickButton)="saveComplement()"></app-button>
+        @if (editingComplementIndex() !== null) {
+          <button type="button" class="item-text-button text-center md:col-start-3" (click)="cancelComplementEdit()">Cancelar edição</button>
+        }
+      </div>
+
+      @if (complements().length) {
+        <ul class="item-list" aria-label="Complementos adicionados">
+          @for (complement of complements(); track $index) {
+            <li class="item-list-row">
+              <span class="font-medium">{{ complement.name }} <span class="text-sub-text">· {{ formatCurrency(complement.value) }}</span></span>
+              <div class="item-list-actions">
+                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Editar ' + complement.name" (click)="editComplement($index)"><span class="item-action-icon item-action-edit" aria-hidden="true"></span></button>
+                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Remover ' + complement.name" (click)="removeComplement($index)"><span class="item-action-icon item-action-delete" aria-hidden="true"></span></button>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-sub-text">Nenhum complemento adicionado.</p>
+      }
+    </div>
+
+    <div class="grid md:flex md:justify-end gap-5">
+      <app-cancel-button (onClickButton)="onClickCancelButton.emit()"></app-cancel-button>
+      <app-button labelButton="Cadastrar item" icon="add" type="submit"></app-button>
+    </div>
+  </form>
+</div>

@@ -13,10 +13,11 @@ export class Input implements ControlValueAccessor {
   id = input.required<string>()
   label = input.required<string>()
   type = input<string>('text')
+  step = input<string>()
   name = input.required<string>()
   placeholder = input<string>()
   isObrigatory = input<boolean>(true)
-  mask = input<'cnpj' | 'phone' | null>(null)
+  mask = input<'cnpj' | 'phone' | 'currency' | null>(null)
   viewPassword = false
   private readonly inputElement = viewChild<ElementRef<HTMLInputElement>>('inputElement')
 
@@ -78,6 +79,8 @@ export class Input implements ControlValueAccessor {
       this.value = formatCnpj(value)
     } else if (this.mask() === 'phone') {
       this.value = this.formatPhone(value)
+    } else if (this.mask() === 'currency') {
+      this.value = this.formatCurrency(value)
     } else {
       this.value = value
     }
@@ -95,6 +98,16 @@ export class Input implements ControlValueAccessor {
     const firstPart = phoneNumber.slice(0, separatorIndex)
     const lastPart = phoneNumber.slice(separatorIndex)
     return `(${areaCode}) ${firstPart}${lastPart ? `-${lastPart}` : ''}`
+  }
+
+  private formatCurrency(value: string): string {
+    const digits = value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 11)
+    if (!digits) return ''
+
+    return (Number(digits) / 100).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
   }
 
   handleBlur() {

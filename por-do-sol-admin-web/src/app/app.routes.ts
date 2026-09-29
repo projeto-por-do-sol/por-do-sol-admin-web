@@ -8,6 +8,7 @@ import { Login } from './core/layout/login/login';
 import { PasswordRecovery } from './core/layout/password-recovery/password-recovery';
 import { InformEmailForRecovery } from './core/layout/inform-email-for-recovery/inform-email-for-recovery';
 import { PasswordReset } from './core/layout/password-reset/password-reset';
+import { KioskItemRegisterPage } from './core/layout/kiosk-item-register-page/kiosk-item-register-page';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -23,6 +24,7 @@ export const routes: Routes = [
       { path: 'home', component: Home },
       { path: 'kioskRegister', component: KioskRegisterPage },
       { path: 'employeeRegister', component: EmployeeRegisterPage },
+      { path: 'itemRegister', component: KioskItemRegisterPage },
     ],
   },
   { path: '**', redirectTo: 'login' },

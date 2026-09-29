@@ -1,0 +1,11 @@
+<main class="m-8 relative">
+  <app-return-link text="Voltar para home"></app-return-link>
+  <app-section-title lable="Cardápio" section="Cadastrar novo item" text="Informe os dados do item, escolha o quiosque e defina o valor para adicioná-lo ao cardápio."></app-section-title>
+
+  <div class="grid grid-cols-1 lg:grid-cols-5 lg:gap-8 relative items-start">
+    <app-kiosk-item-register-form #itemForm class="min-w-0 lg:col-span-3" (onClickCancelButton)="goToHome()"></app-kiosk-item-register-form>
+    <app-card-preview class="min-w-0 lg:col-span-2 lg:sticky lg:top-8" contextLabel="aba Itens" [name]="itemForm.previewName()" [role]="itemForm.previewCategory()" [items]="itemForm.previewItems()" [imageUrl]="itemForm.imagePreview()" [showItemPlaceholder]="true" [lastText]="itemForm.previewLastText"></app-card-preview>
+  </div>
+
+  <p class="text-input-placeholder font-medium text-base mt-12 mb-4">Painel administrativo Pôr do Sol · cadastro de itens</p>
+</main>

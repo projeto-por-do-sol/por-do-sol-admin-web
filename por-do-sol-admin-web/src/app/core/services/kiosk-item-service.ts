@@ -14,4 +14,8 @@ export class KioskItemService {
       ? this._items().filter(item => item.kioskId === selectedKiosk.id)
       : this._items()
   })
+
+  addItem(item: KioskItem): void {
+    this._items.update(items => [...items, item])
+  }
 }

@@ -22,4 +22,18 @@ describe('Input', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('formats currency as the user types', () => {
+    fixture.componentRef.setInput('mask', 'currency');
+    fixture.detectChanges();
+
+    component.handleInput('1');
+    expect(component.value).toBe('0,01');
+
+    component.handleInput('12345678901');
+    expect(component.value).toBe('123.456.789,01');
+
+    component.handleInput('1.234,56');
+    expect(component.value).toBe('1.234,56');
+  });
 });

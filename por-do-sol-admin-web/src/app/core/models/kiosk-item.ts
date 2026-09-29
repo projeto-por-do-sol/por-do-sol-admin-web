@@ -1,3 +1,8 @@
+export interface KioskItemComplement {
+  name: string
+  value: number
+}
+
 export interface KioskItem {
   id: string
   kioskId: string
@@ -7,4 +12,6 @@ export interface KioskItem {
   description: string
   imageUrl: string
   value: number
+  ingredients?: string[]
+  complements?: KioskItemComplement[]
 }

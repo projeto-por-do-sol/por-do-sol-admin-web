@@ -5,7 +5,6 @@ import { Header } from "../header/header";
 import { CardKioskInfo } from "../../feature/card-kiosk-info/card-kiosk-info";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { NavigationService } from '../../services/navigation-service';
-import { Location } from '@angular/common';
 import { StackedColumn } from "../../shared/ui/charts/stacked-column/stacked-column";
 import { ZoomableTimeseries } from "../../shared/ui/charts/zoomable-timeseries/zoomable-timeseries";
 import { Donut } from "../../shared/ui/charts/donut/donut";
@@ -22,18 +21,14 @@ import { KioskItems } from '../../feature/kiosk-items/kiosk-items';
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, KpiCard, Header, CardKioskInfo, SectionTitle, StackedColumn, ZoomableTimeseries, Donut, RadialBar, KioskGrid, Table, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems],
+  imports: [MatButtonModule, Header, CardKioskInfo, KioskGrid, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class Home {
   readonly selectionService = inject(KioskSelectionService)
 
-  constructor(private navigation: NavigationService, private location: Location) {}
-
-  ngOnInit() {
-    this.location.replaceState('/')
-  }
+  constructor(private navigation: NavigationService) {}
 
   // ngAfterViewInit() {
   //   const sections = document.querySelectorAll('section');

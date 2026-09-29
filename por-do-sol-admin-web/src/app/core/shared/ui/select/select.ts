@@ -11,6 +11,8 @@ import { MatSelectChange } from '@angular/material/select';
 export class Select {
   selectTitle = input.required<string>();
   options = input.required<string[]>();
+  selectedValue = input<string>();
+  placeholder = input<string>('');
 
   valueChange = output<string>();
 

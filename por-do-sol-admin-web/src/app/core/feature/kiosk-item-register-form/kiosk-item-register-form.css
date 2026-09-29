@@ -1,0 +1,85 @@
+.item-field {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-fundo);
+  color: var(--color-input-text);
+  outline: none;
+}
+
+.item-field:focus {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+
+.item-field::placeholder {
+  color: var(--color-input-placeholder);
+}
+
+.item-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.item-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-fundo);
+}
+
+.item-list-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.item-icon-button {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.item-action-icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.item-action-edit {
+  mask-image: url('/assets/icons/edit.svg');
+}
+
+.item-action-delete {
+  mask-image: url('/assets/icons/delete_forever.svg');
+}
+
+.item-icon-button:focus-visible {
+  outline: 2px solid var(--color-outline);
+  outline-offset: 2px;
+}
+
+.item-text-button {
+  color: var(--color-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.item-text-button:hover {
+  text-decoration: underline;
+}

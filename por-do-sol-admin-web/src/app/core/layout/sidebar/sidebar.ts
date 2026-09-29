@@ -87,6 +87,11 @@ export class Sidebar {
     this.setViewModal()
   }
 
+  goToItemRegister() {
+    this.router.navigate(['itemRegister'])
+    this.setViewModal()
+  }
+
   scrollToSection(sectionId: string) {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }

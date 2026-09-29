@@ -22,6 +22,7 @@ export class CardPreview {
   items = input<PreviewItem[]>([])
   lastText = input<string>('')
   imageUrl = input<string | null>(null)
+  showItemPlaceholder = input<boolean>(false)
 
   getNameInitials(name: string) {
     return UserInitials.getNameInitials(name.toUpperCase())

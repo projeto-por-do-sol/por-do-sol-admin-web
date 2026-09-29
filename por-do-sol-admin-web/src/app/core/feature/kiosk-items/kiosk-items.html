@@ -1,7 +1,11 @@
 <app-section-title
   [lable]="'Cardápio'"
   [section]="'Itens dos quiosques'"
-  [text]="'Confira os itens cadastrados no cardápio de cada quiosque.'">
+  [text]="'Confira os itens cadastrados no cardápio de cada quiosque.'"
+  [labelButton]="'Adicionar item'"
+  [icon]="'add'"
+  [prefix]="true"
+  (onClickButton)="goToItemRegister()">
 </app-section-title>
 
 <ng-template #itemCard let-item>
