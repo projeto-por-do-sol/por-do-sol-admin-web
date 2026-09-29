@@ -274,3 +274,12 @@ h2 {
     left: -16px;
   }
 }
+
+.item-success-snackbar {
+  --mat-snack-bar-container-color: var(--color-surface);
+  --mat-snack-bar-supporting-text-color: var(--color-outline);
+}
+
+.item-success-snackbar .mdc-snackbar__label {
+  text-align: center;
+}

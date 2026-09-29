@@ -34,9 +34,9 @@
     <div class="sectionCard">
       <h2>Ingredientes</h2>
       <p class="text-sub-text">Adicione os ingredientes que compõem o item.</p>
-      <div class="grid sm:grid-cols-[minmax(0,1fr)_14rem] gap-x-4 gap-y-2 items-end">
+      <div class="grid sm:grid-cols-[minmax(0,1fr)_14rem] gap-x-4 gap-y-2 sm:items-start">
         <app-input id="ingredientName" label="Ingrediente" name="ingredientName" [formControl]="ingredientDraft" placeholder="Ex.: Queijo coalho"></app-input>
-        <app-button [labelButton]="editingIngredientIndex() === null ? 'Adicionar ingrediente' : 'Salvar ingrediente'" [fullWidth]="true" (onClickButton)="saveIngredient()"></app-button>
+        <app-button class="sm:mt-8" [labelButton]="editingIngredientIndex() === null ? 'Adicionar ingrediente' : 'Salvar ingrediente'" [fullWidth]="true" (onClickButton)="saveIngredient()"></app-button>
         @if (editingIngredientIndex() !== null) {
           <button type="button" class="item-text-button text-center sm:col-start-2" (click)="cancelIngredientEdit()">Cancelar edição</button>
         }
@@ -62,7 +62,7 @@
     <div class="sectionCard">
       <h2>Complementos</h2>
       <p class="text-sub-text">Adicione opções extras e informe o preço de cada uma.</p>
-      <div class="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_16rem] md:items-end gap-x-4 gap-y-8 md:gap-y-2">
+      <div class="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_16rem] md:items-start gap-x-4 gap-y-8 md:gap-y-2">
         <app-input class="min-w-0" id="complementName" label="Nome do complemento" name="complementName" [isObrigatory]="false" [formControl]="complementNameDraft" placeholder="Ex.: Queijo extra"></app-input>
         <div class="min-w-0">
           <app-input id="complementValue" label="Valor (R$)" name="complementValue" mask="currency" [isObrigatory]="false" [formControl]="complementValueDraft" placeholder="0,00"></app-input>
@@ -70,7 +70,7 @@
             <span class="text-error text-sm">Informe um valor maior que zero</span>
           }
         </div>
-        <app-button class="whitespace-nowrap" [labelButton]="editingComplementIndex() === null ? 'Adicionar complemento' : 'Salvar complemento'" [fullWidth]="true" (onClickButton)="saveComplement()"></app-button>
+        <app-button class="whitespace-nowrap md:mt-8" [labelButton]="editingComplementIndex() === null ? 'Adicionar complemento' : 'Salvar complemento'" [fullWidth]="true" (onClickButton)="saveComplement()"></app-button>
         @if (editingComplementIndex() !== null) {
           <button type="button" class="item-text-button text-center md:col-start-3" (click)="cancelComplementEdit()">Cancelar edição</button>
         }

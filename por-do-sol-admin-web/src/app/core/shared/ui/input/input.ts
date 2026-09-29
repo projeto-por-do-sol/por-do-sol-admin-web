@@ -50,6 +50,7 @@ export class Input implements ControlValueAccessor {
     if (!control.errors) return null
 
     if (control.errors['required']) return 'Campo obrigatório'
+    if (control.errors['duplicate']) return 'Este nome já foi adicionado'
     if (control.errors['email']) return 'E-mail inválido'
     if (control.errors['cnpj']) return 'CNPJ inválido'
     if (control.errors['minlength']) return `Mínimo de ${control.errors['minlength'].requiredLength} caracteres`

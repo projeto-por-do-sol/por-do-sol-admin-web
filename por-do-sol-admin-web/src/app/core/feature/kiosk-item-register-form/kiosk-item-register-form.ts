@@ -12,10 +12,11 @@ import { CancelButton } from '../../shared/ui/cancel-button/cancel-button';
 import { Button } from '../../shared/ui/button/button';
 import { Select } from '../../shared/ui/select/select';
 import { KioskItemComplement } from '../../models/kiosk-item';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-kiosk-item-register-form',
-  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select],
+  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatSnackBarModule],
   templateUrl: './kiosk-item-register-form.html',
   styleUrl: './kiosk-item-register-form.css',
 })
@@ -24,6 +25,7 @@ export class KioskItemRegisterForm {
   private readonly selectionService = inject(KioskSelectionService)
   private readonly itemService = inject(KioskItemService)
   private readonly router = inject(Router)
+  private readonly snackBar = inject(MatSnackBar)
 
   readonly kiosks = this.kioskService.kiosks
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
@@ -87,8 +89,19 @@ export class KioskItemRegisterForm {
     return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
   }
 
-  saveIngredient(): boolean {
-    const name = this.ingredientDraft.value.trim()
+  private normalizeName(name: string): string {
+    return name.trim().replace(/\s+/g, ' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR')
+  }
+
+  private showSuccess(message: string): void {
+    this.snackBar.open(message, undefined, {
+      duration: 3000,
+      panelClass: 'item-success-snackbar',
+    })
+  }
+
+  saveIngredient(showFeedback = true): boolean {
+    const name = this.ingredientDraft.value.trim().replace(/\s+/g, ' ')
     if (!name) {
       this.ingredientDraft.setErrors({ required: true })
       this.ingredientDraft.markAsTouched()
@@ -96,8 +109,15 @@ export class KioskItemRegisterForm {
     }
 
     const index = this.editingIngredientIndex()
+    if (this.ingredients().some((item, itemIndex) => itemIndex !== index && this.normalizeName(item) === this.normalizeName(name))) {
+      this.ingredientDraft.setErrors({ duplicate: true })
+      this.ingredientDraft.markAsTouched()
+      return false
+    }
+
     if (index === null) {
       this.ingredients.update(items => [...items, name])
+      if (showFeedback) this.showSuccess('Ingrediente adicionado com sucesso.')
     } else {
       this.ingredients.update(items => items.map((item, itemIndex) => itemIndex === index ? name : item))
     }
@@ -120,9 +140,13 @@ export class KioskItemRegisterForm {
     this.editingIngredientIndex.set(null)
   }
 
-  saveComplement(): boolean {
-    const name = this.complementNameDraft.value.trim()
+  saveComplement(showFeedback = true): boolean {
+    const name = this.complementNameDraft.value.trim().replace(/\s+/g, ' ')
     if (!name) this.complementNameDraft.setErrors({ required: true })
+    const index = this.editingComplementIndex()
+    if (name && this.complements().some((item, itemIndex) => itemIndex !== index && this.normalizeName(item.name) === this.normalizeName(name))) {
+      this.complementNameDraft.setErrors({ duplicate: true })
+    }
     if (this.complementNameDraft.invalid || this.complementValueDraft.invalid) {
       this.complementNameDraft.markAsTouched()
       this.complementValueDraft.markAsTouched()
@@ -130,9 +154,9 @@ export class KioskItemRegisterForm {
     }
 
     const complement = { name, value: this.parseCurrency(this.complementValueDraft.value) }
-    const index = this.editingComplementIndex()
     if (index === null) {
       this.complements.update(items => [...items, complement])
+      if (showFeedback) this.showSuccess('Complemento adicionado com sucesso.')
     } else {
       this.complements.update(items => items.map((item, itemIndex) => itemIndex === index ? complement : item))
     }
@@ -171,10 +195,10 @@ export class KioskItemRegisterForm {
 
   async onSubmit(): Promise<void> {
     if (this.editingIngredientIndex() !== null || this.ingredientDraft.value.trim()) {
-      if (!this.saveIngredient()) return
+      if (!this.saveIngredient(false)) return
     }
     if (this.editingComplementIndex() !== null || this.complementNameDraft.value.trim() || this.complementValueDraft.value) {
-      if (!this.saveComplement()) return
+      if (!this.saveComplement(false)) return
     }
 
     for (const field of ['name', 'category', 'description'] as const) {
@@ -206,6 +230,7 @@ export class KioskItemRegisterForm {
     })
 
     await this.router.navigate(['/home'])
+    this.showSuccess('Item adicionado com sucesso.')
   }
 
   private readImage(file: File): Promise<string> {
