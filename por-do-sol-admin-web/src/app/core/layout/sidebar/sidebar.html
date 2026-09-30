@@ -87,14 +87,14 @@
   </div>
 
   <!-- Botão logout -->
-  <button class="buttonModal" (click)="logout()">Logout</button>
+  <button class="cursor-pointer block text-secondary text-base font-medium w-full py-2 rounded-2xl border border-transparent hover:bg-hover-sidebarlink hover:border-secondary" (click)="logout()">Logout</button>
 
 
   <!-- Identificação do Usuário -->
   @if (user(); as currentUser) {
   <div class="flex bg-fundo-escuro rounded-2xl p-4 gap-3 items-center mt-7 md:mt-5">
     <div class="flex rounded-full bg-amarelo w-10 h-10 min-w-10 justify-center items-center shrink-0">
-      <p class="font-bold text-lg text-marrom font-poppins">{{userNameInitials}}</p>
+      <p class="font-bold text-lg text-marrom font-poppins">{{userNameInitials()}}</p>
     </div>
     <div class="min-w-0 flex-1">
       <p [title]="currentUser.name" class="font-poppins font-semibold text-creme truncate">

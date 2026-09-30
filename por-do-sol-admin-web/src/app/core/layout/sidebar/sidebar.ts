@@ -1,7 +1,6 @@
-import { Component, inject, output, Signal } from '@angular/core';
+import { Component, computed, inject, output } from '@angular/core';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { MatSelectModule } from '@angular/material/select';
-import { User } from '../../models/user-model';
 import { UserService } from '../../services/user-service';
 import { Router, RouterLink } from "@angular/router";
 import { NavigationService } from '../../services/navigation-service';
@@ -16,6 +15,7 @@ import { KioskService } from '../../services/kiosk-service';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+  private readonly userService = inject(UserService);
   readonly kioskService = inject(KioskService);
   readonly selectionService = inject(KioskSelectionService);
   selectedKiosk: string = ''
@@ -46,30 +46,21 @@ export class Sidebar {
     },
   ]
 
-  user!: Signal<User | null>
-  userNameInitials: string = ""
+  readonly user = this.userService.user
+  readonly userNameInitials = computed(() => {
+    const name = this.user()?.name
+    return name ? UserInitials.getNameInitials(name) : ''
+  })
 
   constructor(
-    private userService: UserService,
     public navigation: NavigationService,
     private router: Router,
 
   ) { }
 
-  ngOnInit() {
-    this.user = this.userService.user;
-    this.getNameInitials()
-  }
-
   onSelectionChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.selectionService.selectKiosk(value === 'all' ? null : value);
-  }
-
-  // Pega as iniciais do usuário logado para colocar na sidebar
-  getNameInitials() {
-    const user = this.user()
-    this.userNameInitials = user?.name ? UserInitials.getNameInitials(user.name) : ''
   }
 
   setViewModal() {

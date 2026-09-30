@@ -1,5 +1,4 @@
 Mudar o "Como está o quiosque hoje" pelo nome do quiosque selecionado.
-*Dropdown na sidebar para o usuário conseguir ser redirecionado para o cadastro de quiosques, funcionários e itens dos quiosques.
 Talvez colocar um pagination na seção de quiosques. Usuário pode ter muitos quiosques.
 Colocar filtros na tabela de equipe. Filtrar: Quiosques, cargos e status.
 verificar se o funcionários está em turno.
@@ -8,21 +7,16 @@ Colocar campo de busca de pedidos por nome do cliente (e por item pedido [talvez
 
 
 
-Input para adicionar o banner do quiosque (kioskRegister)
 TEM QUE COLOCAR O MINIMAP PARA O USUÁRIO INFORMAR A LATITUDE E LONGITUDE (kioskRegister)
 Colocar um select com os funcionários já cadastrados (talvez) (kioskRegister)
 
 
 
-Tela para cadastro de proprietário
-*Tela para adicionar funcionários
-*Tela para adicionar quiosques
+
 Tela para criar pedidos
-Tela para adicionar item ao quiosque
-Tela de login
-*Botões na sidebar para adicionar quiosque, funcionários e pedidos
+
 Tela de descrição de pedidos
-Tela de recuperação de senha
+
 Alterar dados do proprietário
 Logout
 Apagar conta
@@ -31,12 +25,18 @@ Tela de ajuda
 Skeleton Screen para carregamento das telas
 Snackbar para confirmações/erros
 Guards para acesso nas telas
-Tela com valores pendentes para resgate do quiosque
+
 Modal para criar cupons de desconto
 Modal para criar promoções
 Tela para alterar localização dos quiosques
 Tela para alterar informação dos funcionários
 Tela para alterar informação dos quiosques
 Firebase Cloud Messaging para criação de novos pedidos
-Seleção dos dias da semana que os quiosque abrem
+
 Opção para abrir ou fechar o quiosque antes/depois do esperado (talvez um modal que, quando chega a hora de fechar, pergute se o usuário deseja fechar ou n)
+
+
+Colocar uma nova coluna na tabela de pedidos para permitir que o status do pedido seja atualizado sem precisar entrar no pedido.
+Filtrar os itens vendidos pelo quiosques por categorias.
+
+Colocar um btn para criar novas categorias no formulário de itens e colocar um select para escolher a categoria

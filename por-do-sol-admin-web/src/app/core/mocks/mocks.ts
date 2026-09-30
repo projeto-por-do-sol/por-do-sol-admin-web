@@ -171,6 +171,102 @@ export const MOCK_KIOSK_ITEMS: KioskItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=240&h=240&fit=crop', 
     value: 8,
   },
+  {
+    id: 'item9', kioskId: 'kiosk_01', kioskName: 'Quiosque teste',
+    name: 'Camarão Empanado', category: 'Frutos do mar',
+    description: 'Camarões crocantes servidos com limão e molho da casa.',
+    imageUrl: 'https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=240&h=240&fit=crop', value: 48,
+  },
+  {
+    id: 'item10', kioskId: 'kiosk_01', kioskName: 'Quiosque teste',
+    name: 'Batata Frita com Cheddar', category: 'Porções',
+    description: 'Batatas fritas douradas com cheddar cremoso e bacon.',
+    imageUrl: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=240&h=240&fit=crop', value: 29,
+  },
+  {
+    id: 'item11', kioskId: 'kiosk_01', kioskName: 'Quiosque teste',
+    name: 'Isca de Frango à Passarinho', category: 'Porções',
+    description: 'Pedaços de frango temperados e fritos, acompanhados de molho.',
+    imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=240&h=240&fit=crop', value: 35,
+  },
+  {
+    id: 'item12', kioskId: 'kiosk_01', kioskName: 'Quiosque teste',
+    name: 'Cerveja Gelada (600ml)', category: 'Cerveja trincando',
+    description: 'Garrafa de cerveja de 600 ml servida bem gelada.',
+    imageUrl: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=240&h=240&fit=crop', value: 16,
+  },
+  {
+    id: 'item13', kioskId: 'kiosk_02', kioskName: 'Praia Quiosque',
+    name: 'Hambúrguer da Praia', category: 'Lanches',
+    description: 'Pão macio, hambúrguer grelhado, queijo, alface e molho especial.',
+    imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=240&h=240&fit=crop', value: 32,
+  },
+  {
+    id: 'item14', kioskId: 'kiosk_02', kioskName: 'Praia Quiosque',
+    name: 'Pastel de Queijo', category: 'Lanches',
+    description: 'Pastel frito na hora com recheio generoso de queijo.',
+    imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=240&h=240&fit=crop', value: 12,
+  },
+  {
+    id: 'item15', kioskId: 'kiosk_02', kioskName: 'Praia Quiosque',
+    name: 'Caipirinha de Morango', category: 'Caipirinhas',
+    description: 'Morango, cachaça, açúcar e gelo batidos na hora.',
+    imageUrl: 'https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?w=240&h=240&fit=crop', value: 25,
+  },
+  {
+    id: 'item16', kioskId: 'kiosk_02', kioskName: 'Praia Quiosque',
+    name: 'Limonada com Hortelã', category: 'Drinks artesanais',
+    description: 'Limonada refrescante com folhas de hortelã e gelo.',
+    imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=240&h=240&fit=crop', value: 14,
+  },
+  {
+    id: 'item17', kioskId: 'kiosk_03', kioskName: 'Santos Quiosque',
+    name: 'Açaí 300ml com Granola', category: 'Açaí',
+    description: 'Açaí cremoso servido com granola crocante.',
+    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=240&h=240&fit=crop', value: 21,
+  },
+  {
+    id: 'item18', kioskId: 'kiosk_03', kioskName: 'Santos Quiosque',
+    name: 'Suco de Laranja Natural', category: 'Sucos naturais',
+    description: 'Suco de laranjas frescas espremidas na hora, sem conservantes.',
+    imageUrl: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=240&h=240&fit=crop', value: 12,
+  },
+  {
+    id: 'item19', kioskId: 'kiosk_03', kioskName: 'Santos Quiosque',
+    name: 'Suco de Abacaxi com Hortelã', category: 'Sucos naturais',
+    description: 'Abacaxi fresco batido com hortelã e gelo.',
+    imageUrl: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=240&h=240&fit=crop', value: 14,
+  },
+  {
+    id: 'item20', kioskId: 'kiosk_03', kioskName: 'Santos Quiosque',
+    name: 'Pastel de Camarão', category: 'Pastéis',
+    description: 'Pastel crocante recheado com camarão temperado.',
+    imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=240&h=240&fit=crop', value: 22,
+  },
+  {
+    id: 'item21', kioskId: 'kiosk_04', kioskName: 'Beira Mar Quiosque',
+    name: 'Sorvete de Chocolate', category: 'Sorvetes',
+    description: 'Duas bolas de sorvete de chocolate servidas em taça.',
+    imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=240&h=240&fit=crop', value: 16,
+  },
+  {
+    id: 'item22', kioskId: 'kiosk_04', kioskName: 'Beira Mar Quiosque',
+    name: 'Picolé de Frutas', category: 'Sorvetes',
+    description: 'Picolé refrescante feito com frutas.',
+    imageUrl: 'https://images.unsplash.com/photo-1493857671505-72967e2e2760?w=240&h=240&fit=crop', value: 9,
+  },
+  {
+    id: 'item23', kioskId: 'kiosk_04', kioskName: 'Beira Mar Quiosque',
+    name: 'Amendoim Torrado', category: 'Petiscos',
+    description: 'Porção de amendoim torrado e levemente salgado.',
+    imageUrl: 'https://images.unsplash.com/photo-1567892737950-30c4db37cd89?w=240&h=240&fit=crop', value: 10,
+  },
+  {
+    id: 'item24', kioskId: 'kiosk_04', kioskName: 'Beira Mar Quiosque',
+    name: 'Água de Coco no Copo', category: 'Água de coco',
+    description: 'Água de coco natural servida gelada em copo de 400 ml.',
+    imageUrl: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=240&h=240&fit=crop', value: 11,
+  },
 ];
 
 export const MOCK_EMPLOYEE: Employee[] = [

@@ -7,6 +7,7 @@ import { KioskSelectionService } from './kiosk-selection-service';
 export class KioskItemService {
   private readonly selectionService = inject(KioskSelectionService)
   private readonly _items = signal<KioskItem[]>(MOCK_KIOSK_ITEMS)
+  readonly allItems = this._items.asReadonly()
 
   readonly items = computed(() => {
     const selectedKiosk = this.selectionService.selectedKiosk()

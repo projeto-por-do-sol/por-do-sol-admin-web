@@ -1,0 +1,28 @@
+<div class="p-8">
+  <app-return-link text="Voltar para home"></app-return-link>
+
+  <main class="mt-8">
+    <section class="max-w-100 rounded-2xl border border-border bg-surface p-6">
+      <app-select
+        class="block max-w-md"
+        selectTitle="Quiosque"
+        [options]="kioskNames()"
+        [selectedValue]="selectedKioskName()"
+        placeholder="Selecione um quiosque"
+        (valueChange)="selectKioskByName($event)">
+      </app-select>
+    </section>
+
+    <div class="mt-8 grid auto-rows-fr grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      @if (selectedKiosk()) {
+        @for (item of selectedItems(); track item.id) {
+          <app-item-card-for-order [item]="item"></app-item-card-for-order>
+        } @empty {
+          <p class="col-span-full rounded-2xl bg-border p-6 text-center text-lg font-semibold text-outline">Não há nenhum item cadastrado nesse quiosque!</p>
+        }
+      } @else {
+        <p class="col-span-full rounded-2xl bg-border p-6 text-center text-lg font-semibold text-outline">Não há nenhum quiosque selecionado!</p>
+      }
+    </div>
+  </main>
+</div>

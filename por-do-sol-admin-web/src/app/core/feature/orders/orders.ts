@@ -8,6 +8,7 @@ import { UserInitials } from '../../utils/user-initials';
 import { StatusStyle } from '../../utils/status-style';
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { OrderService } from '../../services/order-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-orders',
@@ -17,6 +18,7 @@ import { OrderService } from '../../services/order-service';
 })
 export class Orders {
   readonly ordersService = inject(OrderService)
+  router = inject(Router)
 
   readonly chipOptions: string[] = ["todos", "novo", "Em preparo", "pronto", "Entregando", "Finalizado", "atrasado", "cancelado"]
   readonly standardOption: string = this.chipOptions[0]
@@ -77,5 +79,7 @@ export class Orders {
     }
   ]
 
-  aa(){}
+  goToCreateOrder(){
+    this.router.navigate(["/createOrder"])
+  }
 }

@@ -1,0 +1,21 @@
+@if (item(); as item) {
+  <div class="cardTemplate">
+    <div class="item-card-header">
+      <img class="item-card-image" [src]="item.imageUrl" [alt]="item.name" loading="lazy">
+      <div class="item-card-heading">
+        <p class="font-semibold text-lg">{{ item.name }}</p>
+        <p class="text-sub-text">{{ item.category }}</p>
+        <p class="text-sub-text">{{ item.kioskName }}</p>
+      </div>
+    </div>
+    <p class="item-card-description">{{ item.description }}</p>
+    <div class="item-card-footer">
+      <p class="font-semibold text-primary">{{ formatValue(item.value) }}</p>
+      <div class="quantity-selector" role="group" [attr.aria-label]="'Quantidade de ' + item.name">
+        <button type="button" class="quantity-button quantity-button-decrease" [disabled]="quantity() === 0" [attr.aria-label]="'Diminuir quantidade de ' + item.name" (click)="decreaseQuantity()">−</button>
+        <output class="quantity-value" aria-live="polite">{{ quantity() }}</output>
+        <button type="button" class="quantity-button quantity-button-increase" [disabled]="quantity() === 99" [attr.aria-label]="'Aumentar quantidade de ' + item.name" (click)="increaseQuantity()">+</button>
+      </div>
+    </div>
+  </div>
+}
