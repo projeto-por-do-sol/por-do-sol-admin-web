@@ -41,4 +41,16 @@ describe('CreateOrder', () => {
     expect(groups.flatMap(group => group.items)).toHaveLength(component.selectedItems().length);
     expect(groups.every(group => group.items.every(item => item.category === group.category))).toBe(true);
   });
+
+  it('searches item names within the selected kiosk', () => {
+    component.selectKioskByName('Santos Quiosque');
+    component.searchControl.setValue('acai');
+
+    expect(component.filteredItems().length).toBeGreaterThan(0);
+    expect(component.filteredItems().every(item => item.name.includes('Açaí'))).toBe(true);
+    expect(component.itemsByCategory().map(group => group.category)).toEqual(['Açaí']);
+
+    component.searchControl.setValue('item inexistente');
+    expect(component.itemsByCategory()).toEqual([]);
+  });
 });
