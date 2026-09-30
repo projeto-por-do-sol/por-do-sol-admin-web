@@ -13,15 +13,22 @@
       </app-select>
     </section>
 
-    <div class="mt-8 grid auto-rows-fr grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div class="mt-8">
       @if (selectedKiosk()) {
-        @for (item of selectedItems(); track item.id) {
-          <app-item-card-for-order [item]="item"></app-item-card-for-order>
+        @for (group of itemsByCategory(); track group.category) {
+          <section class="mb-8" [attr.aria-label]="group.category">
+            <h2 class="mb-4 border-b border-border pb-3 text-2xl font-semibold text-outline">{{ group.category }}</h2>
+            <div class="grid auto-rows-fr grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              @for (item of group.items; track item.id) {
+                <app-item-card-for-order [item]="item"></app-item-card-for-order>
+              }
+            </div>
+          </section>
         } @empty {
-          <p class="col-span-full rounded-2xl bg-border p-6 text-center text-lg font-semibold text-outline">Não há nenhum item cadastrado nesse quiosque!</p>
+          <p class="rounded-2xl bg-border p-6 text-center text-lg font-semibold text-outline">Não há nenhum item cadastrado nesse quiosque!</p>
         }
       } @else {
-        <p class="col-span-full rounded-2xl bg-border p-6 text-center text-lg font-semibold text-outline">Não há nenhum quiosque selecionado!</p>
+        <p class="rounded-2xl bg-border p-6 text-center text-lg font-semibold text-outline">Não há nenhum quiosque selecionado!</p>
       }
     </div>
   </main>

@@ -4,6 +4,7 @@ import { Select } from '../../shared/ui/select/select';
 import { ItemCardForOrder } from '../../feature/item-card-for-order/item-card-for-order';
 import { KioskService } from '../../services/kiosk-service';
 import { KioskItemService } from '../../services/kiosk-item-service';
+import { KioskItem } from '../../models/kiosk-item';
 
 @Component({
   selector: 'app-create-order',
@@ -12,21 +13,34 @@ import { KioskItemService } from '../../services/kiosk-item-service';
   styleUrl: './create-order.css',
 })
 export class CreateOrder {
-  readonly kioskService = inject(KioskService);
-  readonly kioskItemService = inject(KioskItemService);
-  readonly selectedKioskId = signal<string | null>(null);
+  readonly kioskService = inject(KioskService)
+  readonly kioskItemService = inject(KioskItemService)
+  readonly selectedKioskId = signal<string | null>(null)
   readonly selectedKiosk = computed(() => this.kioskService.kiosks()
-    .find(kiosk => kiosk.id === this.selectedKioskId()) ?? null);
+    .find(kiosk => kiosk.id === this.selectedKioskId()) ?? null)
   readonly selectedItems = computed(() => this.kioskItemService.allItems()
-    .filter(item => item.kioskId === this.selectedKioskId()));
+    .filter(item => item.kioskId === this.selectedKioskId()))
+  readonly itemsByCategory = computed(() => {
+    const items = [...this.selectedItems()].sort((a, b) =>
+      a.category.localeCompare(b.category, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR'))
+    const categories = new Map<string, KioskItem[]>()
+
+    for (const item of items) {
+      const categoryItems = categories.get(item.category) ?? []
+      categoryItems.push(item)
+      categories.set(item.category, categoryItems)
+    }
+
+    return [...categories].map(([category, categoryItems]) => ({ category, items: categoryItems }))
+  });
 
   readonly kioskNames = computed(() => this.kioskService.kiosks()
     .map(kiosk => kiosk.name)
-    .filter((name): name is string => !!name));
-  readonly selectedKioskName = computed(() => this.selectedKiosk()?.name ?? '');
+    .filter((name): name is string => !!name))
+  readonly selectedKioskName = computed(() => this.selectedKiosk()?.name ?? '')
 
   selectKioskByName(name: string): void {
-    const kiosk = this.kioskService.kiosks().find(kiosk => kiosk.name === name);
-    this.selectedKioskId.set(kiosk?.id ?? null);
+    const kiosk = this.kioskService.kiosks().find(kiosk => kiosk.name === name)
+    this.selectedKioskId.set(kiosk?.id ?? null)
   }
 }

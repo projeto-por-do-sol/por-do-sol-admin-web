@@ -32,4 +32,13 @@ describe('CreateOrder', () => {
     expect(component.selectedItems().every(item => item.kioskId === 'kiosk_01')).toBe(true);
     expect(sidebarSelection.selectedKioskId()).toBe('kiosk_02');
   });
+
+  it('groups the selected kiosk items by category in alphabetical order', () => {
+    component.selectKioskByName('Quiosque teste');
+
+    const groups = component.itemsByCategory();
+    expect(groups.map(group => group.category)).toEqual(['Cerveja trincando', 'Frutos do mar', 'Porções']);
+    expect(groups.flatMap(group => group.items)).toHaveLength(component.selectedItems().length);
+    expect(groups.every(group => group.items.every(item => item.category === group.category))).toBe(true);
+  });
 });
