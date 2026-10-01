@@ -55,6 +55,10 @@
 
 @layer components {}
 
+.cart-bottom-sheet-panel .mat-bottom-sheet-container {
+  @apply w-full min-w-0 max-w-full max-h-none p-0 overflow-hidden rounded-t-3xl bg-surface;
+}
+
 @utility base-sidebar {
   @apply h-full max-w-3xs;
 }

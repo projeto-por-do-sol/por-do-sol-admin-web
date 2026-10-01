@@ -80,4 +80,16 @@ describe('CreateOrder', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.cart-summary')).toBeNull();
   });
+
+  it('opens the cart bottom sheet from the summary', async () => {
+    const cart = TestBed.inject(ShoppingCart);
+    const item = MOCK_KIOSK_ITEMS[0];
+    cart.setItemQuantity(item.kioskId, item.id, 1);
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('.cart-summary') as HTMLButtonElement).click();
+    await fixture.whenStable();
+
+    expect(document.querySelector('mat-bottom-sheet-container')?.textContent).toContain(item.name);
+  });
 });

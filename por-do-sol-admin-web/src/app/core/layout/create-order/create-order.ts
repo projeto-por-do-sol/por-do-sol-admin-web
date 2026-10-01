@@ -6,6 +6,9 @@ import { ItemCardForOrder } from '../../feature/item-card-for-order/item-card-fo
 import { KioskService } from '../../services/kiosk-service';
 import { KioskItemService } from '../../services/kiosk-item-service';
 import { ShoppingCart } from '../../services/shopping-cart';
+import { CartBottomSheet } from '../../feature/cart-bottom-sheet/cart-bottom-sheet';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { cartItemUnitPrice } from '../../utils/cart-item-price';
 import { KioskItem } from '../../models/kiosk-item';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -19,6 +22,7 @@ export class CreateOrder {
   readonly kioskService = inject(KioskService)
   readonly kioskItemService = inject(KioskItemService)
   readonly shoppingCart = inject(ShoppingCart)
+  private readonly bottomSheet = inject(MatBottomSheet)
   readonly searchControl = new FormControl('', { nonNullable: true })
   readonly searchTerm = toSignal(this.searchControl.valueChanges, { initialValue: '' })
   readonly selectedKioskId = signal<string | null>(null)
@@ -56,7 +60,7 @@ export class CreateOrder {
       const product = products.find(item => item.kioskId === cartItem.idKiosk && item.id === cartItem.idItem)
       return {
         quantity: summary.quantity + cartItem.quantity,
-        total: summary.total + (product?.value ?? 0) * cartItem.quantity,
+        total: summary.total + cartItemUnitPrice(cartItem, product) * cartItem.quantity,
       }
     }, { quantity: 0, total: 0 })
   })
@@ -64,6 +68,13 @@ export class CreateOrder {
 
   formatTotal(value: number): string {
     return this.currencyFormatter.format(value)
+  }
+
+  openCart(): void {
+    this.bottomSheet.open(CartBottomSheet, {
+      ariaLabel: 'Itens do carrinho',
+      panelClass: ['w-full', 'max-w-2xl!', 'cart-bottom-sheet-panel'],
+    })
   }
 
   selectKioskByName(name: string): void {

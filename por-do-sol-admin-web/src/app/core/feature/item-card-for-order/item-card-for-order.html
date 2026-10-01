@@ -11,11 +11,8 @@
     <p class="item-card-description">{{ item.description }}</p>
     <div class="item-card-footer">
       <p class="font-semibold text-primary">{{ formatValue(item.value) }}</p>
-      <div class="quantity-selector" role="group" [attr.aria-label]="'Quantidade de ' + item.name">
-        <button type="button" class="quantity-button quantity-button-decrease" [disabled]="quantity() === 0" [attr.aria-label]="'Diminuir quantidade de ' + item.name" (click)="decreaseQuantity()">−</button>
-        <output class="quantity-value" aria-live="polite">{{ quantity() }}</output>
-        <button type="button" class="quantity-button quantity-button-increase" [disabled]="quantity() === 99" [attr.aria-label]="'Aumentar quantidade de ' + item.name" (click)="increaseQuantity()">+</button>
-      </div>
+      <app-quantity-selector [quantity]="quantity()" [itemName]="item.name" [compact]="true"
+        (quantityChange)="setQuantity($event)" />
     </div>
   </div>
 }

@@ -26,13 +26,13 @@ describe('ItemCardForOrder', () => {
     fixture.componentRef.setInput('item', MOCK_KIOSK_ITEMS[0]);
     fixture.detectChanges();
 
-    component.decreaseQuantity();
+    component.setQuantity(component.quantity() - 1);
     expect(component.quantity()).toBe(0);
 
-    for (let count = 0; count < 100; count++) component.increaseQuantity();
+    for (let count = 0; count < 100; count++) component.setQuantity(component.quantity() + 1);
     expect(component.quantity()).toBe(99);
 
-    component.decreaseQuantity();
+    component.setQuantity(component.quantity() - 1);
     expect(component.quantity()).toBe(98);
     expect(TestBed.inject(ShoppingCart).shoppingCartItens()[0].quantity).toBe(98);
   });
@@ -41,7 +41,7 @@ describe('ItemCardForOrder', () => {
     const item = MOCK_KIOSK_ITEMS[0];
     fixture.componentRef.setInput('item', item);
     fixture.detectChanges();
-    component.increaseQuantity();
+    component.setQuantity(component.quantity() + 1);
 
     const newFixture = TestBed.createComponent(ItemCardForOrder);
     newFixture.componentRef.setInput('item', item);

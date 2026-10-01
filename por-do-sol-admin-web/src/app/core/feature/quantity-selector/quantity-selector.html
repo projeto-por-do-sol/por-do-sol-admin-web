@@ -1,0 +1,10 @@
+<div class="flex items-center justify-between" [class]="compact() ? 'gap-3 rounded-full border border-primary bg-white p-1' : 'gap-4'" role="group" [attr.aria-label]="'Quantidade de ' + itemName()">
+
+  <button type="button" class="grid shrink-0 cursor-pointer place-items-center rounded-full leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50" [class]="compact() ? 'size-8 bg-gray-200 text-gray-600 text-2xl' : 'size-11 bg-fundo text-sub-text text-xl hover:bg-border'" [disabled]="quantity() <= 0" [attr.aria-label]="'Diminuir quantidade de ' + itemName()" (click)="changeQuantity(-1)">
+    −
+  </button>
+
+  <output class="min-w-5 text-center font-semibold" [class]="compact() ? 'text-primary' : 'text-lg text-outline'" aria-live="polite">{{ quantity() }}</output>
+  
+  <button type="button" class="grid shrink-0 cursor-pointer place-items-center rounded-full bg-primary text-2xl leading-none text-creme hover:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50" [class]="compact() ? 'size-8' : 'size-11'" [disabled]="quantity() >= maxQuantity" [attr.aria-label]="'Aumentar quantidade de ' + itemName()" (click)="changeQuantity(1)">+</button>
+</div>

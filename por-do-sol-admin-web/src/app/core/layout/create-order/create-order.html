@@ -45,18 +45,19 @@
   </main>
 
   @if (cartSummary().quantity > 0) {
-    <aside
-      class="fixed inset-x-4 bottom-4 z-20 mx-auto grid max-w-2xl grid-cols-2 items-center gap-x-4 gap-y-2 rounded-2xl bg-primary p-4 text-creme shadow-2xl sm:flex sm:justify-between sm:gap-6 sm:px-6 md:right-6 md:left-68"
-      aria-label="Resumo do carrinho"
-      aria-live="polite">
-      <div class="flex items-center gap-3">
+    <button
+      type="button"
+      class="cart-summary fixed inset-x-4 bottom-4 z-20 mx-auto grid max-w-2xl cursor-pointer grid-cols-2 items-center gap-x-4 gap-y-2 rounded-2xl bg-primary p-4 text-left text-creme shadow-2xl hover:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:flex sm:justify-between sm:gap-6 sm:px-6 md:right-6 md:left-68"
+      [attr.aria-label]="'Abrir carrinho: ' + cartSummary().quantity + ' ' + (cartSummary().quantity === 1 ? 'item' : 'itens') + ', ' + formatTotal(cartSummary().total)"
+      (click)="openCart()">
+      <span class="flex items-center gap-3">
         <span class="grid size-10 shrink-0 place-items-center rounded-full bg-creme font-bold text-primary">{{ cartSummary().quantity }}</span>
         <span>{{ cartSummary().quantity === 1 ? 'item' : 'itens' }}</span>
-      </div>
-      <div class="col-start-1 row-start-2 text-sm">
+      </span>
+      <span class="col-start-1 row-start-2 text-sm">
         <strong class="whitespace-nowrap text-xl">{{ formatTotal(cartSummary().total) }}</strong>
-      </div>
+      </span>
       <span class="col-start-2 row-span-2 row-start-1 justify-self-end whitespace-nowrap text-lg font-semibold">Próximo <span aria-hidden="true">→</span></span>
-    </aside>
+    </button>
   }
 </div>
