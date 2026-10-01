@@ -1,5 +1,6 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { KioskItem } from '../../models/kiosk-item';
+import { ShoppingCart } from '../../services/shopping-cart';
 
 @Component({
   selector: 'app-item-card-for-order',
@@ -8,15 +9,29 @@ import { KioskItem } from '../../models/kiosk-item';
   styleUrl: './item-card-for-order.css',
 })
 export class ItemCardForOrder {
+  private readonly shoppingCart = inject(ShoppingCart)
   readonly item = input<KioskItem | null>(null)
-  readonly quantity = signal(0)
+  readonly quantity = computed(() => {
+    const item = this.item()
+    if (!item) return 0
+
+    return this.shoppingCart.shoppingCartItens()
+      .find(cartItem => cartItem.idKiosk === item.kioskId && cartItem.idItem === item.id)
+      ?.quantity ?? 0
+  })
 
   decreaseQuantity(): void {
-    this.quantity.update(quantity => Math.max(0, quantity - 1))
+    const item = this.item()
+    if (!item) return
+
+    this.shoppingCart.setItemQuantity(item.kioskId, item.id, Math.max(0, this.quantity() - 1))
   }
 
   increaseQuantity(): void {
-    this.quantity.update(quantity => Math.min(99, quantity + 1))
+    const item = this.item()
+    if (!item) return
+
+    this.shoppingCart.setItemQuantity(item.kioskId, item.id, Math.min(99, this.quantity() + 1))
   }
 
   formatValue(value: number): string {
