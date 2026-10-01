@@ -9,6 +9,39 @@
       </div>
     </div>
     <p class="item-card-description">{{ item.description }}</p>
+
+    @if (item.ingredients?.length) {
+
+      <div class="item-card-options" role="group" [attr.aria-label]="'Ingredientes de ' + item.name">
+
+        <p class="item-card-options-title">Ingredientes <span class="item-card-options-hint">(marque para remover)</span></p>
+
+        @for (ingredient of item.ingredients; track ingredient) {
+          <label class="item-card-option ingredient-option" [class.is-selected]="removedIngredients().includes(ingredient)">
+
+            <input type="checkbox" [checked]="removedIngredients().includes(ingredient)"
+              (change)="toggleIngredient(ingredient, $any($event.target).checked)">
+
+            <span>{{ ingredient }}</span>
+            
+          </label>
+        }
+
+      </div>
+    }
+    @if (item.complements?.length) {
+      <div class="item-card-options" role="group" [attr.aria-label]="'Complementos de ' + item.name">
+        <p class="item-card-options-title">Complementos</p>
+        @for (complement of item.complements; track complement.name) {
+          <label class="item-card-option complement-option" [class.is-selected]="selectedComplements().includes(complement.name)">
+            <input type="checkbox" [checked]="selectedComplements().includes(complement.name)"
+              (change)="toggleComplement(complement.name, $any($event.target).checked)">
+            <span>{{ complement.name }}</span>
+            <span class="option-price">+ {{ formatValue(complement.value) }}</span>
+          </label>
+        }
+      </div>
+    }
     <div class="item-card-footer">
       <p class="font-semibold text-primary">{{ formatValue(item.value) }}</p>
       <app-quantity-selector [quantity]="quantity()" [itemName]="item.name" [compact]="true"

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { KioskItem } from '../../models/kiosk-item';
 import { QuantitySelector } from '../quantity-selector/quantity-selector';
 import { ShoppingCart } from '../../services/shopping-cart';
@@ -12,13 +12,16 @@ import { ShoppingCart } from '../../services/shopping-cart';
 export class ItemCardForOrder {
   private readonly shoppingCart = inject(ShoppingCart)
   readonly item = input<KioskItem | null>(null)
+  readonly removedIngredients = signal<string[]>([])
+  readonly selectedComplements = signal<string[]>([])
   readonly quantity = computed(() => {
     const item = this.item()
     if (!item) return 0
 
     return this.shoppingCart.shoppingCartItens()
       .find(cartItem => cartItem.idKiosk === item.kioskId && cartItem.idItem === item.id &&
-        !cartItem.removedIngredient?.length && !cartItem.complement?.length)
+        this.sameSelection(cartItem.removedIngredient, this.removedIngredients()) &&
+        this.sameSelection(cartItem.complement, this.selectedComplements()))
       ?.quantity ?? 0
   })
 
@@ -26,7 +29,35 @@ export class ItemCardForOrder {
     const item = this.item()
     if (!item) return
 
-    this.shoppingCart.setItemQuantity(item.kioskId, item.id, quantity)
+    const cartItem = this.shoppingCart.shoppingCartItens().find(cartItem =>
+      cartItem.idKiosk === item.kioskId && cartItem.idItem === item.id &&
+      this.sameSelection(cartItem.removedIngredient, this.removedIngredients()) &&
+      this.sameSelection(cartItem.complement, this.selectedComplements()))
+
+    if (cartItem?.idCartItem != null) {
+      this.shoppingCart.setCartItemQuantity(cartItem.idCartItem, quantity)
+    } else if (quantity > 0) {
+      this.shoppingCart.addItemToCart({
+        idCartItem: null,
+        idKiosk: item.kioskId,
+        idItem: item.id,
+        quantity,
+        removedIngredient: [...this.removedIngredients()],
+        complement: [...this.selectedComplements()],
+      })
+    }
+  }
+
+  toggleIngredient(name: string, checked: boolean): void {
+    this.removedIngredients.update(names => checked ? [...names, name] : names.filter(value => value !== name))
+  }
+
+  toggleComplement(name: string, checked: boolean): void {
+    this.selectedComplements.update(names => checked ? [...names, name] : names.filter(value => value !== name))
+  }
+
+  private sameSelection(first: string[] | undefined, second: string[]): boolean {
+    return (first?.length ?? 0) === second.length && second.every(name => first?.includes(name))
   }
 
   formatValue(value: number): string {

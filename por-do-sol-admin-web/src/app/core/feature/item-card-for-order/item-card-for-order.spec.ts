@@ -50,4 +50,32 @@ describe('ItemCardForOrder', () => {
     expect(newFixture.componentInstance.quantity()).toBe(1);
     newFixture.destroy();
   });
+
+  it('shows ingredients and complements and stores the selected configuration', () => {
+    fixture.componentRef.setInput('item', {
+      ...MOCK_KIOSK_ITEMS[0],
+      ingredients: ['Batata'],
+      complements: [{ name: 'Cheddar', value: 13.13 }],
+    });
+    fixture.detectChanges();
+
+    const options = fixture.nativeElement.querySelectorAll('.item-card-option');
+    expect(options.length).toBe(2);
+    expect(options[0].textContent).toContain('Batata');
+    expect(options[1].textContent).toContain('+ R$ 13,13');
+
+    const checkboxes = fixture.nativeElement.querySelectorAll('input[type="checkbox"]');
+    checkboxes[0].click();
+    checkboxes[1].click();
+    fixture.detectChanges();
+
+    expect(options[0].classList.contains('is-selected')).toBe(true);
+    expect(options[1].classList.contains('is-selected')).toBe(true);
+    component.setQuantity(1);
+    expect(TestBed.inject(ShoppingCart).shoppingCartItens()[0]).toEqual(expect.objectContaining({
+      removedIngredient: ['Batata'],
+      complement: ['Cheddar'],
+      quantity: 1,
+    }));
+  });
 });
