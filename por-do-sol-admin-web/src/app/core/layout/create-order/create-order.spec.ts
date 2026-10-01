@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { CreateOrder } from './create-order';
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
+import { ShoppingCart } from '../../services/shopping-cart';
+import { MOCK_KIOSK_ITEMS } from '../../mocks/mocks';
 
 describe('CreateOrder', () => {
   let component: CreateOrder;
@@ -10,6 +13,7 @@ describe('CreateOrder', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateOrder],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateOrder);
@@ -52,5 +56,28 @@ describe('CreateOrder', () => {
 
     component.searchControl.setValue('item inexistente');
     expect(component.itemsByCategory()).toEqual([]);
+  });
+
+  it('shows the cart summary with unit count and total, then hides it when empty', () => {
+    const cart = TestBed.inject(ShoppingCart);
+    const [first, second] = MOCK_KIOSK_ITEMS;
+
+    expect(fixture.nativeElement.querySelector('.cart-summary')).toBeNull();
+
+    cart.setItemQuantity(first.kioskId, first.id, 2);
+    cart.setItemQuantity(second.kioskId, second.id, 1);
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement.querySelector('.cart-summary') as HTMLElement;
+    expect(component.cartSummary().quantity).toBe(3);
+    expect(component.cartSummary().total).toBe(first.value * 2 + second.value);
+    expect(summary.textContent).toContain('3');
+    expect(summary.textContent).toContain(component.formatTotal(component.cartSummary().total));
+    expect(summary.textContent).toContain('Próximo');
+
+    cart.setItemQuantity(first.kioskId, first.id, 0);
+    cart.setItemQuantity(second.kioskId, second.id, 0);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.cart-summary')).toBeNull();
   });
 });
