@@ -3,7 +3,7 @@
     <div class="sectionCard">
       <h2>Dados do item</h2>
       <app-image-input label="Imagem do item" formControlName="image" (imageSelected)="imagePreview.set($event)"></app-image-input>
-      <app-input id="itemName" label="Nome do item" name="name" formControlName="name" placeholder="Ex.: Porção de peixe frito"></app-input>
+      <app-input #itemNameInput id="itemName" label="Nome do item" name="name" formControlName="name" placeholder="Ex.: Porção de peixe frito"></app-input>
 
       <div class="grid md:grid-cols-2 gap-8">
         <div class="grid content-start gap-2">
@@ -109,7 +109,7 @@
 
     <div class="grid md:flex md:justify-end gap-5">
       <app-cancel-button (onClickButton)="onClickCancelButton.emit()"></app-cancel-button>
-      <app-button labelButton="Cadastrar item" icon="add" type="submit"></app-button>
+      <app-button labelButton="Cadastrar item" icon="add" type="submit" [disabled]="saving()"></app-button>
     </div>
   </form>
 
@@ -123,5 +123,16 @@
         <app-button labelButton="Criar categoria" type="submit"></app-button>
       </div>
     </form>
+  </dialog>
+
+  <dialog #successDialog class="m-auto w-11/12 max-w-md max-h-[80dvh] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="item-success-title" aria-describedby="item-success-description" (cancel)="$event.preventDefault()">
+    <div class="grid gap-5">
+      <h2 id="item-success-title">Item cadastrado com sucesso!</h2>
+      <p id="item-success-description" class="text-sub-text">Deseja adicionar outro item ou voltar para a home?</p>
+      <div class="grid gap-5 md:flex md:justify-end">
+        <app-cancel-button labelButton="Voltar para home" (onClickButton)="goHomeAfterSave()"></app-cancel-button>
+        <app-button labelButton="Adicionar outro item" (onClickButton)="addAnotherItem()"></app-button>
+      </div>
+    </div>
   </dialog>
 </div>

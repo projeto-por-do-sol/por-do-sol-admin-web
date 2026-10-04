@@ -1,4 +1,4 @@
-import { Component, input, Optional, output, Self } from '@angular/core';
+import { Component, ElementRef, input, Optional, output, Self, viewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 @Component({
@@ -8,6 +8,7 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
   styleUrl: './image-input.css',
 })
 export class ImageInput implements ControlValueAccessor {
+  private readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput')
   id = input<string>('image-upload')
   label = input<string>('Foto de perfil')
   hint = input<string>('PNG, JPG ou WEBP de até 5 MB')
@@ -68,6 +69,8 @@ export class ImageInput implements ControlValueAccessor {
 
   writeValue(value: File | null): void {
     if (!value) {
+      const fileInput = this.fileInput()?.nativeElement
+      if (fileInput) fileInput.value = ''
       this.fileName = ''
       this.previewUrl = null
     }

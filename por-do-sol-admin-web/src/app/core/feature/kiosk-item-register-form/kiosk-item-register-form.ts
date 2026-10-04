@@ -31,7 +31,10 @@ export class KioskItemRegisterForm {
   readonly kiosks = this.kioskService.kiosks
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
   private readonly categoryDialog = viewChild<ElementRef<HTMLDialogElement>>('categoryDialog')
+  private readonly successDialog = viewChild<ElementRef<HTMLDialogElement>>('successDialog')
+  private readonly itemNameInput = viewChild<Input>('itemNameInput')
   readonly onClickCancelButton = output<void>()
+  readonly saving = signal(false)
   readonly imagePreview = signal<string | null>(null)
   readonly ingredients = signal<string[]>([])
   readonly complements = signal<KioskItemComplement[]>([])
@@ -235,6 +238,7 @@ export class KioskItemRegisterForm {
   }
 
   async onSubmit(): Promise<void> {
+    if (this.saving()) return
     if (this.editingIngredientIndex() !== null || this.ingredientDraft.value.trim()) {
       if (!this.saveIngredient(false)) return
     }
@@ -261,22 +265,44 @@ export class KioskItemRegisterForm {
       return
     }
 
-    const imageUrl = image ? await this.readImage(image) : this.placeholderImage
-    this.itemService.addItem({
-      id: crypto.randomUUID(),
-      kioskId: kiosk.id,
-      kioskName: kiosk.name,
-      name: name.trim(),
-      category: category.trim(),
-      description: description.trim(),
-      value: this.parseCurrency(value),
-      imageUrl,
-      ingredients: [...this.ingredients()],
-      complements: [...this.complements()],
-    })
+    this.saving.set(true)
+    try {
+      const imageUrl = image ? await this.readImage(image) : this.placeholderImage
+      this.itemService.addItem({
+        id: crypto.randomUUID(),
+        kioskId: kiosk.id,
+        kioskName: kiosk.name,
+        name: name.trim(),
+        category: category.trim(),
+        description: description.trim(),
+        value: this.parseCurrency(value),
+        imageUrl,
+        ingredients: [...this.ingredients()],
+        complements: [...this.complements()],
+      })
+      this.successDialog()?.nativeElement.showModal()
+    } catch {
+      this.snackBar.open('Não foi possível cadastrar o item. Tente novamente.', undefined, { duration: 3000 })
+    } finally {
+      this.saving.set(false)
+    }
+  }
 
-    await this.router.navigate(['/home'])
-    this.showSuccess('Item adicionado com sucesso.')
+  addAnotherItem(): void {
+    this.successDialog()?.nativeElement.close()
+    const kioskId = this.formFields.controls.kioskId.value
+    this.formFields.reset({ name: '', category: '', kioskId, description: '', value: '', image: null })
+    this.imagePreview.set(null)
+    this.ingredients.set([])
+    this.complements.set([])
+    this.cancelIngredientEdit()
+    this.cancelComplementEdit()
+    this.itemNameInput()?.focusInput()
+  }
+
+  goHomeAfterSave(): void {
+    this.successDialog()?.nativeElement.close()
+    void this.router.navigate(['/home'])
   }
 
   private readImage(file: File): Promise<string> {
