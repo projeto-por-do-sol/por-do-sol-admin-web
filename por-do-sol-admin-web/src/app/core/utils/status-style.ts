@@ -1,9 +1,5 @@
 export class StatusStyle {
   static orderStatus(status: string): string {
-    status = status.toLowerCase()
-    if (status != 'em preparo') {
-      return status
-    }
-    return 'em_preparo'
+    return status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '_')
   }
 }

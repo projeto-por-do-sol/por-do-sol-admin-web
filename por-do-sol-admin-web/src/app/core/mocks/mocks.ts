@@ -400,7 +400,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client1',
     value: 42.00,
     time: '12:38',
-    status: 'Novo'
+    status: 'Esperando confirmação'
   },
   {
     id: 'order2',
@@ -411,7 +411,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client2',
     value: 27.50,
     time: '12:45',
-    status: 'Em Preparo'
+    status: 'Preparando'
   },
   {
     id: 'order3',
@@ -422,7 +422,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client3',
     value: 15.00,
     time: '13:02',
-    status: 'Novo'
+    status: 'Esperando confirmação'
   },
   {
     id: 'order4',
@@ -433,7 +433,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client4',
     value: 58.90,
     time: '13:15',
-    status: 'Pronto'
+    status: 'Aceito'
   },
   {
     id: 'order5',
@@ -468,7 +468,7 @@ export const MOCK_ORDERS: Order[] = [
     time: '13:40',
     status: 'Entregando'
   },
-  {
+  /* {
     id: 'order8',
     items: ['Milho Verde com Manteiga'],
     kioskName: 'Beira Mar Quiosque',
@@ -478,7 +478,7 @@ export const MOCK_ORDERS: Order[] = [
     value: 8.00,
     time: '13:42',
     status: 'Atrasado'
-  },
+  }, */
   {
     id: 'order9',
     items: ['Isca de Peixe', 'Refrigerante Lata'],
@@ -488,7 +488,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client9',
     value: 55.00,
     time: '13:50',
-    status: 'Em Preparo'
+    status: 'Preparando'
   },
   {
     id: 'order10',
@@ -499,7 +499,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client10',
     value: 28.50,
     time: '13:55',
-    status: 'Pronto'
+    status: 'Entregando'
   },
   {
     id: 'order11',
@@ -523,7 +523,7 @@ export const MOCK_ORDERS: Order[] = [
     time: '14:05',
     status: 'Finalizado'
   },
-  {
+  /* {
     id: 'order13',
     items: ['Porção de Batata Frita M', 'Guaraná 2L'],
     kioskName: 'Praia Quiosque',
@@ -533,7 +533,7 @@ export const MOCK_ORDERS: Order[] = [
     value: 35.00,
     time: '14:10',
     status: 'Atrasado'
-  },
+  }, */
   {
     id: 'order14',
     items: ['Espetinho de Queijo Coalho', 'Espetinho de Carne'],
@@ -543,7 +543,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client14',
     value: 24.00,
     time: '14:15',
-    status: 'Novo'
+    status: 'Esperando confirmação'
   },
   {
     id: 'order15',

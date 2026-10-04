@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { KioskSelectionService } from './kiosk-selection-service';
-import { Order } from '../models/order';
+import { Order, OrderStatus } from '../models/order';
 import { MOCK_ORDERS } from '../mocks/mocks';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { MOCK_ORDERS } from '../mocks/mocks';
 export class OrderService {
 
   private readonly selectionService = inject(KioskSelectionService)
-  private readonly _orders = signal<Order[]>(MOCK_ORDERS)
+  private readonly _orders = signal<Order[]>(MOCK_ORDERS.map(order => ({ ...order })))
 
   readonly orders = computed(() => {
     const selectedKiosk = this.selectionService.selectedKiosk()
@@ -20,5 +20,11 @@ export class OrderService {
 
     return this._orders().filter((order) => order.kioskId === selectedKiosk.id)
   })
+
+  updateStatus(id: string, status: OrderStatus): void {
+    this._orders.update(orders => orders.map(order =>
+      order.id === id ? { ...order, status } : order
+    ))
+  }
 
 }

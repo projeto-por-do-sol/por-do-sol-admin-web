@@ -92,19 +92,19 @@ body {
 }
 
 /* status */
-.novo {
+.esperando_confirmacao {
   background: #D6EFFF;
   color: #355C82;
 }
 
-.em_preparo {
-  background: #FFF3D6;
-  color: #824F35;
-}
-
-.pronto {
+.aceito {
   background-color: #EDE7F6;
   color: #4A148C;
+}
+
+.preparando {
+  background: #FFF3D6;
+  color: #824F35;
 }
 
 .atrasado {
@@ -128,10 +128,9 @@ body {
 }
 
 .status,
-.novo,
-.em_preparo,
-.pronto,
-.entregue,
+.esperando_confirmacao,
+.aceito,
+.preparando,
 .atrasado,
 .cancelado,
 .status_active,

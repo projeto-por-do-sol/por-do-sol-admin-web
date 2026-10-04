@@ -40,6 +40,12 @@
         </span>
         }
 
+        @case ('template') {
+        @if (cellTemplate(); as template) {
+        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{$implicit: item}"></ng-container>
+        }
+        }
+
         @case ('list') {
         <div class="grid grid-cols-1 gap-3 my-2">
           @for (subItem of item[column.key]; track $index) {

@@ -13,7 +13,8 @@ export class TableOrCard {
 
   columns = input.required<TableColumn[]>()
   ELEMENT_DATA = input.required<unknown[]>();
-  cardTemplate = input.required<TemplateRef<any>>();
+  cardTemplate = input.required<TemplateRef<any>>()
+  cellTemplate = input<TemplateRef<any>>()
 
   isMobile = signal(false)
 

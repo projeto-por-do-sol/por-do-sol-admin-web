@@ -28,7 +28,26 @@
     </div>
 
     <p [ngClass]="orderStatus(order.status)">{{order.status}}</p>
+    <div class="mt-3 flex items-center justify-between gap-3">
+      <span class="text-sm font-medium text-sub-text">Alterar status</span>
+      <app-order-status-actions [status]="order.status" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
+    </div>
   </div>
 </ng-template>
 
-<app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders()" [cardTemplate]="orderCard"></app-table-or-card>
+<ng-template #statusActions let-order>
+  <app-order-status-actions [status]="order.status" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
+</ng-template>
+
+<app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders()" [cardTemplate]="orderCard" [cellTemplate]="statusActions"></app-table-or-card>
+
+<dialog #finishDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="finish-order-title" aria-describedby="finish-order-description" (close)="pendingOrder.set(null)">
+  <div class="grid gap-5">
+    <h2 id="finish-order-title">Finalizar pedido?</h2>
+    <p id="finish-order-description" class="text-sub-text">Confirma a finalização do pedido de {{ pendingOrder()?.clientName }}?</p>
+    <div class="grid gap-3 sm:flex sm:justify-end">
+      <app-cancel-button (onClickButton)="closeFinishDialog()"></app-cancel-button>
+      <app-button labelButton="Finalizar pedido" (onClickButton)="confirmFinishOrder()"></app-button>
+    </div>
+  </div>
+</dialog>
