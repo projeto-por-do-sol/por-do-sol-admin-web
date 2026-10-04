@@ -1,4 +1,4 @@
-import { Component, computed, inject, output, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, output, signal, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -13,10 +13,11 @@ import { Button } from '../../shared/ui/button/button';
 import { Select } from '../../shared/ui/select/select';
 import { KioskItemComplement } from '../../models/kiosk-item';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-kiosk-item-register-form',
-  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatSnackBarModule],
+  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatSnackBarModule, MatTooltipModule],
   templateUrl: './kiosk-item-register-form.html',
   styleUrl: './kiosk-item-register-form.css',
 })
@@ -29,6 +30,7 @@ export class KioskItemRegisterForm {
 
   readonly kiosks = this.kioskService.kiosks
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
+  private readonly categoryDialog = viewChild<ElementRef<HTMLDialogElement>>('categoryDialog')
   readonly onClickCancelButton = output<void>()
   readonly imagePreview = signal<string | null>(null)
   readonly ingredients = signal<string[]>([])
@@ -64,6 +66,7 @@ export class KioskItemRegisterForm {
       control => !control.value || this.parseCurrency(control.value) > 0 ? null : { min: true },
     ],
   })
+  readonly categoryDraft = new FormControl('', { nonNullable: true, validators: [Validators.required] })
 
   private readonly formValue = toSignal(this.formFields.valueChanges, {
     initialValue: this.formFields.value,
@@ -72,6 +75,7 @@ export class KioskItemRegisterForm {
   readonly previewName = computed(() => this.formValue().name?.trim() || 'Novo item')
   readonly previewCategory = computed(() => this.formValue().category?.trim() || 'Categoria')
   readonly selectedKioskName = computed(() => this.kiosks().find(kiosk => kiosk.id === this.formValue().kioskId)?.name ?? '')
+  readonly categoryOptions = computed(() => this.kiosks().find(kiosk => kiosk.id === this.formValue().kioskId)?.categories ?? [])
   readonly previewItems = computed<PreviewItem[]>(() => {
     const value = this.formValue()
     const kiosk = this.kiosks().find(k => k.id === value.kioskId)
@@ -187,6 +191,43 @@ export class KioskItemRegisterForm {
     const control = this.formFields.controls.kioskId
     control.setValue(kiosk?.id ?? '')
     control.markAsTouched()
+    this.formFields.controls.category.setValue('')
+  }
+
+  selectCategory(name: string): void {
+    this.formFields.controls.category.setValue(name)
+    this.formFields.controls.category.markAsTouched()
+  }
+
+  openCategoryDialog(): void {
+    if (!this.formFields.controls.kioskId.value) return
+    this.categoryDraft.reset('')
+    this.categoryDialog()?.nativeElement.showModal()
+  }
+
+  closeCategoryDialog(): void {
+    this.categoryDialog()?.nativeElement.close()
+    this.categoryDraft.reset('')
+  }
+
+  createCategory(): void {
+    const name = this.categoryDraft.value.trim().replace(/\s+/g, ' ')
+    if (!name) {
+      this.categoryDraft.setErrors({ required: true })
+      this.categoryDraft.markAsTouched()
+      return
+    }
+
+    const kioskId = this.formFields.controls.kioskId.value
+    if (!this.kioskService.addCategory(kioskId, name)) {
+      this.categoryDraft.setErrors({ duplicate: true })
+      this.categoryDraft.markAsTouched()
+      return
+    }
+
+    this.selectCategory(name)
+    this.closeCategoryDialog()
+    this.showSuccess('Categoria criada com sucesso.')
   }
 
   private parseCurrency(value: string): number {
@@ -214,6 +255,11 @@ export class KioskItemRegisterForm {
     const { name, category, kioskId, description, value, image } = this.formFields.getRawValue()
     const kiosk = this.kiosks().find(k => k.id === kioskId)
     if (!kiosk?.id || !kiosk.name) return
+    if (!kiosk.categories?.includes(category)) {
+      this.formFields.controls.category.setErrors({ required: true })
+      this.formFields.controls.category.markAsTouched()
+      return
+    }
 
     const imageUrl = image ? await this.readImage(image) : this.placeholderImage
     this.itemService.addItem({

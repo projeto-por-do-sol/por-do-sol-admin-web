@@ -6,11 +6,25 @@
       <app-input id="itemName" label="Nome do item" name="name" formControlName="name" placeholder="Ex.: Porção de peixe frito"></app-input>
 
       <div class="grid md:grid-cols-2 gap-8">
-        <app-input id="itemCategory" label="Categoria" name="category" formControlName="category" placeholder="Ex.: Frutos do mar"></app-input>
         <div class="grid content-start gap-2">
           <app-select selectTitle="Quiosque" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
           @if (formFields.controls.kioskId.invalid && formFields.controls.kioskId.touched) {
             <span class="text-error text-sm">Selecione um quiosque</span>
+          }
+        </div>
+        <div class="grid content-start gap-2 min-w-0">
+          <div class="flex min-w-0 items-end gap-3">
+            <div class="min-w-0 flex-1" [class.opacity-50]="!formFields.controls.kioskId.value" [class.cursor-not-allowed]="!formFields.controls.kioskId.value" matTooltip="Selecione um quiosque antes" [matTooltipDisabled]="!!formFields.controls.kioskId.value">
+              <app-select selectTitle="Categoria" [options]="categoryOptions()" [selectedValue]="formFields.controls.category.value" [disabled]="!formFields.controls.kioskId.value" placeholder="Selecione uma categoria" (valueChange)="selectCategory($event)"></app-select>
+            </div>
+            <div class="size-12.5 shrink-0" matTooltip="Selecione um quiosque antes" [matTooltipDisabled]="!!formFields.controls.kioskId.value">
+              <button type="button" class="grid size-12.5 shrink-0 cursor-pointer place-items-center rounded-full bg-primary text-2xl leading-none text-creme hover:enabled:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50" aria-label="Criar categoria" [disabled]="!formFields.controls.kioskId.value" (click)="openCategoryDialog()">+</button>
+            </div>
+          </div>
+          @if (!formFields.controls.kioskId.value) {
+            <p class="text-sm text-sub-text">Selecione um quiosque para escolher ou criar uma categoria.</p>
+          } @else if (formFields.controls.category.invalid && formFields.controls.category.touched) {
+            <span class="text-error text-sm">Selecione uma categoria</span>
           }
         </div>
       </div>
@@ -98,4 +112,16 @@
       <app-button labelButton="Cadastrar item" icon="add" type="submit"></app-button>
     </div>
   </form>
+
+  <dialog #categoryDialog class="m-auto w-11/12 max-w-md max-h-[80dvh] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="category-dialog-title" (close)="categoryDraft.reset('')">
+    <form class="grid gap-5" (submit)="$event.preventDefault(); createCategory()">
+      <h2 id="category-dialog-title">Criar categoria</h2>
+      <p class="text-sub-text">Quiosque: {{ selectedKioskName() }}</p>
+      <app-input id="newCategoryName" label="Nome da categoria" name="newCategoryName" [formControl]="categoryDraft" placeholder="Ex.: Frutos do mar"></app-input>
+      <div class="grid gap-5 md:flex md:justify-end">
+        <app-cancel-button (onClickButton)="closeCategoryDialog()"></app-cancel-button>
+        <app-button labelButton="Criar categoria" type="submit"></app-button>
+      </div>
+    </form>
+  </dialog>
 </div>

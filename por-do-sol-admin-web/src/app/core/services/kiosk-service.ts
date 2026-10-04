@@ -10,6 +10,18 @@ export class KioskService {
   private _kiosks = signal<KioskModel[]>(MOCK_KIOSKS)
   kiosks = this._kiosks.asReadonly()
 
+  addCategory(kioskId: string, categoryName: string): boolean {
+    const name = categoryName.trim().replace(/\s+/g, ' ')
+    const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR')
+    const kiosk = this._kiosks().find(item => item.id === kioskId)
+    if (!name || !kiosk || kiosk.categories?.some(category => normalize(category) === normalize(name))) return false
+
+    this._kiosks.update(kiosks => kiosks.map(item => item.id === kioskId
+      ? { ...item, categories: [...(item.categories ?? []), name] }
+      : item))
+    return true
+  }
+
   // ngOnInit() {
   //   this.isOpen()
   // }

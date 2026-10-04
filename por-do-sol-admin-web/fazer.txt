@@ -38,5 +38,3 @@ Opção para abrir ou fechar o quiosque antes/depois do esperado (talvez um moda
 
 Colocar uma nova coluna na tabela de pedidos para permitir que o status do pedido seja atualizado sem precisar entrar no pedido.
 Filtrar os itens vendidos pelo quiosques por categorias.
-
-Colocar um btn para criar novas categorias no formulário de itens e colocar um select para escolher a categoria

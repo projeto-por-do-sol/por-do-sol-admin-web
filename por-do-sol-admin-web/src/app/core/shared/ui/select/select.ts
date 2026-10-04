@@ -9,14 +9,15 @@ import { MatSelectChange } from '@angular/material/select';
   styleUrl: './select.css',
 })
 export class Select {
-  selectTitle = input.required<string>();
-  options = input.required<string[]>();
-  selectedValue = input<string>();
-  placeholder = input<string>('');
+  selectTitle = input.required<string>()
+  options = input.required<string[]>()
+  selectedValue = input<string>()
+  placeholder = input<string>('')
+  disabled = input<boolean>(false)
 
-  valueChange = output<string>();
+  valueChange = output<string>()
 
   onSelectionChange(event: MatSelectChange) {
-    this.valueChange.emit(event.value);
+    this.valueChange.emit(event.value)
   }
 }
