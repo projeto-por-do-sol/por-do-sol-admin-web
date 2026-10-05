@@ -25,6 +25,7 @@ export const routes: Routes = [
       { path: 'home', component: Home },
       { path: 'kioskRegister', component: KioskRegisterPage },
       { path: 'employeeRegister', component: EmployeeRegisterPage },
+      { path: 'employeeRegister/:id', component: EmployeeRegisterPage },
       { path: 'itemRegister', component: KioskItemRegisterPage },
       { path: 'createOrder', component: CreateOrder },
     ],

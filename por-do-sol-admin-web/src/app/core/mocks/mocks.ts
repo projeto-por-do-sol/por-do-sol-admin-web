@@ -8,8 +8,8 @@ import { User } from "../models/user-model";
 export const MOCK_USER: User = {
   id: "id_mockado",
   name: "Nome do Usuário",
-  position: "Gerente",
-  kiosk: "Quiosque Santos"
+  position: "Proprietário",
+  kiosk: "Empresa"
 }
 
 export const MOCK_KPI: KpiModel[] = [
@@ -321,6 +321,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee1",
     name: "Rodolfo da Silva",
+    email: "rodolfo.silva@example.com",
+    phone: "(13) 99999-0001",
+    daysShift: ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
     role: "Gerente",
     kioskId: "kiosk_01",
     kioskName: "Quiosque teste",
@@ -331,6 +334,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee2",
     name: "Mariana Costa",
+    email: "mariana.costa@example.com",
+    phone: "(13) 99999-0002",
+    daysShift: ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
     role: "Funcionario",
     kioskId: "kiosk_01",
     kioskName: "Quiosque teste",
@@ -341,6 +347,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee3",
     name: "Lucas Oliveira",
+    email: "lucas.oliveira@example.com",
+    phone: "(13) 99999-0003",
+    daysShift: ["Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
     role: "Funcionario",
     kioskId: "kiosk_02",
     kioskName: "Praia Quiosque",
@@ -351,6 +360,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee4",
     name: "Fernanda Souza",
+    email: "fernanda.souza@example.com",
+    phone: "(13) 99999-0004",
+    daysShift: ["Quarta", "Quinta", "Sexta", "Sábado", "Domingo"],
     role: "Funcionario",
     kioskId: "kiosk_02",
     kioskName: "Praia Quiosque",
@@ -361,6 +373,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee5",
     name: "Gabriel Santos",
+    email: "gabriel.santos@example.com",
+    phone: "(13) 99999-0005",
+    daysShift: ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
     role: "Funcionario",
     kioskId: "kiosk_03",
     kioskName: "Santos Quiosque",
@@ -371,6 +386,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee6",
     name: "Camila Rodrigues",
+    email: "camila.rodrigues@example.com",
+    phone: "(13) 99999-0006",
+    daysShift: ["Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
     role: "Funcionario",
     kioskId: "kiosk_04",
     kioskName: "Beira Mar Quiosque",
@@ -381,6 +399,9 @@ export const MOCK_EMPLOYEE: Employee[] = [
   {
     id: "employee7",
     name: "Thiago Almeida",
+    email: "thiago.almeida@example.com",
+    phone: "(13) 99999-0007",
+    daysShift: ["Quarta", "Quinta", "Sexta", "Sábado", "Domingo"],
     role: "Gerente",
     kioskId: "kiosk_04",
     kioskName: "Beira Mar Quiosque",

@@ -23,6 +23,21 @@ export class TeamService {
     )
   })
 
-}
+  getEmployee(id: string): Employee | undefined {
+    return this._team().find(employee => employee.id === id)
+  }
 
+  updateEmployee(id: string, changes: Partial<Employee>): boolean {
+    if (!this.getEmployee(id)) return false
+    this._team.update(employees => employees.map(employee =>
+      employee.id === id ? { ...employee, ...changes, id } : employee
+    ))
+    return true
+  }
+
+  addEmployee(employee: Employee): void {
+    this._team.update(employees => [...employees, { ...employee, id: crypto.randomUUID() }])
+  }
+
+}
 

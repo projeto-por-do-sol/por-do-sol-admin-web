@@ -1,12 +1,12 @@
 <div class="bg-surface p-8 rounded-2xl border border-border grid grid-cols-1">
   <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
-    <!-- Dados do quiosque -->
+    <!-- Dados do funcionário -->
     <div class="sectionCard">
-      <h2>Dados do quiosque</h2>
+      <h2>Dados do funcionário</h2>
       <app-input [id]="'name'" [label]="'Nome do colaborador'" [name]="'name'" formControlName="name" [placeholder]="'Ex.: João da Silva'"></app-input>
 
       <div class="grid md:flex gap-10">
-        <app-input [id]="'email'" [label]="'E-mail de contato'" [name]="'email'" type="e-mail" formControlName="email" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
+        <app-input [id]="'email'" [label]="'E-mail de contato'" [name]="'email'" type="email" formControlName="email" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
         <app-input [id]="'phone'" [label]="'Telefone'" [name]="'phone'" formControlName="phone" [placeholder]="'(11) 99999-9999'" class="flex-1" mask="phone"></app-input>
       </div>
     </div>
@@ -16,8 +16,8 @@
       <h2>Alocação</h2>
 
       <div class="allocation flex gap-8 justify-between min-w-0">
-        <app-select class="flex-1 min-w-0" [selectTitle]="'Quiosque'" [options]="['Teste', 'Teste2', 'Teste3']" (valueChange)="setKiok($event)"></app-select>
-        <app-select class="flex-1 min-w-0" [selectTitle]="'Cargo'" [options]="['Funcionário', 'Gerente']" (valueChange)="setRole($event)"></app-select>
+        <app-select class="flex-1 min-w-0" [selectTitle]="'Quiosque'" [options]="kioskNames()" [selectedValue]="kiosk()" (valueChange)="setKiok($event)"></app-select>
+        <app-select class="flex-1 min-w-0" [selectTitle]="'Cargo'" [options]="['Funcionário', 'Gerente']" [selectedValue]="role()" (valueChange)="setRole($event)"></app-select>
       </div>
 
       <div class="openTime">
@@ -25,13 +25,13 @@
         <app-input [id]="'finishShift'" [label]="'Fim turno'" [name]="'finishShift'" [type]="'time'" formControlName="finishShift" [isObrigatory]="false"></app-input>
       </div>
 
-      <app-chip-multi-choice [options]="['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']" (outputSelected)="setDaysShift($event)"></app-chip-multi-choice>
+      <app-chip-multi-choice [options]="['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']" [initialSelection]="selectedDays()" (outputSelected)="setDaysShift($event)"></app-chip-multi-choice>
 
     </div>
 
     <div class="grid md:flex md:justify-end gap-5">
       <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
-      <app-button [labelButton]="'Cadastrar quiosque'" [icon]="'add'" type="submit"></app-button>
+      <app-button [labelButton]="employee() ? 'Salvar alterações' : 'Cadastrar funcionário'" [icon]="employee() ? undefined : 'add'" type="submit"></app-button>
     </div>
 
   </form>

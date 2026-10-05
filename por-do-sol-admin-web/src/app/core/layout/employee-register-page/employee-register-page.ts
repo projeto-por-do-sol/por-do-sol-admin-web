@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReturnLink } from "../../shared/ui/return-link/return-link";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { CardPreview } from "../../shared/ui/card-preview/card-preview";
 import { EmployeeRegisterForm } from '../../feature/employee-register-form/employee-register-form';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TeamService } from '../../services/team-service';
 
 
 
@@ -14,8 +15,11 @@ import { Router } from '@angular/router';
   styleUrl: './employee-register-page.css',
 })
 export class EmployeeRegisterPage {
-
-  constructor(private router: Router) { }
+  private readonly router = inject(Router)
+  private readonly route = inject(ActivatedRoute)
+  private readonly teamService = inject(TeamService)
+  readonly employeeId = this.route.snapshot.paramMap.get('id')
+  readonly employee = this.employeeId ? this.teamService.getEmployee(this.employeeId) : null
 
   goToHome() {
     this.router.navigate(['/home'])

@@ -1,4 +1,4 @@
-import { Component, computed, output, signal, Signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal, Signal, effect } from '@angular/core';
 import { Input } from "../../shared/ui/input/input";
 import { ChipMultiChoice } from "../../shared/ui/chip-multi-choice/chip-multi-choice";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
@@ -7,6 +7,9 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
 import { Select } from "../../shared/ui/select/select";
+import { KioskService } from '../../services/kiosk-service';
+import { TeamService } from '../../services/team-service';
+import { Employee } from '../../models/employee';
 
 @Component({
   selector: 'app-employee-register-form',
@@ -16,11 +19,18 @@ import { Select } from "../../shared/ui/select/select";
 })
 export class EmployeeRegisterForm {
 
+  private readonly kiosksService = inject(KioskService)
+  private readonly teamService = inject(TeamService)
+  private kiosks = this.kiosksService.kiosks
+  employee = input<Employee | null>(null)
   daysShift: string[] = []
   onClickCancelButton = output<void>()
+  saved = output<void>()
   role = signal<string>("Funcionário")
   kiosk = signal<string>("")
 
+  readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
+  readonly selectedDays = signal<string[]>([])
 
   previewItems = computed<PreviewItem[]>(() => {
     const d = this.formValue();
@@ -32,14 +42,19 @@ export class EmployeeRegisterForm {
 
   previewName = computed(() => this.formValue().name || 'Novo colaborador')
 
-  previewRole = computed(() => this.role)
+  previewRole = computed(() => this.role())
 
-  previewLastText = "Esse será o card exibido na aba <span class='text-outline'>Equipe</span> do painel assim que o cadastro for concluído."
+  get previewLastText(): string {
+    return this.employee()
+      ? "Esse card será atualizado na aba <span class='text-outline'>Equipe</span> quando as alterações forem salvas."
+      : "Esse será o card exibido na aba <span class='text-outline'>Equipe</span> do painel assim que o cadastro for concluído."
+  }
 
-  previewKioks = computed(() => this.kiosk)
+  previewKioks = computed(() => this.kiosk())
 
   setDaysShift(days: string[]) {
     this.daysShift = days
+    this.selectedDays.set(days)
   }
 
   onClickCancel() {
@@ -70,6 +85,25 @@ export class EmployeeRegisterForm {
     this.formValue = toSignal(this.formFields.valueChanges, {
       initialValue: this.formFields.value,
     });
+
+    effect(() => {
+      const employee = this.employee()
+      if (!employee) {
+        if (!this.kiosk()) this.kiosk.set(this.kioskNames()[0] ?? '')
+        return
+      }
+      this.formFields.patchValue({
+        name: employee.name ?? '',
+        email: employee.email ?? '',
+        phone: employee.phone ?? '',
+        startShift: employee.startShift ?? '',
+        finishShift: employee.finishShift ?? '',
+      })
+      this.kiosk.set(employee.kioskName ?? '')
+      this.role.set(employee.role === 'Funcionario' ? 'Funcionário' : employee.role ?? 'Funcionário')
+      this.daysShift = [...(employee.daysShift ?? [])]
+      this.selectedDays.set(this.daysShift)
+    })
   }
 
   onSubmit() {
@@ -77,9 +111,26 @@ export class EmployeeRegisterForm {
       this.formFields.markAllAsTouched()
       return
     }
-    const payload = { ...this.formFields.value, daysShift: this.daysShift }
-    console.log(payload)
-    // chamada ao service/API aqui
+    const kiosk = this.kiosks().find(item => item.name === this.kiosk())
+    if (!kiosk) return
+    const payload: Employee = {
+      name: this.formFields.value.name?.trim(),
+      email: this.formFields.value.email?.trim(),
+      phone: this.formFields.value.phone,
+      startShift: this.formFields.value.startShift,
+      finishShift: this.formFields.value.finishShift,
+      daysShift: this.daysShift,
+      kioskId: kiosk.id,
+      kioskName: kiosk.name,
+      role: this.role(),
+    }
+    const employee = this.employee()
+    if (employee?.id) {
+      if (!this.teamService.updateEmployee(employee.id, payload)) return
+    } else {
+      this.teamService.addEmployee({ ...payload, status: false })
+    }
+    this.saved.emit()
   }
 
 }

@@ -3,11 +3,16 @@
 
 <ng-template #teamCard let-employee>
   <div class="cardTemplate overflow-hidden">
-    <div class="name overflow-hidden">
-      <div class="avatar">
-        {{getNameInitials(employee.name)}}
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="name overflow-hidden min-w-0 flex-1">
+        <div class="avatar">
+          {{getNameInitials(employee.name)}}
+        </div>
+        <p class="font-semibold truncate">{{employee.name}}</p>
       </div>
-      <p class="font-semibold truncate">{{employee.name}}</p>
+      <button type="button" class="employee-edit-button" [attr.aria-label]="'Editar ' + employee.name" (click)="editEmployee(employee)">
+        <img src="assets/icons/edit.svg" alt="" aria-hidden="true">
+      </button>
     </div>
     <p class="mt-2 font-medium text-base text-sub-text">{{employee.role}}</p>
 
@@ -19,4 +24,9 @@
     <p [ngClass]="employee.status ? 'status_active' : 'status_inactive'">{{employee.status ? 'Em turno' : 'Fora de turno'}}</p>
   </div>
 </ng-template>
-<app-table-or-card [columns]="employeeColumns" [ELEMENT_DATA]="teamService.team()" [cardTemplate]="teamCard"></app-table-or-card>
+<ng-template #editCell let-employee>
+  <button type="button" class="employee-edit-button" [attr.aria-label]="'Editar ' + employee.name" (click)="editEmployee(employee)">
+    <img src="assets/icons/edit.svg" alt="" aria-hidden="true">
+  </button>
+</ng-template>
+<app-table-or-card [columns]="employeeColumns" [ELEMENT_DATA]="teamService.team()" [cardTemplate]="teamCard" [cellTemplate]="editCell"></app-table-or-card>

@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { SectionTitle } from '../../shared/ui/section-title/section-title';
-import { Table, TableColumn } from '../../shared/ui/table/table';
-import { MOCK_EMPLOYEE } from '../../mocks/mocks';
+import { TableColumn } from '../../shared/ui/table/table';
 import { Employee } from '../../models/employee';
 import { TableOrCard } from "../table-or-card/table-or-card";
 import { UserInitials } from '../../utils/user-initials';
@@ -42,6 +41,11 @@ export class Team {
       key: 'status',
       header: 'Status',
       type: 'statusEmployee'
+    },
+    {
+      key: 'actions',
+      header: 'Editar',
+      type: 'template'
     }
   ];
 
@@ -53,6 +57,10 @@ export class Team {
 
   goToEmployeeRegister() {
     this.router.navigate(['employeeRegister'])
+  }
+
+  editEmployee(employee: Employee) {
+    if (employee.id) this.router.navigate(['/employeeRegister', employee.id])
   }
 
 }

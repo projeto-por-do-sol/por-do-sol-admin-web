@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal, effect } from '@angular/core';
 
 @Component({
   selector: 'app-chip-multi-choice',
@@ -10,17 +10,18 @@ import { Component, input, output } from '@angular/core';
 export class ChipMultiChoice {
 
   options = input.required<string[]>()
+  initialSelection = input<string[]>([])
 
-  selectedOptions: string[] = []
+  selectedOptions = signal<string[]>([])
 
   outputSelected = output<string[]>()
 
-  ngOnInit() {
-
+  constructor() {
+    effect(() => this.selectedOptions.set([...this.initialSelection()]))
   }
 
   containsOption(option: string) {
-    if (this.selectedOptions.includes(option)) {
+    if (this.selectedOptions().includes(option)) {
       return true
     }
     return false
@@ -28,11 +29,11 @@ export class ChipMultiChoice {
 
   choosenOption(option: string) {
     if (this.containsOption(option)) {
-      this.selectedOptions = this.selectedOptions.filter(o => o !== option);
+      this.selectedOptions.update(options => options.filter(o => o !== option));
     } else {
-      this.selectedOptions = [...this.selectedOptions, option];
+      this.selectedOptions.update(options => [...options, option]);
     }
-    this.outputSelected.emit(this.selectedOptions)
+    this.outputSelected.emit(this.selectedOptions())
   }
 
 }
