@@ -23,6 +23,7 @@ export class KioskItems {
     { key: 'kioskName', header: 'Quiosque' },
     { key: 'description', header: 'Descrição', formatter: item => this.shortDescription(item.description) },
     { key: 'value', header: 'Valor', formatter: item => this.formatValue(item.value) },
+    { key: 'actions', header: 'Editar', type: 'template' },
   ]
 
   shortDescription(description: string): string {
@@ -38,5 +39,9 @@ export class KioskItems {
 
   goToItemRegister(): void {
     this.router.navigate(['/itemRegister'])
+  }
+
+  editItem(item: KioskItem): void {
+    this.router.navigate(['/itemRegister', item.id])
   }
 }

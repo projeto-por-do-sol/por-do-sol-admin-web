@@ -35,9 +35,14 @@ export class TeamService {
     return true
   }
 
+  removeEmployee(id: string): boolean {
+    if (!this.getEmployee(id)) return false
+    this._team.update(employees => employees.filter(employee => employee.id !== id))
+    return true
+  }
+
   addEmployee(employee: Employee): void {
     this._team.update(employees => [...employees, { ...employee, id: crypto.randomUUID() }])
   }
 
 }
-

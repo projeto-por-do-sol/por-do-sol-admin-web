@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, output, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { ImageInput } from '../../shared/ui/image-input/image-input';
 import { CancelButton } from '../../shared/ui/cancel-button/cancel-button';
 import { Button } from '../../shared/ui/button/button';
 import { Select } from '../../shared/ui/select/select';
-import { KioskItemComplement } from '../../models/kiosk-item';
+import { KioskItem, KioskItemComplement } from '../../models/kiosk-item';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -22,6 +22,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './kiosk-item-register-form.css',
 })
 export class KioskItemRegisterForm {
+  readonly item = input<KioskItem | null>(null)
   private readonly kioskService = inject(KioskService)
   private readonly selectionService = inject(KioskSelectionService)
   private readonly itemService = inject(KioskItemService)
@@ -32,16 +33,22 @@ export class KioskItemRegisterForm {
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
   private readonly categoryDialog = viewChild<ElementRef<HTMLDialogElement>>('categoryDialog')
   private readonly successDialog = viewChild<ElementRef<HTMLDialogElement>>('successDialog')
+  private readonly removeDialog = viewChild<ElementRef<HTMLDialogElement>>('removeDialog')
   private readonly itemNameInput = viewChild<Input>('itemNameInput')
   readonly onClickCancelButton = output<void>()
   readonly saving = signal(false)
   readonly imagePreview = signal<string | null>(null)
+  readonly imageRemoved = signal(false)
   readonly ingredients = signal<string[]>([])
   readonly complements = signal<KioskItemComplement[]>([])
   readonly editingIngredientIndex = signal<number | null>(null)
   readonly editingComplementIndex = signal<number | null>(null)
   readonly placeholderImage = '/assets/images/item-placeholder.svg'
-  readonly previewLastText = "Este item aparecerá na aba <span class='text-outline'>Itens</span> após o cadastro."
+  get previewLastText(): string {
+    return this.item()
+      ? "Este item será atualizado na aba <span class='text-outline'>Itens</span> após salvar."
+      : "Este item aparecerá na aba <span class='text-outline'>Itens</span> após o cadastro."
+  }
 
   readonly formFields = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -91,6 +98,50 @@ export class KioskItemRegisterForm {
       { label: 'Complementos', value: this.complements().map(item => `${item.name} (${this.formatCurrency(item.value)})`).join(', ') || 'Nenhum' },
     ]
   })
+
+  constructor() {
+    effect(() => {
+      const item = this.item()
+      if (!item) return
+      this.formFields.patchValue({
+        name: item.name,
+        category: item.category,
+        kioskId: item.kioskId,
+        description: item.description,
+        value: item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        image: null,
+      })
+      this.imagePreview.set(item.imageUrl === this.placeholderImage ? null : item.imageUrl)
+      this.imageRemoved.set(false)
+      this.ingredients.set([...(item.ingredients ?? [])])
+      this.complements.set((item.complements ?? []).map(complement => ({ ...complement })))
+    })
+  }
+
+  onImageSelected(url: string | null): void {
+    this.imagePreview.set(url)
+    this.imageRemoved.set(url === null)
+  }
+
+  openRemoveDialog(): void {
+    if (this.item() && !this.saving()) this.removeDialog()?.nativeElement.showModal()
+  }
+
+  closeRemoveDialog(): void {
+    this.removeDialog()?.nativeElement.close()
+  }
+
+  confirmRemoveItem(): void {
+    const item = this.item()
+    if (!item || this.saving()) return
+    if (!this.itemService.removeItem(item.id)) {
+      this.snackBar.open('Não foi possível remover o item. Tente novamente.', undefined, { duration: 3000 })
+      return
+    }
+    this.closeRemoveDialog()
+    this.showSuccess('Item removido com sucesso.')
+    void this.router.navigate(['/home'])
+  }
 
   formatCurrency(value: number): string {
     return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -267,9 +318,11 @@ export class KioskItemRegisterForm {
 
     this.saving.set(true)
     try {
-      const imageUrl = image ? await this.readImage(image) : this.placeholderImage
-      this.itemService.addItem({
-        id: crypto.randomUUID(),
+      const currentItem = this.item()
+      const imageUrl = image
+        ? await this.readImage(image)
+        : this.imageRemoved() ? this.placeholderImage : currentItem?.imageUrl ?? this.placeholderImage
+      const itemData = {
         kioskId: kiosk.id,
         kioskName: kiosk.name,
         name: name.trim(),
@@ -279,10 +332,17 @@ export class KioskItemRegisterForm {
         imageUrl,
         ingredients: [...this.ingredients()],
         complements: [...this.complements()],
-      })
-      this.successDialog()?.nativeElement.showModal()
+      }
+      if (currentItem) {
+        if (!this.itemService.updateItem(currentItem.id, itemData)) throw new Error('Item não encontrado')
+        this.showSuccess('Item atualizado com sucesso.')
+        void this.router.navigate(['/home'])
+      } else {
+        this.itemService.addItem({ ...itemData, id: crypto.randomUUID() })
+        this.successDialog()?.nativeElement.showModal()
+      }
     } catch {
-      this.snackBar.open('Não foi possível cadastrar o item. Tente novamente.', undefined, { duration: 3000 })
+      this.snackBar.open(this.item() ? 'Não foi possível atualizar o item. Tente novamente.' : 'Não foi possível cadastrar o item. Tente novamente.', undefined, { duration: 3000 })
     } finally {
       this.saving.set(false)
     }
@@ -293,6 +353,7 @@ export class KioskItemRegisterForm {
     const kioskId = this.formFields.controls.kioskId.value
     this.formFields.reset({ name: '', category: '', kioskId, description: '', value: '', image: null })
     this.imagePreview.set(null)
+    this.imageRemoved.set(false)
     this.ingredients.set([])
     this.complements.set([])
     this.cancelIngredientEdit()

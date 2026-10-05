@@ -33,4 +33,14 @@ describe('TeamService', () => {
     expect(service.getEmployee('employee2')?.name).toBe('Mariana Costa');
     expect(service.updateEmployee('missing', { name: 'Ninguém' })).toBe(false);
   });
+
+  it('removes only the requested employee', () => {
+    const count = service.team().length;
+
+    expect(service.removeEmployee('employee1')).toBe(true);
+    expect(service.getEmployee('employee1')).toBeUndefined();
+    expect(service.getEmployee('employee2')).toBeTruthy();
+    expect(service.team().length).toBe(count - 1);
+    expect(service.removeEmployee('employee1')).toBe(false);
+  });
 });

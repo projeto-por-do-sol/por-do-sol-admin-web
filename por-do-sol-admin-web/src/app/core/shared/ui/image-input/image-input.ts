@@ -13,12 +13,18 @@ export class ImageInput implements ControlValueAccessor {
   label = input<string>('Foto de perfil')
   hint = input<string>('PNG, JPG ou WEBP de até 5 MB')
   accept = input<string>('image/png,image/jpeg,image/webp')
+  existingImageUrl = input<string | null>(null)
   imageSelected = output<string | null>()
 
   previewUrl: string | null = null
+  private removed = false
   fileName = ''
   disabled = false
   errorMessage = ''
+
+  get displayUrl(): string | null {
+    return this.previewUrl ?? (this.removed ? null : this.existingImageUrl())
+  }
 
   private onChange: (value: File | null) => void = () => undefined
   private onTouched: () => void = () => undefined
@@ -46,6 +52,7 @@ export class ImageInput implements ControlValueAccessor {
     }
 
     this.fileName = file.name
+    this.removed = false
     this.onChange(file)
     const reader = new FileReader()
     reader.onload = () => {
@@ -61,6 +68,7 @@ export class ImageInput implements ControlValueAccessor {
     fileInput.value = ''
     this.fileName = ''
     this.previewUrl = null
+    this.removed = true
     this.errorMessage = ''
     this.onChange(null)
     this.onTouched()

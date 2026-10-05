@@ -11,10 +11,6 @@ TEM QUE COLOCAR O MINIMAP PARA O USUÁRIO INFORMAR A LATITUDE E LONGITUDE (kiosk
 Colocar um select com os funcionários já cadastrados (talvez) (kioskRegister)
 
 
-
-
-Tela para criar pedidos
-
 Tela de descrição de pedidos
 
 Alterar dados do proprietário
@@ -29,12 +25,11 @@ Guards para acesso nas telas
 Modal para criar cupons de desconto
 Modal para criar promoções
 Tela para alterar localização dos quiosques
-Tela para alterar informação dos funcionários
+
 Tela para alterar informação dos quiosques
 Firebase Cloud Messaging para criação de novos pedidos
 
 Opção para abrir ou fechar o quiosque antes/depois do esperado (talvez um modal que, quando chega a hora de fechar, pergute se o usuário deseja fechar ou n)
 
 
-Colocar uma nova coluna na tabela de pedidos para permitir que o status do pedido seja atualizado sem precisar entrar no pedido.
 Filtrar os itens vendidos pelo quiosques por categorias.

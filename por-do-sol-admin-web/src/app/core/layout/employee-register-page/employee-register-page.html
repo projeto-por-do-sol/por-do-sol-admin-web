@@ -3,7 +3,7 @@
   <app-section-title [lable]="'Equipe'" [section]="employeeId ? 'Editar funcionário' : 'Cadastrar novo funcionário'" [text]="employeeId ? 'Atualize os dados, a alocação e o turno do funcionário.' : 'Adicione os dados do funcionário, escolha o quiosque e o turno, e crie o acesso dele ao painel.'"></app-section-title>
   @if (!employeeId || employee) {
   <div class="grid grid-cols-1 lg:grid-cols-5 lg:gap-8 relative items-start">
-    <app-employee-register-form #employeeForm class="col-span-3" [employee]="employee ?? null" (onClickCancelButton)="goToHome()" (saved)="goToHome()"></app-employee-register-form>
+    <app-employee-register-form #employeeForm class="col-span-3" [employee]="employee ?? null" (onClickCancelButton)="goToHome()" (saved)="goToHome()" (removed)="goToHome()"></app-employee-register-form>
 
     <app-card-preview class="col-span-2 sticky top-8" [contextLabel]="'equipe'" [name]="employeeForm.previewName()" [items]="employeeForm.previewItems()" [role]="employeeForm.previewRole()" [lastText]="employeeForm.previewLastText"></app-card-preview>
   </div>

@@ -6,15 +6,15 @@
 
   <label
     class="group relative flex h-48 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-2 border-dashed border-secondary bg-fundo text-center text-outline transition-all hover:border-primary hover:bg-surface focus-within:border-primary focus-within:bg-surface focus-within:ring-3 focus-within:ring-primary/20 sm:h-56"
-    [class.border-solid]="previewUrl"
-    [class.bg-outline]="previewUrl"
+    [class.border-solid]="displayUrl"
+    [class.bg-outline]="displayUrl"
     [class.cursor-not-allowed]="disabled"
     [class.opacity-60]="disabled"
     [for]="id()">
     <input class="absolute size-px opacity-0" #fileInput [id]="id()" type="file" [accept]="accept()" [disabled]="disabled" (change)="handleFile($event)">
 
-    @if (previewUrl) {
-      <img class="h-full w-full object-cover" [src]="previewUrl" [alt]="'Prévia de ' + fileName">
+    @if (displayUrl) {
+      <img class="h-full w-full object-cover" [src]="displayUrl" [alt]="fileName ? 'Prévia de ' + fileName : 'Imagem atual do item'">
       <div class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-outline/80 p-3 font-semibold text-on-tertiary">
         <svg class="w-7 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16h6v-5h4l-7-7-7 7h4v5Zm-4 4h14v-2H5v2Z"/></svg>
         <span>Trocar imagem</span>

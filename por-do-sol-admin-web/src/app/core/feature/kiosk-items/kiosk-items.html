@@ -12,8 +12,13 @@
   <div class="cardTemplate">
     <div class="item-card-header">
       <img class="item-card-image" [src]="item.imageUrl" [alt]="item.name" loading="lazy">
-      <div class="item-card-heading">
-        <p class="font-semibold text-lg">{{ item.name }}</p>
+      <div class="item-card-heading flex-1">
+        <div class="flex min-w-0 items-center justify-between gap-3">
+          <p class="min-w-0 font-semibold text-lg truncate">{{ item.name }}</p>
+          <button type="button" class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary cursor-pointer hover:bg-marrom focus-visible:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline" [attr.aria-label]="'Editar item ' + item.name" (click)="editItem(item)">
+            <img src="assets/icons/edit.svg" class="size-5" alt="" aria-hidden="true">
+          </button>
+        </div>
         <p class="text-sub-text">{{ item.category }}</p>
         <p class="text-sub-text">{{ item.kioskName }}</p>
       </div>
@@ -23,8 +28,15 @@
   </div>
 </ng-template>
 
+<ng-template #editCell let-item>
+  <button type="button" class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary cursor-pointer hover:bg-marrom focus-visible:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline" [attr.aria-label]="'Editar item ' + item.name" (click)="editItem(item)">
+    <img src="assets/icons/edit.svg" class="size-5" alt="" aria-hidden="true">
+  </button>
+</ng-template>
+
 <app-table-or-card
   [columns]="itemColumns"
   [ELEMENT_DATA]="kioskItemService.items()"
-  [cardTemplate]="itemCard">
+  [cardTemplate]="itemCard"
+  [cellTemplate]="editCell">
 </app-table-or-card>

@@ -2,14 +2,14 @@
   <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
     <div class="sectionCard">
       <h2>Dados do item</h2>
-      <app-image-input label="Imagem do item" formControlName="image" (imageSelected)="imagePreview.set($event)"></app-image-input>
+      <app-image-input label="Imagem do item" formControlName="image" [existingImageUrl]="item()?.imageUrl ?? null" (imageSelected)="onImageSelected($event)"></app-image-input>
       <app-input #itemNameInput id="itemName" label="Nome do item" name="name" formControlName="name" placeholder="Ex.: Porção de peixe frito"></app-input>
 
       <div class="grid md:grid-cols-2 gap-8">
         <div class="grid content-start gap-2">
           <app-select selectTitle="Quiosque" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
           @if (formFields.controls.kioskId.invalid && formFields.controls.kioskId.touched) {
-            <span class="text-error text-sm">Selecione um quiosque</span>
+          <span class="text-error text-sm">Selecione um quiosque</span>
           }
         </div>
         <div class="grid content-start gap-2 min-w-0">
@@ -22,9 +22,9 @@
             </div>
           </div>
           @if (!formFields.controls.kioskId.value) {
-            <p class="text-sm text-sub-text">Selecione um quiosque para escolher ou criar uma categoria.</p>
+          <p class="text-sm text-sub-text">Selecione um quiosque para escolher ou criar uma categoria.</p>
           } @else if (formFields.controls.category.invalid && formFields.controls.category.touched) {
-            <span class="text-error text-sm">Selecione uma categoria</span>
+          <span class="text-error text-sm">Selecione uma categoria</span>
           }
         </div>
       </div>
@@ -33,14 +33,14 @@
         <label for="itemDescription" class="font-semibold text-base">Descrição <span class="text-primary">*</span></label>
         <textarea id="itemDescription" formControlName="description" rows="4" placeholder="Descreva o item do cardápio" class="item-field resize-y" [class.border-error]="formFields.controls.description.invalid && formFields.controls.description.touched"></textarea>
         @if (formFields.controls.description.invalid && formFields.controls.description.touched) {
-          <span class="text-error text-sm">Campo obrigatório</span>
+        <span class="text-error text-sm">Campo obrigatório</span>
         }
       </div>
 
       <div class="w-full">
         <app-input id="itemValue" label="Valor (R$)" name="value" mask="currency" formControlName="value" placeholder="0,00"></app-input>
         @if (formFields.controls.value.hasError('min') && formFields.controls.value.touched) {
-          <span class="text-error text-sm">Informe um valor maior que zero</span>
+        <span class="text-error text-sm">Informe um valor maior que zero</span>
         }
       </div>
     </div>
@@ -52,24 +52,24 @@
         <app-input id="ingredientName" label="Ingrediente" name="ingredientName" [formControl]="ingredientDraft" placeholder="Ex.: Queijo coalho"></app-input>
         <app-button class="sm:mt-8" [labelButton]="editingIngredientIndex() === null ? 'Adicionar ingrediente' : 'Salvar ingrediente'" [fullWidth]="true" (onClickButton)="saveIngredient()"></app-button>
         @if (editingIngredientIndex() !== null) {
-          <button type="button" class="item-text-button text-center sm:col-start-2" (click)="cancelIngredientEdit()">Cancelar edição</button>
+        <button type="button" class="item-text-button text-center sm:col-start-2" (click)="cancelIngredientEdit()">Cancelar edição</button>
         }
       </div>
 
       @if (ingredients().length) {
-        <ul class="item-list" aria-label="Ingredientes adicionados">
-          @for (ingredient of ingredients(); track $index) {
-            <li class="item-list-row">
-              <span class="font-medium">{{ ingredient }}</span>
-              <div class="item-list-actions">
-                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Editar ' + ingredient" (click)="editIngredient($index)"><span class="item-action-icon item-action-edit" aria-hidden="true"></span></button>
-                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Remover ' + ingredient" (click)="removeIngredient($index)"><span class="item-action-icon item-action-delete" aria-hidden="true"></span></button>
-              </div>
-            </li>
-          }
-        </ul>
+      <ul class="item-list" aria-label="Ingredientes adicionados">
+        @for (ingredient of ingredients(); track $index) {
+        <li class="item-list-row">
+          <span class="font-medium">{{ ingredient }}</span>
+          <div class="item-list-actions">
+            <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Editar ' + ingredient" (click)="editIngredient($index)"><span class="item-action-icon item-action-edit" aria-hidden="true"></span></button>
+            <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Remover ' + ingredient" (click)="removeIngredient($index)"><span class="item-action-icon item-action-delete" aria-hidden="true"></span></button>
+          </div>
+        </li>
+        }
+      </ul>
       } @else {
-        <p class="text-sub-text">Nenhum ingrediente adicionado.</p>
+      <p class="text-sub-text">Nenhum ingrediente adicionado.</p>
       }
     </div>
 
@@ -81,35 +81,45 @@
         <div class="min-w-0">
           <app-input id="complementValue" label="Valor (R$)" name="complementValue" mask="currency" [isObrigatory]="false" [formControl]="complementValueDraft" placeholder="0,00"></app-input>
           @if (complementValueDraft.hasError('min') && complementValueDraft.touched) {
-            <span class="text-error text-sm">Informe um valor maior que zero</span>
+          <span class="text-error text-sm">Informe um valor maior que zero</span>
           }
         </div>
         <app-button class="whitespace-nowrap md:mt-8" [labelButton]="editingComplementIndex() === null ? 'Adicionar complemento' : 'Salvar complemento'" [fullWidth]="true" (onClickButton)="saveComplement()"></app-button>
         @if (editingComplementIndex() !== null) {
-          <button type="button" class="item-text-button text-center md:col-start-3" (click)="cancelComplementEdit()">Cancelar edição</button>
+        <button type="button" class="item-text-button text-center md:col-start-3" (click)="cancelComplementEdit()">Cancelar edição</button>
         }
       </div>
 
       @if (complements().length) {
-        <ul class="item-list" aria-label="Complementos adicionados">
-          @for (complement of complements(); track $index) {
-            <li class="item-list-row">
-              <span class="font-medium">{{ complement.name }} <span class="text-sub-text">· {{ formatCurrency(complement.value) }}</span></span>
-              <div class="item-list-actions">
-                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Editar ' + complement.name" (click)="editComplement($index)"><span class="item-action-icon item-action-edit" aria-hidden="true"></span></button>
-                <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Remover ' + complement.name" (click)="removeComplement($index)"><span class="item-action-icon item-action-delete" aria-hidden="true"></span></button>
-              </div>
-            </li>
-          }
-        </ul>
+      <ul class="item-list" aria-label="Complementos adicionados">
+        @for (complement of complements(); track $index) {
+        <li class="item-list-row">
+          <span class="font-medium">{{ complement.name }} <span class="text-sub-text">· {{ formatCurrency(complement.value) }}</span></span>
+          <div class="item-list-actions">
+            <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Editar ' + complement.name" (click)="editComplement($index)"><span class="item-action-icon item-action-edit" aria-hidden="true"></span></button>
+            <button type="button" class="item-icon-button border border-transparent hover:bg-outline/20 hover:border-border" [attr.aria-label]="'Remover ' + complement.name" (click)="removeComplement($index)"><span class="item-action-icon item-action-delete" aria-hidden="true"></span></button>
+          </div>
+        </li>
+        }
+      </ul>
       } @else {
-        <p class="text-sub-text">Nenhum complemento adicionado.</p>
+      <p class="text-sub-text">Nenhum complemento adicionado.</p>
       }
     </div>
 
-    <div class="grid md:flex md:justify-end gap-5">
-      <app-cancel-button (onClickButton)="onClickCancelButton.emit()"></app-cancel-button>
-      <app-button labelButton="Cadastrar item" icon="add" type="submit" [disabled]="saving()"></app-button>
+    <div class="grid gap-5 md:flex md:items-center md:justify-between">
+      @if (item()) {
+      <button type="button" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:enabled:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline disabled:cursor-not-allowed disabled:opacity-50 md:w-auto" aria-label="Remover item do cardápio" [disabled]="saving()" (click)="openRemoveDialog()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+          <path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z" />
+        </svg>
+        Remover item
+      </button>
+      }
+      <div class="grid gap-5 md:ml-auto md:flex md:justify-end">
+        <app-cancel-button (onClickButton)="onClickCancelButton.emit()"></app-cancel-button>
+        <app-button [labelButton]="item() ? 'Salvar alterações' : 'Cadastrar item'" [icon]="item() ? undefined : 'add'" type="submit" [disabled]="saving()"></app-button>
+      </div>
     </div>
   </form>
 
@@ -123,6 +133,17 @@
         <app-button labelButton="Criar categoria" type="submit"></app-button>
       </div>
     </form>
+  </dialog>
+
+  <dialog #removeDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="remove-item-title" aria-describedby="remove-item-description">
+    <div class="grid gap-5">
+      <h2 id="remove-item-title">Remover item?</h2>
+      <p id="remove-item-description" class="text-sub-text">Deseja remover {{ item()?.name }} do cardápio? Esta ação não pode ser desfeita.</p>
+      <div class="grid gap-3 sm:flex sm:justify-end">
+        <app-cancel-button (onClickButton)="closeRemoveDialog()"></app-cancel-button>
+        <button type="button" class="inline-flex w-full items-center justify-center rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline sm:w-auto" aria-label="Confirmar remoção do item" (click)="confirmRemoveItem()">Remover item</button>
+      </div>
+    </div>
   </dialog>
 
   <dialog #successDialog class="m-auto w-11/12 max-w-md max-h-[80dvh] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="item-success-title" aria-describedby="item-success-description" (cancel)="$event.preventDefault()">

@@ -19,4 +19,22 @@ export class KioskItemService {
   addItem(item: KioskItem): void {
     this._items.update(items => [...items, item])
   }
+
+  getItem(id: string): KioskItem | undefined {
+    return this._items().find(item => item.id === id)
+  }
+
+  updateItem(id: string, changes: Partial<KioskItem>): boolean {
+    if (!this.getItem(id)) return false
+    this._items.update(items => items.map(item =>
+      item.id === id ? { ...item, ...changes, id } : item
+    ))
+    return true
+  }
+
+  removeItem(id: string): boolean {
+    if (!this.getItem(id)) return false
+    this._items.update(items => items.filter(item => item.id !== id))
+    return true
+  }
 }

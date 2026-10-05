@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { KioskItems } from './kiosk-items';
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
+import { Router } from '@angular/router';
+import { vi } from 'vitest';
 
 describe('KioskItems', () => {
   let component: KioskItems;
@@ -34,5 +36,15 @@ describe('KioskItems', () => {
     expect(component.shortDescription('Descrição curta')).toBe('Descrição curta');
     expect(component.shortDescription('a'.repeat(81))).toBe(`${'a'.repeat(80)}...`);
     expect(component.formatValue(28.9)).toBe('R$ 28,90');
+  });
+
+  it('opens the editor for the selected item', () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const button = fixture.nativeElement.querySelector('[aria-label="Editar item Porção de Peixe Frito"]') as HTMLButtonElement;
+
+    expect(button).toBeTruthy();
+    button.click();
+
+    expect(navigate).toHaveBeenCalledWith(['/itemRegister', 'item1']);
   });
 });

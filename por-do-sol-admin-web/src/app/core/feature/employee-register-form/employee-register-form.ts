@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal, Signal, effect } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, output, signal, Signal, effect, viewChild } from '@angular/core';
 import { Input } from "../../shared/ui/input/input";
 import { ChipMultiChoice } from "../../shared/ui/chip-multi-choice/chip-multi-choice";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
@@ -21,11 +21,13 @@ export class EmployeeRegisterForm {
 
   private readonly kiosksService = inject(KioskService)
   private readonly teamService = inject(TeamService)
+  private readonly removeDialog = viewChild<ElementRef<HTMLDialogElement>>('removeDialog')
   private kiosks = this.kiosksService.kiosks
   employee = input<Employee | null>(null)
   daysShift: string[] = []
   onClickCancelButton = output<void>()
   saved = output<void>()
+  removed = output<void>()
   role = signal<string>("Funcionário")
   kiosk = signal<string>("")
 
@@ -59,6 +61,21 @@ export class EmployeeRegisterForm {
 
   onClickCancel() {
     this.onClickCancelButton.emit()
+  }
+
+  openRemoveDialog() {
+    if (this.employee()) this.removeDialog()?.nativeElement.showModal()
+  }
+
+  closeRemoveDialog() {
+    this.removeDialog()?.nativeElement.close()
+  }
+
+  confirmRemoveEmployee() {
+    const employee = this.employee()
+    if (!employee?.id || !this.teamService.removeEmployee(employee.id)) return
+    this.closeRemoveDialog()
+    this.removed.emit()
   }
 
   setRole(role: string) {

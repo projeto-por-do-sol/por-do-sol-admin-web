@@ -29,10 +29,28 @@
 
     </div>
 
-    <div class="grid md:flex md:justify-end gap-5">
-      <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
-      <app-button [labelButton]="employee() ? 'Salvar alterações' : 'Cadastrar funcionário'" [icon]="employee() ? undefined : 'add'" type="submit"></app-button>
+    <div class="grid gap-5 md:flex md:items-center md:justify-between">
+      @if (employee()) {
+        <button type="button" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:enabled:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline md:w-auto" aria-label="Remover funcionário da equipe" (click)="openRemoveDialog()">
+          <img src="assets/icons/delete_forever.svg" class="size-6" alt="" aria-hidden="true">
+          Remover funcionário
+        </button>
+      }
+      <div class="grid gap-5 md:ml-auto md:flex md:justify-end">
+        <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
+        <app-button [labelButton]="employee() ? 'Salvar alterações' : 'Cadastrar funcionário'" [icon]="employee() ? undefined : 'add'" type="submit"></app-button>
+      </div>
     </div>
 
   </form>
+  <dialog #removeDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="remove-employee-title" aria-describedby="remove-employee-description">
+    <div class="grid gap-5">
+      <h2 id="remove-employee-title">Remover funcionário?</h2>
+      <p id="remove-employee-description" class="text-sub-text">Deseja remover {{ employee()?.name }} da equipe? Esta ação não pode ser desfeita.</p>
+      <div class="grid gap-3 sm:flex sm:justify-end">
+        <app-cancel-button (onClickButton)="closeRemoveDialog()"></app-cancel-button>
+        <button type="button" class="inline-flex w-full items-center justify-center rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline sm:w-auto" aria-label="Confirmar remoção do funcionário" (click)="confirmRemoveEmployee()">Remover funcionário</button>
+      </div>
+    </div>
+  </dialog>
 </div>
