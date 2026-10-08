@@ -105,7 +105,10 @@
         {{currentUser.name}}
       </p>
       <p class="text-sm text-secondary truncate">
-        <span [title]="currentUser.position">{{currentUser.position}}</span> • <span [title]="currentUser.kiosk">{{currentUser.kiosk}}</span>
+        <span [title]="currentUser.position">{{currentUser.position}}</span>
+        @if (currentUser.kiosk) {
+          • <span [title]="currentUser.kiosk">{{currentUser.kiosk}}</span>
+        }
       </p>
     </div>
   </div>

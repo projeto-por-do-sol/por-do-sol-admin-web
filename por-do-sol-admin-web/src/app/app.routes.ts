@@ -10,6 +10,7 @@ import { InformEmailForRecovery } from './core/layout/inform-email-for-recovery/
 import { PasswordReset } from './core/layout/password-reset/password-reset';
 import { KioskItemRegisterPage } from './core/layout/kiosk-item-register-page/kiosk-item-register-page';
 import { CreateOrder } from './core/layout/create-order/create-order';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -21,6 +22,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LoggedUser,
+    canActivate: [authGuard],
     children: [
       { path: 'home', component: Home },
       { path: 'kioskRegister', component: KioskRegisterPage },

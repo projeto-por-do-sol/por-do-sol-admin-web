@@ -12,22 +12,28 @@
     <div class="p-8">
       <h1 class="font-bold text-outline text-xl mb-1">Bem Vindo(a) ao Apollo!</h1>
       <p class="text-sub-text text-base mb-7">Entre com suas credenciais para acessar o Painel Administrativo</p>
-      <form action="">
+      <form [formGroup]="form" (ngSubmit)="login()">
         <div class="grid grid-cols-1 gap-5 mb-5">
-          <app-input label="Credencial" id="login" name="login" type="email"></app-input>
-          <app-input label="Senha" id="password" name="password" type="password"></app-input>
+          <app-input label="Credencial" id="login" name="login" type="text" formControlName="email"></app-input>
+          <app-input label="Senha" id="password" name="password" type="password" formControlName="password"></app-input>
         </div>
 
         <div class="flex justify-between mb-7">
           <div class="flex gap-2">
-            <input type="checkbox" id="check" name="check" class="accent-primary w-4 cursor-pointer">
+            <input type="checkbox" id="check" name="check" formControlName="rememberMe" class="accent-primary w-4 cursor-pointer">
             <label for="check" class="text-outline text-base cursor-pointer">Lembrar de mim</label>
           </div>
 
           <a routerLink="/informEmailForRecovery" class="text-base text-primary hover:underline">Esqueci minha senha</a>
         </div>
 
-        <app-button labelButton="Entrar" icon="arrow-right" (onClickButton)="login()" [fullWidth]="true"></app-button>
+        @if (errorMessage()) {
+          <p role="alert" class="mb-4 rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container">
+            {{ errorMessage() }}
+          </p>
+        }
+
+        <app-button [labelButton]="isLoading() ? 'Entrando...' : 'Entrar'" icon="arrow-right" type="submit" [disabled]="isLoading()" [fullWidth]="true"></app-button>
 
       </form>
 

@@ -58,6 +58,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 55352
+          },
           "configurations": {
             "production": {
               "buildTarget": "por-do-sol-admin-web:build:production"
