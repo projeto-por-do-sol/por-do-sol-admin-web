@@ -7,6 +7,15 @@ export interface LoginResponse {
   token: string
 }
 
+export interface OwnerRegistrationRequest {
+  nome: string
+  email: string
+  password: string
+  cpf: null
+  role: 'PROPRIETARIO'
+  telefone: string
+}
+
 export interface AuthenticatedUserResponse {
   id: string
   nome: string

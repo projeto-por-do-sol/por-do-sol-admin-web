@@ -1,4 +1,5 @@
-import { Component, computed, signal, Signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, signal, Signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -9,6 +10,7 @@ import { ImageInput } from '../../shared/ui/image-input/image-input';
 import { Input } from '../../shared/ui/input/input';
 import { ReturnLink } from '../../shared/ui/return-link/return-link';
 import { SectionTitle } from '../../shared/ui/section-title/section-title';
+import { UserService } from '../../services/user-service';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value
@@ -23,7 +25,12 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   styleUrl: './owner-registration.css',
 })
 export class OwnerRegistration {
+  private readonly userService = inject(UserService)
+  private readonly router = inject(Router)
+
   readonly imagePreview = signal<string | null>(null)
+  readonly isLoading = signal(false)
+  readonly errorMessage = signal('')
   readonly formFields = new FormGroup({
     ownerName: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -37,7 +44,7 @@ export class OwnerRegistration {
   readonly previewName;
   readonly previewItems;
 
-  constructor(private readonly router: Router) {
+  constructor() {
     this.formValue = toSignal(this.formFields.valueChanges, { initialValue: this.formFields.value })
     this.previewName = computed(() => this.formValue().ownerName || 'Nome do proprietário')
     this.previewItems = computed<PreviewItem[]>(() => [
@@ -51,12 +58,39 @@ export class OwnerRegistration {
   }
 
   onSubmit(): void {
-    if (this.formFields.invalid) {
+    if (this.formFields.invalid || this.isLoading()) {
       this.formFields.markAllAsTouched()
-      return;
+      return
     }
 
-    console.log(this.formFields.getRawValue())
-    // chamada ao service/API aqui
+    const {
+      ownerName,
+      email,
+      phone,
+      password,
+      profileImage,
+    } = this.formFields.getRawValue()
+
+    this.isLoading.set(true)
+    this.errorMessage.set('')
+
+    this.userService.registerOwner({
+      nome: ownerName,
+      email,
+      password,
+      cpf: null,
+      role: 'PROPRIETARIO',
+      telefone: phone,
+    }, profileImage).subscribe({
+      next: () => this.router.navigateByUrl('/home'),
+      error: (error: HttpErrorResponse) => {
+        this.isLoading.set(false)
+        this.errorMessage.set(
+          error.status === 400
+            ? 'Não foi possível cadastrar. Verifique se o e-mail já está em uso.'
+            : 'Não foi possível concluir o cadastro. Verifique sua conexão e tente novamente.',
+        )
+      },
+    })
   }
 }

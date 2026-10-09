@@ -2,7 +2,12 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { User } from '../models/user-model';
-import { AuthenticatedUserResponse, LoginRequest, LoginResponse } from '../models/auth-model';
+import {
+  AuthenticatedUserResponse,
+  LoginRequest,
+  LoginResponse,
+  OwnerRegistrationRequest,
+} from '../models/auth-model';
 import { API_BASE_URL } from '../config/api';
 import { AuthTokenService } from './auth-token-service';
 
@@ -27,6 +32,35 @@ export class UserService {
     );
   }
 
+  registerOwner(
+    registration: OwnerRegistrationRequest,
+    profileImage: File | null = null,
+  ): Observable<User> {
+    const credentials: LoginRequest = {
+      email: registration.email,
+      password: registration.password,
+    }
+
+    return this.http
+      .post<AuthenticatedUserResponse>(`${API_BASE_URL}/auth/register`, registration)
+      .pipe(
+        switchMap(() => this.login(credentials)),
+        switchMap(user => {
+          if (!profileImage) return of(user)
+
+          const formData = new FormData()
+          formData.append('file', profileImage)
+
+          return this.http
+            .post(`${API_BASE_URL}/me/imagem`, formData, { responseType: 'text' })
+            .pipe(
+              switchMap(() => this.loadAuthenticatedUser()),
+              catchError(() => of(user)),
+            )
+        }),
+      )
+  }
+
   restoreSession(): Observable<User> {
     const currentUser = this._user();
     if (currentUser) return of(currentUser);
@@ -40,7 +74,7 @@ export class UserService {
         this.clearSession();
         return throwError(() => error);
       }),
-    );
+    )
   }
 
   logout() {
@@ -51,7 +85,7 @@ export class UserService {
     return this.http.get<AuthenticatedUserResponse>(`${API_BASE_URL}/me`).pipe(
       map(response => this.mapUser(response)),
       tap(user => this._user.set(user)),
-    );
+    )
   }
 
   private clearSession(): void {
@@ -64,7 +98,7 @@ export class UserService {
       proprietario: 'Proprietário',
       gerente: 'Gerente',
       funcionario: 'Funcionário',
-    };
+    }
 
     return {
       id: response.id,
@@ -75,6 +109,6 @@ export class UserService {
       image: response.imagem,
       role: response.role,
       position: positions[response.role],
-    };
+    }
   }
 }

@@ -58,6 +58,58 @@ describe('UserService', () => {
     expect(service.user()?.position).toBe('Gerente');
   });
 
+  it('registers an owner and authenticates the new account automatically', () => {
+    let userName: string | undefined;
+    const registration = {
+      nome: 'Maria Proprietária',
+      email: 'maria@apollo.com',
+      password: 'senha123',
+      cpf: null,
+      role: 'PROPRIETARIO' as const,
+      telefone: '(11) 99999-9999',
+    };
+
+    service.registerOwner(registration).subscribe(user => {
+      userName = user.name;
+    });
+
+    const registerRequest = http.expectOne(`${API_BASE_URL}/auth/register`);
+    expect(registerRequest.request.method).toBe('POST');
+    expect(registerRequest.request.body).toEqual(registration);
+    registerRequest.flush({
+      id: 'owner-id',
+      nome: 'Maria Proprietária',
+      email: 'maria@apollo.com',
+      telefone: '(11) 99999-9999',
+      dataCadastro: '2026-10-08',
+      imagem: null,
+      role: 'proprietario',
+    });
+
+    const loginRequest = http.expectOne(`${API_BASE_URL}/auth/login/quiosque`);
+    expect(loginRequest.request.body).toEqual({
+      email: 'maria@apollo.com',
+      password: 'senha123',
+    });
+    loginRequest.flush({ token: 'new-owner-token' });
+
+    const meRequest = http.expectOne(`${API_BASE_URL}/me`);
+    expect(meRequest.request.headers.get('Authorization')).toBe('Bearer new-owner-token');
+    meRequest.flush({
+      id: 'owner-id',
+      nome: 'Maria Proprietária',
+      email: 'maria@apollo.com',
+      telefone: '(11) 99999-9999',
+      dataCadastro: '2026-10-08',
+      imagem: null,
+      role: 'proprietario',
+    });
+
+    expect(sessionStorage.getItem('apollo-token')).toBe('new-owner-token');
+    expect(userName).toBe('Maria Proprietária');
+    expect(service.user()?.role).toBe('proprietario');
+  });
+
   it('restores a remembered session from local storage', () => {
     localStorage.setItem('apollo-token', 'remembered-token');
 
