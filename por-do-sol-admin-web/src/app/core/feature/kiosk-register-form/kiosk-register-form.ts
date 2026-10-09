@@ -7,10 +7,12 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
 import { ImageInput } from '../../shared/ui/image-input/image-input';
+import { cnpjValidator } from '../../utils/cnpj';
+import { LocationMap, MapLocation } from '../../shared/ui/location-map/location-map';
 
 @Component({
   selector: 'app-kiosk-register-form',
-  imports: [Input, CancelButton, Button, ChipMultiChoice, ReactiveFormsModule, ImageInput],
+  imports: [Input, CancelButton, Button, ChipMultiChoice, ReactiveFormsModule, ImageInput, LocationMap],
   templateUrl: './kiosk-register-form.html',
   styleUrl: './kiosk-register-form.css',
 })
@@ -19,14 +21,16 @@ export class KioskRegisterForm {
   daysOpen: string[] = []
   onClickCancelButton = output<void>()
 
-  readonly imagePreview = signal<string | null>(null);
+  readonly imagePreview = signal<string | null>(null)
 
   previewItems = computed<PreviewItem[]>(() => {
-    const d = this.formValue();
+    const d = this.formValue()
     return [
+      { label: 'CNPJ', value: `${d.kioskCnpj || '00.000.000/0000-00'}` },
       { label: 'Endereço', value: `${d.kioskState || 'Estado'}, ${d.kioskCity || 'cidade'}` },
       { label: 'Horário', value: `${d.openTime}-${d.closeTime}` },
-      { label: 'Gestor', value: `${d.managerName || '-'}` },
+      // Cadastro de gestor desativado temporariamente.
+      // { label: 'Gestor', value: `${d.managerName || '-'}` },
     ]
   })
 
@@ -40,26 +44,29 @@ export class KioskRegisterForm {
   constructor() {
     this.formFields = new FormGroup({
       kioskName: new FormControl("", Validators.required),
+      kioskCnpj: new FormControl("", [Validators.required, cnpjValidator()]),
       kioskEmail: new FormControl("", [Validators.required, Validators.email]),
-      kioskPhone: new FormControl("", Validators.required),
       kioskCep: new FormControl("", Validators.required),
       kioskState: new FormControl("", Validators.required),
       kioskCity: new FormControl("", Validators.required),
       kioskStreet: new FormControl(""),
       kioskNumber: new FormControl(""),
       kioskReference: new FormControl(""),
+      latitude: new FormControl<number | null>(null, Validators.required),
+      longitude: new FormControl<number | null>(null, Validators.required),
       openTime: new FormControl("08:00", Validators.required),
       closeTime: new FormControl("22:00", Validators.required),
 
-      managerName: new FormControl("", Validators.required),
-      managerEmail: new FormControl("", [Validators.required, Validators.email]),
-      managerPhone: new FormControl("", Validators.required),
+      // Cadastro de gestor desativado temporariamente.
+      // managerName: new FormControl("", Validators.required),
+      // managerEmail: new FormControl("", [Validators.required, Validators.email]),
+      // managerPhone: new FormControl("", Validators.required),
       profileImage: new FormControl<File | null>(null),
     })
 
     this.formValue = toSignal(this.formFields.valueChanges, {
       initialValue: this.formFields.value,
-    });
+    })
   }
 
   ngOnInit() {
@@ -68,6 +75,16 @@ export class KioskRegisterForm {
 
   setDaysOpen(days: string[]) {
     this.daysOpen = days
+  }
+
+  setLocation(location: MapLocation) {
+    this.formFields.patchValue({
+      latitude: location.latitude,
+      longitude: location.longitude,
+    })
+
+    this.formFields.get('latitude')?.markAsTouched()
+    this.formFields.get('longitude')?.markAsTouched()
   }
 
   onClickCancel() {

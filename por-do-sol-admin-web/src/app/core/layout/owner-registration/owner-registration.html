@@ -26,14 +26,12 @@
             </div>
 
             <app-image-input formControlName="profileImage" (imageSelected)="imagePreview.set($event)"></app-image-input>
-            <app-input id="companyName" label="Nome da empresa" name="companyName" formControlName="companyName" placeholder="Ex.: Quiosque Pôr do Sol"></app-input>
+            <app-input id="ownerName" label="Nome do proprietário" name="ownerName" formControlName="ownerName" placeholder="Ex.: Maria da Silva"></app-input>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <app-input id="cnpj" label="CNPJ" name="cnpj" formControlName="cnpj" mask="cnpj" placeholder="00.000.000/0000-00"></app-input>
               <app-input id="email" label="E-mail" name="email" type="email" formControlName="email" placeholder="contato@empresa.com.br"></app-input>
+              <app-input id="phone" label="Telefone" name="phone" type="tel" formControlName="phone" mask="phone" placeholder="(11) 99999-9999"></app-input>
             </div>
-
-            <app-input id="phone" label="Telefone" name="phone" type="tel" formControlName="phone" mask="phone" placeholder="(11) 99999-9999"></app-input>
           </div>
 
           <div class="grid grid-cols-1 gap-6 border-b-2 border-dashed border-border py-8">

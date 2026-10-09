@@ -4,12 +4,13 @@
     <div class="sectionCard">
       <h2>Dados do quiosque</h2>
       <app-image-input label="Banner do Quiosque" formControlName="profileImage" (imageSelected)="imagePreview.set($event)"></app-image-input>
-      <app-input [id]="'kioskName'" [label]="'Nome do quiosque'" [name]="'kioskName'" formControlName="kioskName" [placeholder]="'Ex.: Cantinho da Maré'"></app-input>
 
-      <div class="grid md:flex gap-10">
-        <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" type="e-mail" formControlName="kioskEmail" [placeholder]="'contato@pordosol.com.br'" class="flex-1"></app-input>
-        <app-input [id]="'kioskPhone'" [label]="'Telefone'" [name]="'kioskPhone'" formControlName="kioskPhone" [placeholder]="'(11) 99999-9999'" class="flex-1" mask="phone"></app-input>
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+        <app-input [id]="'kioskName'" [label]="'Nome do quiosque'" [name]="'kioskName'" formControlName="kioskName" [placeholder]="'Ex.: Cantinho da Maré'"></app-input>
+        <app-input [id]="'kioskCnpj'" [label]="'CNPJ'" [name]="'kioskCnpj'" formControlName="kioskCnpj" mask="cnpj" [placeholder]="'00.000.000/0000-00'"></app-input>
       </div>
+
+      <app-input [id]="'kioskEmail'" [label]="'E-mail de contato'" [name]="'kioskEmail'" type="email" formControlName="kioskEmail" [placeholder]="'contato@pordosol.com.br'"></app-input>
     </div>
 
     <!-- Localização -->
@@ -21,7 +22,29 @@
       <app-input [id]="'kioskStreet'" [label]="'Rua'" [name]="'kioskStreet'" formControlName="kioskStreet" [placeholder]="'Av. Vicent de Carvalho'" [isObrigatory]="false"></app-input>
       <app-input [id]="'kioskNumber'" [label]="'Número'" [name]="'kioskNumber'" formControlName="kioskNumber" [placeholder]="'200'" [isObrigatory]="false"></app-input>
       <app-input [id]="'kioskReference'" [label]="'Ponto de referência'" [name]="'kioskReference'" formControlName="kioskReference" [placeholder]="'Ex.: Em frente ao posto 3'" [isObrigatory]="false"></app-input>
-      <p class="text-tertiary">TEM QUE COLOCAR O MINIMAP PARA O USUÁRIO INFORMAR A LATITUDE E LONGITUDE</p>
+
+      <div class="grid gap-3">
+        <h3 class="font-semibold text-outline">Localização exata</h3>
+
+        <app-location-map
+          [initialLatitude]="formFields.get('latitude')?.value"
+          [initialLongitude]="formFields.get('longitude')?.value"
+          (locationChange)="setLocation($event)"
+        ></app-location-map>
+
+        @if (formFields.get('latitude')?.invalid && formFields.get('latitude')?.touched) {
+        <p class="text-sm text-error">
+          Selecione a localização do quiosque no mapa.
+        </p>
+        }
+
+        @if (formFields.get('latitude')?.value !== null && formFields.get('longitude')?.value !== null) {
+        <div class="grid gap-1 rounded-xl bg-fundo p-3 text-sm text-sub-text sm:grid-cols-2">
+          <p>Latitude: {{ formFields.get('latitude')?.value }}</p>
+          <p>Longitude: {{ formFields.get('longitude')?.value }}</p>
+        </div>
+        }
+      </div>
     </div>
 
     <!-- Funcionamento -->
@@ -36,7 +59,7 @@
 
     </div>
 
-    <!-- Cadastro de Gerente -->
+    <!-- Cadastro de gestor desativado temporariamente.
     <div class="sectionCard">
       <h2>Gestor responsável</h2>
       <p class="text-tertiary">Colocar um select com os funcionários já cadastrados (talvez)</p>
@@ -45,6 +68,7 @@
       <app-input [id]="'managerPhone'" [label]="'Telefone'" [name]="'managerPhone'" formControlName="managerPhone" [placeholder]="'(11) 99999-9999'" class="w-full" mask="phone"></app-input>
 
     </div>
+    -->
 
     <div class="grid md:flex md:justify-end gap-5">
       <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
