@@ -56,32 +56,32 @@ export class ZoomableTimeseries {
   @ViewChild('chart') chart!: ChartComponent;
   private dataSeries: any = [
     {
-      "date": "2014-01-01",
-      "value": 20000000
+      "date": "2026-10-03T12:00:00",
+      "value": 5540
     },
     {
-      "date": "2014-01-02",
-      "value": 10379978
+      "date": "2026-10-04T12:00:00",
+      "value": 6120
     },
     {
-      "date": "2014-01-03",
-      "value": 30493749
+      "date": "2026-10-05T12:00:00",
+      "value": 4860
     },
     {
-      "date": "2014-01-04",
-      "value": 10785250
+      "date": "2026-10-06T12:00:00",
+      "value": 5390
     },
     {
-      "date": "2014-01-05",
-      "value": 33901904
+      "date": "2026-10-07T12:00:00",
+      "value": 6480
     },
     {
-      "date": "2014-01-06",
-      "value": 11576838
+      "date": "2026-10-08T12:00:00",
+      "value": 7310
     },
     {
-      "date": "2014-01-07",
-      "value": 14413854
+      "date": "2026-10-09T12:00:00",
+      "value": 6890
     },
   ]
 
@@ -152,7 +152,11 @@ export class ZoomableTimeseries {
       yaxis: {
         labels: {
           formatter: (val) => {
-            return 'R$' + (val / 1000000).toFixed(0)
+            return new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+              maximumFractionDigits: 0,
+            }).format(val)
           },
         },
         title: {
@@ -169,7 +173,11 @@ export class ZoomableTimeseries {
         shared: false,
         y: {
           formatter: (val) => {
-            return 'R$' + (val / 1000000).toFixed(0)
+            return new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+              minimumFractionDigits: 2,
+            }).format(val)
           },
         },
       },

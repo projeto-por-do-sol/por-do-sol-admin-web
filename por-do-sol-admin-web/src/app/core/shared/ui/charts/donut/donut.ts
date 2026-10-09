@@ -57,7 +57,7 @@ export class Donut {
   public chartOptions!: ChartOptions
   constructor() {
     this.chartOptions = {
-      series: [128, 96, 74, 52, 38],
+      series: [96, 82, 67, 54, 41],
       chart: {
         type: 'donut',
         width: '100%',
@@ -94,7 +94,7 @@ export class Donut {
           }
         },
       },
-      labels: ['Compute', 'Storage', 'Database', 'Networking', 'Analytics'],
+      labels: ['Frutos do mar', 'Porções', 'Lanches', 'Caipirinhas', 'Açaí'],
       dataLabels: {
         enabled: false,
       },
@@ -103,7 +103,7 @@ export class Donut {
       // },
       legend: {
         formatter: (val, opts) => {
-          return val + ' - $' + opts.w.globals.series[opts.seriesIndex] + 'k'
+          return val + ' · ' + opts.w.globals.series[opts.seriesIndex] + ' pedidos'
         },
         position: 'bottom',
       },

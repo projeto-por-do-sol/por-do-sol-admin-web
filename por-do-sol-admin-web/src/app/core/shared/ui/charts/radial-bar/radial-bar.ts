@@ -58,7 +58,7 @@ export class RadialBar {
 
   constructor() {
     this.chartOptions = {
-      series: [68, 82],
+      series: [4.8, 7.2],
       chart: {
         height: 350,
         type: 'radialBar',
@@ -85,7 +85,7 @@ export class RadialBar {
         }
       },
       subtitle: {
-        text: 'Pedidos cancelados/atrasados',
+        text: 'Percentual sobre os pedidos dos últimos 7 dias',
         align: 'left',
         style: {
           color: "var(--color-sub-text)",
