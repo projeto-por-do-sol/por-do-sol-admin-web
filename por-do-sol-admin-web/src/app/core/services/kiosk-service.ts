@@ -1,14 +1,74 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom, Observable, tap } from 'rxjs';
 import { KioskModel } from '../models/kiosk-model';
-import { MOCK_KIOSKS } from '../mocks/mocks';
+import { CatalogKioskResponse } from '../models/item-api';
+import { UserService } from './user-service';
+import { API_BASE_URL } from '../config/api';
+import { apiImageUrl } from '../utils/api-image-url';
+import { KioskRegistrationRequest, KioskRegistrationResponse } from '../models/kiosk-registration';
 
 @Injectable({
   providedIn: 'root',
 })
 export class KioskService {
 
-  private _kiosks = signal<KioskModel[]>(MOCK_KIOSKS)
+  private readonly http = inject(HttpClient)
+  private readonly userService = inject(UserService)
+
+  private _kiosks = signal<KioskModel[]>([])
   kiosks = this._kiosks.asReadonly()
+
+  async loadKiosks(): Promise<void> {
+    const user = await firstValueFrom(this.userService.restoreSession())
+    const endpoint = user.role === 'proprietario' ? '/empresas/me/overview/quiosques' : '/quiosques/me'
+    const response = await firstValueFrom(this.http.get<CatalogKioskResponse | CatalogKioskResponse[]>(`${API_BASE_URL}${endpoint}`))
+    const records = Array.isArray(response) ? response : [response]
+    this._kiosks.set(records.map(record => ({
+      id: String(record.id), name: record.nome, location: `${record.cidade ?? ''}, ${record.uf ?? ''}`,
+      startOperation: record.openingTime, finishOperation: record.closingTime,
+      categories: (record.categorias ?? []).map((category) => typeof category === 'string' ? category : category.nome),
+      urlImg: apiImageUrl(record.imagem), rating: String(record.nota ?? 0),
+      todaysOrders: record.pedidosHoje ?? 0, averageTime: record.tempoMedio ?? 0, invoicing: record.faturamentoHoje ?? 0,
+    })))
+    this.isOpen()
+  }
+
+  registerKiosk(request: KioskRegistrationRequest): Observable<KioskRegistrationResponse> {
+    return this.http.post<KioskRegistrationResponse>(`${API_BASE_URL}/quiosques`, request).pipe(
+      tap(response => {
+        const kiosk: KioskModel = {
+          id: String(response.id),
+          name: response.nome,
+          location: `${response.cidade}, ${response.uf}`,
+          startOperation: response.openingTime.slice(0, 5),
+          finishOperation: response.closingTime.slice(0, 5),
+          categories: [],
+          rating: '0',
+          todaysOrders: 0,
+          averageTime: 0,
+          invoicing: 0,
+        }
+        this._kiosks.update(kiosks => [...kiosks.filter(item => item.id !== kiosk.id), kiosk])
+        this.isOpen()
+      }),
+    )
+  }
+
+  uploadKioskImage(kioskId: number, image: File): Observable<string> {
+    const formData = new FormData()
+    formData.append('file', image)
+
+    return this.http.post(`${API_BASE_URL}/quiosques/${kioskId}/imagem`, formData, {
+      responseType: 'text',
+    }).pipe(
+      tap(fileName => this._kiosks.update(kiosks => kiosks.map(kiosk =>
+        kiosk.id === String(kioskId)
+          ? { ...kiosk, urlImg: apiImageUrl(`/uploads/${encodeURIComponent(fileName.trim())}`) }
+          : kiosk,
+      ))),
+    )
+  }
 
   addCategory(kioskId: string, categoryName: string): boolean {
     const name = categoryName.trim().replace(/\s+/g, ' ')

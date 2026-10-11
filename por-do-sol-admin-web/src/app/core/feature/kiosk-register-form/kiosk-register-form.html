@@ -1,5 +1,6 @@
 <div class="bg-surface p-8 rounded-2xl border border-border grid grid-cols-1">
   <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
+    <fieldset [disabled]="isLoading() || createdKioskId() !== null" class="min-w-0">
     <!-- Dados do quiosque -->
     <div class="sectionCard">
       <h2>Dados do quiosque</h2>
@@ -16,8 +17,8 @@
     <!-- Localização -->
     <div class="sectionCard">
       <h2>Localização</h2>
-      <app-input [id]="'kioskCep'" [label]="'CEP'" [name]="'kioskCep'" formControlName="kioskCep" [placeholder]="'00000-00'"></app-input>
-      <app-input [id]="'kioskState'" [label]="'Estado'" [name]="'kioskState'" formControlName="kioskState" [placeholder]="'São Paulo'"></app-input>
+      <app-input [id]="'kioskCep'" [label]="'CEP'" [name]="'kioskCep'" formControlName="kioskCep" [placeholder]="'00000-000'"></app-input>
+      <app-input [id]="'kioskState'" [label]="'Estado (UF)'" [name]="'kioskState'" formControlName="kioskState" [placeholder]="'SP'"></app-input>
       <app-input [id]="'kioskCity'" [label]="'Cidade'" [name]="'kioskCity'" formControlName="kioskCity" [placeholder]="'Santos'"></app-input>
       <app-input [id]="'kioskStreet'" [label]="'Rua'" [name]="'kioskStreet'" formControlName="kioskStreet" [placeholder]="'Av. Vicent de Carvalho'" [isObrigatory]="false"></app-input>
       <app-input [id]="'kioskNumber'" [label]="'Número'" [name]="'kioskNumber'" formControlName="kioskNumber" [placeholder]="'200'" [isObrigatory]="false"></app-input>
@@ -55,7 +56,18 @@
         <app-input [id]="'closeTime'" [label]="'Fechamento'" [name]="'closeTime'" [type]="'time'" formControlName="closeTime" [isObrigatory]="false"></app-input>
       </div>
 
-      <app-chip-multi-choice [options]="['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']" (outputSelected)="setDaysOpen($event)"></app-chip-multi-choice>
+      <div class="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
+        <app-chip-multi-choice class="lg:col-span-1" [options]="['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']" (outputSelected)="setDaysOpen($event)"></app-chip-multi-choice>
+        <app-input
+          id="distAtendimento"
+          label="Distância de atendimento (m)"
+          name="distAtendimento"
+          type="number"
+          step="1"
+          formControlName="distAtendimento"
+          placeholder="Ex.: 100"
+        ></app-input>
+      </div>
 
     </div>
 
@@ -70,9 +82,19 @@
     </div>
     -->
 
+    </fieldset>
+
+    @if (errorMessage()) {
+      <p role="alert" class="mb-5 text-sm text-error">{{ errorMessage() }}</p>
+    }
+
     <div class="grid md:flex md:justify-end gap-5">
-      <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
-      <app-button [labelButton]="'Cadastrar quiosque'" [icon]="'add'" type="submit"></app-button>
+      @if (createdKioskId() !== null) {
+        <app-button labelButton="Continuar sem imagem" [disabled]="isLoading()" (onClickButton)="saved.emit()"></app-button>
+      } @else {
+        <app-cancel-button (onClickButton)="onClickCancel()"></app-cancel-button>
+      }
+      <app-button [labelButton]="isLoading() ? 'Salvando...' : (createdKioskId() !== null ? 'Reenviar imagem' : 'Cadastrar quiosque')" [icon]="'add'" type="submit" [disabled]="isLoading()"></app-button>
     </div>
 
   </form>

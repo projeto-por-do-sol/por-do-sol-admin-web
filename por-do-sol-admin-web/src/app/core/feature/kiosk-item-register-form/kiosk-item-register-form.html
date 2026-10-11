@@ -1,5 +1,11 @@
+@if (loading()) { <p role="status">Carregando cardápio...</p> }
+@if (loadError()) {
+  <p role="alert">{{ loadError() }}</p>
+  <button type="button" (click)="loadCatalog()">Tentar novamente</button>
+}
 <div class="bg-surface p-8 rounded-2xl border border-border">
   <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
+    <fieldset [disabled]="saving() || loading() || !!loadError()" class="min-w-0">
     <div class="sectionCard">
       <h2>Dados do item</h2>
       <app-image-input label="Imagem do item" formControlName="image" [existingImageUrl]="item()?.imageUrl ?? null" (imageSelected)="onImageSelected($event)"></app-image-input>
@@ -7,7 +13,7 @@
 
       <div class="grid md:grid-cols-2 gap-8">
         <div class="grid content-start gap-2">
-          <app-select selectTitle="Quiosque" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
+          <app-select selectTitle="Quiosque" [disabled]="identityLocked() || saving() || loading()" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
           @if (formFields.controls.kioskId.invalid && formFields.controls.kioskId.touched) {
           <span class="text-error text-sm">Selecione um quiosque</span>
           }
@@ -15,10 +21,10 @@
         <div class="grid content-start gap-2 min-w-0">
           <div class="flex min-w-0 items-end gap-3">
             <div class="min-w-0 flex-1" [class.opacity-50]="!formFields.controls.kioskId.value" [class.cursor-not-allowed]="!formFields.controls.kioskId.value" matTooltip="Selecione um quiosque antes" [matTooltipDisabled]="!!formFields.controls.kioskId.value">
-              <app-select selectTitle="Categoria" [options]="categoryOptions()" [selectedValue]="formFields.controls.category.value" [disabled]="!formFields.controls.kioskId.value" placeholder="Selecione uma categoria" (valueChange)="selectCategory($event)"></app-select>
+              <app-select selectTitle="Categoria" [options]="categoryOptions()" [selectedValue]="formFields.controls.category.value" [disabled]="!formFields.controls.kioskId.value || identityLocked() || saving() || loading()" placeholder="Selecione uma categoria" (valueChange)="selectCategory($event)"></app-select>
             </div>
             <div class="size-12.5 shrink-0" matTooltip="Selecione um quiosque antes" [matTooltipDisabled]="!!formFields.controls.kioskId.value">
-              <button type="button" class="grid size-12.5 shrink-0 cursor-pointer place-items-center rounded-full bg-primary text-2xl leading-none text-creme hover:enabled:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50" aria-label="Criar categoria" [disabled]="!formFields.controls.kioskId.value" (click)="openCategoryDialog()">+</button>
+              <button type="button" class="grid size-12.5 shrink-0 cursor-pointer place-items-center rounded-full bg-primary text-2xl leading-none text-creme hover:enabled:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50" aria-label="Criar categoria" [disabled]="!formFields.controls.kioskId.value || identityLocked() || saving() || loading()" (click)="openCategoryDialog()">+</button>
             </div>
           </div>
           @if (!formFields.controls.kioskId.value) {
@@ -109,7 +115,7 @@
 
     <div class="grid gap-5 md:flex md:items-center md:justify-between">
       @if (item()) {
-      <button type="button" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:enabled:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline disabled:cursor-not-allowed disabled:opacity-50 md:w-auto" aria-label="Remover item do cardápio" [disabled]="saving()" (click)="openRemoveDialog()">
+      <button type="button" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:enabled:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline disabled:cursor-not-allowed disabled:opacity-50 md:w-auto" aria-label="Remover item do cardápio" [disabled]="saving() || loading() || !!loadError()" (click)="openRemoveDialog()">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
           <path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z" />
         </svg>
@@ -118,19 +124,26 @@
       }
       <div class="grid gap-5 md:ml-auto md:flex md:justify-end">
         <app-cancel-button (onClickButton)="onClickCancelButton.emit()"></app-cancel-button>
-        <app-button [labelButton]="item() ? 'Salvar alterações' : 'Cadastrar item'" [icon]="item() ? undefined : 'add'" type="submit" [disabled]="saving()"></app-button>
+        <app-button [labelButton]="item() ? 'Salvar alterações' : 'Cadastrar item'" [icon]="item() ? undefined : 'add'" type="submit" [disabled]="saving() || loading() || !!loadError()"></app-button>
       </div>
     </div>
+    </fieldset>
   </form>
 
   <dialog #categoryDialog class="m-auto w-11/12 max-w-md max-h-[80dvh] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="category-dialog-title" (close)="categoryDraft.reset('')">
     <form class="grid gap-5" (submit)="$event.preventDefault(); createCategory()">
-      <h2 id="category-dialog-title">Criar categoria</h2>
-      <p class="text-sub-text">Quiosque: {{ selectedKioskName() }}</p>
-      <app-input id="newCategoryName" label="Nome da categoria" name="newCategoryName" [formControl]="categoryDraft" placeholder="Ex.: Frutos do mar"></app-input>
+      <h2 id="category-dialog-title" class="text-2xl">Criar categoria</h2>
+      <p class="text-sub-text text-lg">Quiosque: {{ selectedKioskName() }}</p>
+      <label for="newCategoryName" class="text-base">Nome da categoria</label>
+
+      <!-- Temporário -->
+      <select id="newCategoryName" [formControl]="categoryDraft" class="rounded-xl border border-border p-3">
+        <option value="">Selecione uma categoria</option>
+        @for (category of allowedCategories; track category) { <option [value]="category">{{ category }}</option> }
+      </select>
       <div class="grid gap-5 md:flex md:justify-end">
         <app-cancel-button (onClickButton)="closeCategoryDialog()"></app-cancel-button>
-        <app-button labelButton="Criar categoria" type="submit"></app-button>
+        <app-button labelButton="Criar categoria" type="submit" [disabled]="creatingCategory()"></app-button>
       </div>
     </form>
   </dialog>

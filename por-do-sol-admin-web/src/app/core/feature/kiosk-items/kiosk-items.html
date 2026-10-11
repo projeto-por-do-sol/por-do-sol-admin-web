@@ -1,3 +1,5 @@
+@if (loading()) { <p role="status">Carregando itens...</p> }
+@if (loadError()) { <p role="alert">{{ loadError() }}</p><button type="button" (click)="loadItems()">Tentar novamente</button> }
 <app-section-title
   [lable]="'Cardápio'"
   [section]="'Itens dos quiosques'"

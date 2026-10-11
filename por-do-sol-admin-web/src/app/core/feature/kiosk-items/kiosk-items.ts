@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { KioskItem } from '../../models/kiosk-item';
 import { KioskItemService } from '../../services/kiosk-item-service';
 import { SectionTitle } from '../../shared/ui/section-title/section-title';
@@ -15,6 +15,17 @@ import { Router } from '@angular/router';
 export class KioskItems {
   readonly kioskItemService = inject(KioskItemService)
   private readonly router = inject(Router)
+
+  readonly loadError = signal('')
+  readonly loading = signal(false)
+  constructor() { void this.loadItems() }
+  async loadItems(): Promise<void> {
+    this.loading.set(true)
+    this.loadError.set('')
+    try { await this.kioskItemService.loadCatalog() }
+    catch { this.loadError.set('Não foi possível carregar os itens. Verifique a conexão e sua sessão.') }
+    finally { this.loading.set(false) }
+  }
 
   readonly itemColumns: TableColumn<KioskItem>[] = [
     { key: 'imageUrl', header: 'Imagem', type: 'image' },

@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ITEM_CATEGORIES } from '../../models/item-api';
 import { Component, computed, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -37,6 +39,36 @@ export class KioskItemRegisterForm {
   private readonly itemNameInput = viewChild<Input>('itemNameInput')
   readonly onClickCancelButton = output<void>()
   readonly saving = signal(false)
+  readonly loading = signal(true)
+  readonly loadError = signal('')
+  readonly creatingCategory = signal(false)
+  readonly allowedCategories = ITEM_CATEGORIES
+  private persistedItem: KioskItem | null = null
+  private imagePending = false
+  private initializedItemId: string | null = null
+  readonly identityLocked = computed(() => !!this.item() || !!this.savedItemId())
+  private readonly savedItemId = signal<string | null>(null)
+
+  private errorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 0) return 'Não foi possível conectar à API. Verifique a conexão e tente novamente.'
+      if (error.status === 403) return 'Você não tem permissão para realizar esta operação neste quiosque.'
+      if (error.status === 401) return 'Sua sessão expirou. Entre novamente.'
+      return error.error?.message || error.error?.detail || (typeof error.error === 'string' ? error.error : 'Não foi possível salvar. Tente novamente.')
+    }
+    return error instanceof Error ? error.message : 'Não foi possível salvar. Tente novamente.'
+  }
+
+  async loadCatalog(): Promise<void> {
+    this.loading.set(true)
+    this.loadError.set('')
+    try {
+      await this.itemService.loadCatalog()
+      const id = this.formFields.controls.kioskId.value
+      if (!this.kiosks().some(kiosk => kiosk.id === id)) this.formFields.controls.kioskId.setValue('')
+    } catch (error) { this.loadError.set(this.errorMessage(error)) }
+    finally { this.loading.set(false) }
+  }
   readonly imagePreview = signal<string | null>(null)
   readonly imageRemoved = signal(false)
   readonly ingredients = signal<string[]>([])
@@ -85,7 +117,7 @@ export class KioskItemRegisterForm {
   readonly previewName = computed(() => this.formValue().name?.trim() || 'Novo item')
   readonly previewCategory = computed(() => this.formValue().category?.trim() || 'Categoria')
   readonly selectedKioskName = computed(() => this.kiosks().find(kiosk => kiosk.id === this.formValue().kioskId)?.name ?? '')
-  readonly categoryOptions = computed(() => this.kiosks().find(kiosk => kiosk.id === this.formValue().kioskId)?.categories ?? [])
+  readonly categoryOptions = computed(() => (this.itemService.categories()[this.formValue().kioskId ?? ''] ?? []).map(category => category.nome))
   readonly previewItems = computed<PreviewItem[]>(() => {
     const value = this.formValue()
     const kiosk = this.kiosks().find(k => k.id === value.kioskId)
@@ -100,15 +132,17 @@ export class KioskItemRegisterForm {
   })
 
   constructor() {
+    void this.loadCatalog()
     effect(() => {
       const item = this.item()
-      if (!item) return
+      if (!item || this.initializedItemId === item.id) return
+      this.initializedItemId = item.id
       this.formFields.patchValue({
         name: item.name,
         category: item.category,
         kioskId: item.kioskId,
         description: item.description,
-        value: item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        value: (item.baseValue ?? item.value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         image: null,
       })
       this.imagePreview.set(item.imageUrl === this.placeholderImage ? null : item.imageUrl)
@@ -131,16 +165,17 @@ export class KioskItemRegisterForm {
     this.removeDialog()?.nativeElement.close()
   }
 
-  confirmRemoveItem(): void {
+  async confirmRemoveItem(): Promise<void> {
     const item = this.item()
     if (!item || this.saving()) return
-    if (!this.itemService.removeItem(item.id)) {
-      this.snackBar.open('Não foi possível remover o item. Tente novamente.', undefined, { duration: 3000 })
-      return
-    }
-    this.closeRemoveDialog()
-    this.showSuccess('Item removido com sucesso.')
-    void this.router.navigate(['/home'])
+    this.saving.set(true)
+    try {
+      await this.itemService.removeRemote(item)
+      this.closeRemoveDialog()
+      this.showSuccess('Item removido com sucesso.')
+      void this.router.navigate(['/home'])
+    } catch (error) { this.snackBar.open(this.errorMessage(error), undefined, { duration: 6000 }) }
+    finally { this.saving.set(false) }
   }
 
   formatCurrency(value: number): string {
@@ -241,6 +276,7 @@ export class KioskItemRegisterForm {
   }
 
   selectKiosk(name: string): void {
+    if (this.item() || this.persistedItem || this.saving()) return
     const kiosk = this.kiosks().find(k => k.name === name)
     const control = this.formFields.controls.kioskId
     control.setValue(kiosk?.id ?? '')
@@ -249,6 +285,7 @@ export class KioskItemRegisterForm {
   }
 
   selectCategory(name: string): void {
+    if (this.item() || this.persistedItem || this.saving()) return
     this.formFields.controls.category.setValue(name)
     this.formFields.controls.category.markAsTouched()
   }
@@ -264,24 +301,23 @@ export class KioskItemRegisterForm {
     this.categoryDraft.reset('')
   }
 
-  createCategory(): void {
-    const name = this.categoryDraft.value.trim().replace(/\s+/g, ' ')
-    if (!name) {
+  async createCategory(): Promise<void> {
+    if (this.creatingCategory()) return
+    const name = this.categoryDraft.value.trim()
+    if (!ITEM_CATEGORIES.includes(name)) {
       this.categoryDraft.setErrors({ required: true })
       this.categoryDraft.markAsTouched()
       return
     }
-
     const kioskId = this.formFields.controls.kioskId.value
-    if (!this.kioskService.addCategory(kioskId, name)) {
-      this.categoryDraft.setErrors({ duplicate: true })
-      this.categoryDraft.markAsTouched()
-      return
-    }
-
-    this.selectCategory(name)
-    this.closeCategoryDialog()
-    this.showSuccess('Categoria criada com sucesso.')
+    this.creatingCategory.set(true)
+    try {
+      await this.itemService.createCategory(kioskId, name)
+      this.selectCategory(name)
+      this.closeCategoryDialog()
+      this.showSuccess('Categoria criada com sucesso.')
+    } catch (error) { this.snackBar.open(this.errorMessage(error), undefined, { duration: 6000 }) }
+    finally { this.creatingCategory.set(false) }
   }
 
   private parseCurrency(value: string): number {
@@ -289,7 +325,7 @@ export class KioskItemRegisterForm {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.saving()) return
+    if (this.saving() || this.loading() || this.loadError()) return
     if (this.editingIngredientIndex() !== null || this.ingredientDraft.value.trim()) {
       if (!this.saveIngredient(false)) return
     }
@@ -310,7 +346,7 @@ export class KioskItemRegisterForm {
     const { name, category, kioskId, description, value, image } = this.formFields.getRawValue()
     const kiosk = this.kiosks().find(k => k.id === kioskId)
     if (!kiosk?.id || !kiosk.name) return
-    if (!kiosk.categories?.includes(category)) {
+    if (!this.categoryOptions().includes(category)) {
       this.formFields.controls.category.setErrors({ required: true })
       this.formFields.controls.category.markAsTouched()
       return
@@ -318,10 +354,8 @@ export class KioskItemRegisterForm {
 
     this.saving.set(true)
     try {
-      const currentItem = this.item()
-      const imageUrl = image
-        ? await this.readImage(image)
-        : this.imageRemoved() ? this.placeholderImage : currentItem?.imageUrl ?? this.placeholderImage
+      const currentItem = this.persistedItem ?? this.item()
+      const imageUrl = currentItem?.imageUrl ?? this.placeholderImage
       const itemData = {
         kioskId: kiosk.id,
         kioskName: kiosk.name,
@@ -333,22 +367,30 @@ export class KioskItemRegisterForm {
         ingredients: [...this.ingredients()],
         complements: [...this.complements()],
       }
-      if (currentItem) {
-        if (!this.itemService.updateItem(currentItem.id, itemData)) throw new Error('Item não encontrado')
+      const saved = await this.itemService.saveRemote(itemData, currentItem)
+      this.persistedItem = saved
+      this.savedItemId.set(saved.id)
+      this.imagePending = !!image || this.imageRemoved()
+      await this.itemService.saveImage(saved, image, this.imageRemoved())
+      this.imagePending = false
+      if (this.item()) {
         this.showSuccess('Item atualizado com sucesso.')
         void this.router.navigate(['/home'])
       } else {
-        this.itemService.addItem({ ...itemData, id: crypto.randomUUID() })
         this.successDialog()?.nativeElement.showModal()
       }
-    } catch {
-      this.snackBar.open(this.item() ? 'Não foi possível atualizar o item. Tente novamente.' : 'Não foi possível cadastrar o item. Tente novamente.', undefined, { duration: 3000 })
+    } catch (error) {
+      const prefix = this.imagePending ? 'Item salvo, mas a imagem não foi atualizada. Clique em salvar para tentar novamente. ' : ''
+      this.snackBar.open(prefix + this.errorMessage(error), undefined, { duration: 10000 })
     } finally {
       this.saving.set(false)
     }
   }
 
   addAnotherItem(): void {
+    this.persistedItem = null
+    this.savedItemId.set(null)
+    this.imagePending = false
     this.successDialog()?.nativeElement.close()
     const kioskId = this.formFields.controls.kioskId.value
     this.formFields.reset({ name: '', category: '', kioskId, description: '', value: '', image: null })
@@ -366,12 +408,4 @@ export class KioskItemRegisterForm {
     void this.router.navigate(['/home'])
   }
 
-  private readImage(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(String(reader.result))
-      reader.onerror = () => reject(reader.error)
-      reader.readAsDataURL(file)
-    })
-  }
 }
