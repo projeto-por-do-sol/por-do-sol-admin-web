@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { SectionTitle } from '../../shared/ui/section-title/section-title';
 import { TableColumn } from '../../shared/ui/table/table';
 import { Employee } from '../../models/employee';
@@ -49,7 +49,15 @@ export class Team {
     }
   ];
 
-  constructor(private router: Router) { }
+  readonly loadError = signal(false)
+
+  constructor(private router: Router) { void this.loadTeam() }
+
+  async loadTeam(): Promise<void> {
+    this.loadError.set(false)
+    try { await this.teamService.loadTeam() }
+    catch { this.loadError.set(true) }
+  }
 
   getNameInitials(name: string) {
     return UserInitials.getNameInitials(name)

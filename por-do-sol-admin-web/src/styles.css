@@ -283,11 +283,17 @@ h2 {
   }
 }
 
-.item-success-snackbar {
+.app-snackbar {
   --mat-snack-bar-container-color: var(--color-surface);
   --mat-snack-bar-supporting-text-color: var(--color-outline);
 }
 
-.item-success-snackbar .mdc-snackbar__label {
+.app-snackbar-error {
+  --mat-snack-bar-container-color: var(--color-error);
+  --mat-snack-bar-supporting-text-color: var(--color-on-error);
+}
+
+.app-snackbar .mdc-snackbar__label,
+.app-snackbar-error .mdc-snackbar__label {
   text-align: center;
 }

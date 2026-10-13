@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, ElementRef, inject, input, output, signal, Signal, effect, viewChild } from '@angular/core';
 import { Input } from "../../shared/ui/input/input";
 import { ChipMultiChoice } from "../../shared/ui/chip-multi-choice/chip-multi-choice";
@@ -10,6 +11,7 @@ import { Select } from "../../shared/ui/select/select";
 import { KioskService } from '../../services/kiosk-service';
 import { TeamService } from '../../services/team-service';
 import { Employee } from '../../models/employee';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-employee-register-form',
@@ -21,6 +23,7 @@ export class EmployeeRegisterForm {
 
   private readonly kiosksService = inject(KioskService)
   private readonly teamService = inject(TeamService)
+  private readonly notifications = inject(NotificationService)
   private readonly removeDialog = viewChild<ElementRef<HTMLDialogElement>>('removeDialog')
   private kiosks = this.kiosksService.kiosks
   employee = input<Employee | null>(null)
@@ -30,6 +33,7 @@ export class EmployeeRegisterForm {
   removed = output<void>()
   role = signal<string>("Funcionário")
   kiosk = signal<string>("")
+  saving = signal(false)
 
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
   readonly selectedDays = signal<string[]>([])
@@ -71,11 +75,30 @@ export class EmployeeRegisterForm {
     this.removeDialog()?.nativeElement.close()
   }
 
-  confirmRemoveEmployee() {
+  async confirmRemoveEmployee() {
     const employee = this.employee()
-    if (!employee?.id || !this.teamService.removeEmployee(employee.id)) return
-    this.closeRemoveDialog()
-    this.removed.emit()
+    if (!employee?.id || this.saving()) return
+    this.saving.set(true)
+    try {
+      await this.teamService.removeEmployee(employee.id)
+      this.closeRemoveDialog()
+      this.notifications.success('Funcionário removido com sucesso.')
+      this.removed.emit()
+    } catch (error) {
+      this.closeRemoveDialog()
+      this.notifications.error(this.errorMessage(error))
+    } finally { this.saving.set(false) }
+  }
+
+  private errorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 0) return 'Não foi possível conectar à API. Verifique a conexão e tente novamente.'
+      if (error.status === 401) return 'Sua sessão expirou. Entre novamente.'
+      if (error.status === 403) return 'Você não tem permissão para realizar esta operação neste quiosque.'
+      if (error.status === 404) return 'Funcionário não encontrado neste quiosque.'
+      return error.error?.message || error.error?.detail || (typeof error.error === 'string' && error.error ? error.error : 'Não foi possível salvar. Tente novamente.')
+    }
+    return error instanceof Error ? error.message : 'Não foi possível salvar. Tente novamente.'
   }
 
   setRole(role: string) {
@@ -123,12 +146,14 @@ export class EmployeeRegisterForm {
     })
   }
 
-  onSubmit() {
+  async onSubmit() {
+    if (this.saving()) return
     if (this.formFields.invalid) {
       this.formFields.markAllAsTouched()
       return
     }
-    const kiosk = this.kiosks().find(item => item.name === this.kiosk())
+    const employee = this.employee()
+    const kiosk = this.kiosks().find(item => employee ? item.id === employee.kioskId : item.name === this.kiosk())
     if (!kiosk) return
     const payload: Employee = {
       name: this.formFields.value.name?.trim(),
@@ -141,13 +166,20 @@ export class EmployeeRegisterForm {
       kioskName: kiosk.name,
       role: this.role(),
     }
-    const employee = this.employee()
-    if (employee?.id) {
-      if (!this.teamService.updateEmployee(employee.id, payload)) return
-    } else {
-      this.teamService.addEmployee({ ...payload, status: false })
-    }
-    this.saved.emit()
+    this.saving.set(true)
+    try {
+      if (employee?.id) {
+        await this.teamService.updateEmployee(employee.id, payload)
+        this.notifications.success('Funcionário atualizado com sucesso.')
+        this.saved.emit()
+      } else {
+        await this.teamService.addEmployee(payload)
+        this.notifications.success('Funcionário cadastrado com sucesso.')
+        this.saved.emit()
+      }
+    } catch (error) {
+      this.notifications.error(this.errorMessage(error), 10000)
+    } finally { this.saving.set(false) }
   }
 
 }

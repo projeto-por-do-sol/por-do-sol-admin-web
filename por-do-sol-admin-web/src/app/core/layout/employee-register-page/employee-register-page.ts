@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ReturnLink } from "../../shared/ui/return-link/return-link";
 import { SectionTitle } from "../../shared/ui/section-title/section-title";
 import { CardPreview } from "../../shared/ui/card-preview/card-preview";
@@ -19,7 +19,19 @@ export class EmployeeRegisterPage {
   private readonly route = inject(ActivatedRoute)
   private readonly teamService = inject(TeamService)
   readonly employeeId = this.route.snapshot.paramMap.get('id')
-  readonly employee = this.employeeId ? this.teamService.getEmployee(this.employeeId) : null
+  readonly employee = computed(() => this.employeeId ? this.teamService.getEmployee(this.employeeId) ?? null : null)
+  readonly loading = signal(true)
+  readonly loadError = signal(false)
+
+  constructor() { void this.loadTeam() }
+
+  async loadTeam(): Promise<void> {
+    this.loading.set(true)
+    this.loadError.set(false)
+    try { await this.teamService.loadTeam() }
+    catch { this.loadError.set(true) }
+    finally { this.loading.set(false) }
+  }
 
   goToHome() {
     this.router.navigate(['/home'])

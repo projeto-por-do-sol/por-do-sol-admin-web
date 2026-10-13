@@ -14,12 +14,12 @@ import { CancelButton } from '../../shared/ui/cancel-button/cancel-button';
 import { Button } from '../../shared/ui/button/button';
 import { Select } from '../../shared/ui/select/select';
 import { KioskItem, KioskItemComplement } from '../../models/kiosk-item';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { NotificationService } from '../../services/notification-service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-kiosk-item-register-form',
-  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatSnackBarModule, MatTooltipModule],
+  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatTooltipModule],
   templateUrl: './kiosk-item-register-form.html',
   styleUrl: './kiosk-item-register-form.css',
 })
@@ -29,7 +29,7 @@ export class KioskItemRegisterForm {
   private readonly selectionService = inject(KioskSelectionService)
   private readonly itemService = inject(KioskItemService)
   private readonly router = inject(Router)
-  private readonly snackBar = inject(MatSnackBar)
+  private readonly notifications = inject(NotificationService)
 
   readonly kiosks = this.kioskService.kiosks
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
@@ -174,7 +174,7 @@ export class KioskItemRegisterForm {
       this.closeRemoveDialog()
       this.showSuccess('Item removido com sucesso.')
       void this.router.navigate(['/home'])
-    } catch (error) { this.snackBar.open(this.errorMessage(error), undefined, { duration: 6000 }) }
+    } catch (error) { this.notifications.error(this.errorMessage(error)) }
     finally { this.saving.set(false) }
   }
 
@@ -187,10 +187,7 @@ export class KioskItemRegisterForm {
   }
 
   private showSuccess(message: string): void {
-    this.snackBar.open(message, undefined, {
-      duration: 3000,
-      panelClass: 'item-success-snackbar',
-    })
+    this.notifications.success(message)
   }
 
   saveIngredient(showFeedback = true): boolean {
@@ -316,7 +313,7 @@ export class KioskItemRegisterForm {
       this.selectCategory(name)
       this.closeCategoryDialog()
       this.showSuccess('Categoria criada com sucesso.')
-    } catch (error) { this.snackBar.open(this.errorMessage(error), undefined, { duration: 6000 }) }
+    } catch (error) { this.notifications.error(this.errorMessage(error)) }
     finally { this.creatingCategory.set(false) }
   }
 
@@ -381,7 +378,7 @@ export class KioskItemRegisterForm {
       }
     } catch (error) {
       const prefix = this.imagePending ? 'Item salvo, mas a imagem não foi atualizada. Clique em salvar para tentar novamente. ' : ''
-      this.snackBar.open(prefix + this.errorMessage(error), undefined, { duration: 10000 })
+      this.notifications.error(prefix + this.errorMessage(error), 10000)
     } finally {
       this.saving.set(false)
     }

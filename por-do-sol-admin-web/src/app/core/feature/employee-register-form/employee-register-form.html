@@ -16,7 +16,7 @@
       <h2>Alocação</h2>
 
       <div class="allocation flex gap-8 justify-between min-w-0">
-        <app-select class="flex-1 min-w-0" [selectTitle]="'Quiosque'" [options]="kioskNames()" [selectedValue]="kiosk()" (valueChange)="setKiok($event)"></app-select>
+        <app-select class="flex-1 min-w-0" [selectTitle]="'Quiosque'" [options]="kioskNames()" [selectedValue]="kiosk()" [disabled]="!!employee()" (valueChange)="setKiok($event)"></app-select>
         <app-select class="flex-1 min-w-0" [selectTitle]="'Cargo'" [options]="['Funcionário', 'Gerente']" [selectedValue]="role()" (valueChange)="setRole($event)"></app-select>
       </div>
 
@@ -49,7 +49,7 @@
       <p id="remove-employee-description" class="text-sub-text">Deseja remover {{ employee()?.name }} da equipe? Esta ação não pode ser desfeita.</p>
       <div class="grid gap-3 sm:flex sm:justify-end">
         <app-cancel-button (onClickButton)="closeRemoveDialog()"></app-cancel-button>
-        <button type="button" class="inline-flex w-full items-center justify-center rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline sm:w-auto" aria-label="Confirmar remoção do funcionário" (click)="confirmRemoveEmployee()">Remover funcionário</button>
+        <button type="button" class="inline-flex w-full items-center justify-center rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline sm:w-auto" aria-label="Confirmar remoção do funcionário" (click)="confirmRemoveEmployee()" [disabled]="saving()">Remover funcionário</button>
       </div>
     </div>
   </dialog>

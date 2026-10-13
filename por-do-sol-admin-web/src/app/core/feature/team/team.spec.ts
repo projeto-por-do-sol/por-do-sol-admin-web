@@ -1,16 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Team } from './team';
-import { Router } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
 import { vi } from 'vitest';
+import { TeamService } from '../../services/team-service';
 
 describe('Team', () => {
   let component: Team;
   let fixture: ComponentFixture<Team>;
+  const team = signal([{ id: 'a', name: 'Rodolfo da Silva', role: 'Gerente', kioskName: 'Praia', startShift: '08:00', finishShift: '18:00', status: true }]);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Team],
+      providers: [provideRouter([]), { provide: TeamService, useValue: { team, loadTeam: () => Promise.resolve() } }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Team);
@@ -30,6 +34,6 @@ describe('Team', () => {
     expect(button).toBeTruthy();
     button.click();
 
-    expect(navigate).toHaveBeenCalledWith(['/employeeRegister', 'employee1']);
+    expect(navigate).toHaveBeenCalledWith(['/employeeRegister', 'a']);
   });
 });

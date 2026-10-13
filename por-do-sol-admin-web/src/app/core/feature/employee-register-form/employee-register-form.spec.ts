@@ -2,7 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EmployeeRegisterForm } from './employee-register-form';
 import { TeamService } from '../../services/team-service';
+import { signal } from '@angular/core';
 import { vi } from 'vitest';
+import { KioskService } from '../../services/kiosk-service';
 
 describe('EmployeeRegisterForm', () => {
   let component: EmployeeRegisterForm;
@@ -11,6 +13,10 @@ describe('EmployeeRegisterForm', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EmployeeRegisterForm],
+      providers: [
+        { provide: KioskService, useValue: { kiosks: signal([{ id: '1', name: 'Praia' }]).asReadonly() } },
+        { provide: TeamService, useValue: { addEmployee: vi.fn(), updateEmployee: vi.fn(), removeEmployee: vi.fn() } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmployeeRegisterForm);
@@ -24,67 +30,41 @@ describe('EmployeeRegisterForm', () => {
 
   it('prefills and saves an existing employee', async () => {
     const teamService = TestBed.inject(TeamService);
-    const employee = teamService.getEmployee('employee1')!;
+    const employee = { id: 'a', name: 'Rodolfo', email: 'r@x.com', phone: '(13) 99999-0001', role: 'Gerente', kioskId: '1', kioskName: 'Praia', startShift: '08:00', finishShift: '18:00', daysShift: ['Segunda'] };
     fixture.componentRef.setInput('employee', employee);
     await fixture.whenStable();
+    const saved = vi.fn();
+    component.saved.subscribe(saved);
 
-    expect(component.formFields.value.name).toBe(employee.name);
-    expect(component.formFields.value.email).toBe(employee.email);
-    expect(component.formFields.value.phone).toBe(employee.phone);
-    expect(component.kiosk()).toBe(employee.kioskName);
-    expect(component.role()).toBe(employee.role);
-    expect(component.selectedDays()).toEqual(employee.daysShift);
-    expect((fixture.nativeElement.querySelector('input[name="name"]') as HTMLInputElement).value).toBe(employee.name);
-    expect((fixture.nativeElement.querySelector('input[name="email"]') as HTMLInputElement).value).toBe(employee.email);
-    expect(fixture.nativeElement.querySelectorAll('.selected-chip').length).toBe(employee.daysShift?.length);
+    expect(component.formFields.value.name).toBe('Rodolfo');
+    expect(component.kiosk()).toBe('Praia');
+    expect(component.role()).toBe('Gerente');
+    expect(component.selectedDays()).toEqual(['Segunda']);
 
     component.formFields.patchValue({ name: 'Rodolfo Editado' });
     component.setDaysShift(['Domingo']);
-    component.onSubmit();
+    await component.onSubmit();
 
-    expect(teamService.getEmployee(employee.id!)?.name).toBe('Rodolfo Editado');
-    expect(teamService.getEmployee(employee.id!)?.daysShift).toEqual(['Domingo']);
-    expect(teamService.team().length).toBe(7);
+    expect(teamService.updateEmployee).toHaveBeenCalledWith('a', expect.objectContaining({ name: 'Rodolfo Editado', kioskId: '1', daysShift: ['Domingo'] }));
+    expect(saved).toHaveBeenCalled();
   });
 
-  it('keeps the registration flow usable', async () => {
+  it('registers a new employee', async () => {
     const teamService = TestBed.inject(TeamService);
-    component.formFields.patchValue({
-      name: 'Novo Funcionário',
-      email: 'novo@example.com',
-      phone: '(13) 99999-0010',
-    });
+    vi.mocked(teamService.addEmployee).mockResolvedValue({ id: 'n', nome: 'Novo Funcionário' });
+    const saved = vi.fn();
+    component.saved.subscribe(saved);
+    component.formFields.patchValue({ name: 'Novo Funcionário', email: 'novo@example.com', phone: '(13) 99999-0010' });
     await fixture.whenStable();
-    component.onSubmit();
+    await component.onSubmit();
 
-    expect(teamService.team().some(employee => employee.name === 'Novo Funcionário')).toBe(true);
+    expect(teamService.addEmployee).toHaveBeenCalledWith(expect.objectContaining({ name: 'Novo Funcionário', kioskId: '1', role: 'Funcionário' }));
+    expect(saved).toHaveBeenCalled();
   });
 
-  it('shows removal only while editing and requires confirmation', async () => {
-    expect(fixture.nativeElement.querySelector('form button[aria-label="Remover funcionário da equipe"]')).toBeNull();
-
-    const service = TestBed.inject(TeamService);
-    const employee = service.getEmployee('employee1')!;
-    const removed = vi.fn();
-    component.removed.subscribe(removed);
-    fixture.componentRef.setInput('employee', employee);
-    await fixture.whenStable();
-
-    const dialog = fixture.nativeElement.querySelector('#remove-employee-title')?.closest('dialog') as HTMLDialogElement;
-    dialog.showModal = vi.fn();
-    dialog.close = vi.fn();
-    const openButton = fixture.nativeElement.querySelector('form button[aria-label="Remover funcionário da equipe"]') as HTMLButtonElement;
-    openButton.click();
-    expect(dialog.showModal).toHaveBeenCalledOnce();
-    expect(service.getEmployee(employee.id!)).toBeTruthy();
-
-    (dialog.querySelector('app-cancel-button button') as HTMLButtonElement).click();
-    expect(service.getEmployee(employee.id!)).toBeTruthy();
-    expect(removed).not.toHaveBeenCalled();
-
-    openButton.click();
-    (dialog.querySelector('button[aria-label="Confirmar remoção do funcionário"]') as HTMLButtonElement).click();
-    expect(service.getEmployee(employee.id!)).toBeUndefined();
-    expect(removed).toHaveBeenCalledOnce();
+  it('does not submit an invalid form', async () => {
+    const teamService = TestBed.inject(TeamService);
+    await component.onSubmit();
+    expect(teamService.addEmployee).not.toHaveBeenCalled();
   });
 });

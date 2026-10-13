@@ -29,4 +29,5 @@
     <img src="assets/icons/edit.svg" alt="" aria-hidden="true">
   </button>
 </ng-template>
+@if (loadError()) { <p role="alert">Não foi possível carregar a equipe.</p><button type="button" (click)="loadTeam()">Tentar novamente</button> }
 <app-table-or-card [columns]="employeeColumns" [ELEMENT_DATA]="teamService.team()" [cardTemplate]="teamCard" [cellTemplate]="editCell"></app-table-or-card>

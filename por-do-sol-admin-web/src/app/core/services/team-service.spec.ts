@@ -1,46 +1,60 @@
 import { TestBed } from '@angular/core/testing';
-
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
 import { TeamService } from './team-service';
+import { KioskService } from './kiosk-service';
+import { API_BASE_URL } from '../config/api';
 
 describe('TeamService', () => {
   let service: TeamService;
+  let http: HttpTestingController;
+  const kiosk = { id: '1', name: 'Praia' };
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TeamService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
-  it('finds and updates an employee without replacing the other records', () => {
-    const original = service.getEmployee('employee1');
-    expect(original?.name).toBe('Rodolfo da Silva');
-
-    expect(service.updateEmployee('employee1', {
-      name: 'Rodolfo Atualizado',
-      kioskName: 'Praia Quiosque',
-      daysShift: ['Sábado'],
-    })).toBe(true);
-
-    expect(service.getEmployee('employee1')).toEqual({
-      ...original,
-      name: 'Rodolfo Atualizado',
-      kioskName: 'Praia Quiosque',
-      daysShift: ['Sábado'],
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(), provideHttpClientTesting(),
+        { provide: KioskService, useValue: { kiosks: signal([kiosk]).asReadonly(), loadKiosks: () => Promise.resolve() } },
+      ],
     });
-    expect(service.getEmployee('employee2')?.name).toBe('Mariana Costa');
-    expect(service.updateEmployee('missing', { name: 'Ninguém' })).toBe(false);
+    service = TestBed.inject(TeamService);
+    http = TestBed.inject(HttpTestingController);
   });
 
-  it('removes only the requested employee', () => {
-    const count = service.team().length;
+  async function load() {
+    const loading = service.loadTeam();
+    await Promise.resolve(); await Promise.resolve();
+    http.expectOne(`${API_BASE_URL}/quiosques/1/funcionarios`).flush([
+      { id: 'a', quiosqueId: 1, nome: 'Ana', email: 'ana.1', role: 'GERENTE', telefone: '1', imagem: null, startShift: '08:00:00', finishShift: '18:00:00' },
+    ]);
+    await loading;
+  }
 
-    expect(service.removeEmployee('employee1')).toBe(true);
-    expect(service.getEmployee('employee1')).toBeUndefined();
-    expect(service.getEmployee('employee2')).toBeTruthy();
-    expect(service.team().length).toBe(count - 1);
-    expect(service.removeEmployee('employee1')).toBe(false);
+  it('loads the team of every kiosk from the API', async () => {
+    await load();
+    expect(service.team()).toEqual([jasmineLike({ id: 'a', name: 'Ana', role: 'Gerente', kioskName: 'Praia', startShift: '08:00', finishShift: '18:00' })]);
+  });
+
+  it('creates an employee through the API', async () => {
+    const created = service.addEmployee({ name: 'Bia', email: 'b@x.com', phone: '2', role: 'Funcionário', kioskId: '1', kioskName: 'Praia', startShift: '08:00', finishShift: '12:00' });
+    const req = http.expectOne(`${API_BASE_URL}/quiosques/1/funcionarios`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toMatchObject({ nome: 'Bia', role: 'FUNCIONARIO', startShift: '08:00', finishShift: '12:00', telefone: '2' });
+    req.flush({ id: 'b', nome: 'Bia' });
+    await created;
+    expect(service.getEmployee('b')?.name).toBe('Bia');
+  });
+
+  it('removes an employee after the API confirms', async () => {
+    await load();
+    const removing = service.removeEmployee('a');
+    const req = http.expectOne(`${API_BASE_URL}/quiosques/1/funcionarios/a`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+    await removing;
+    expect(service.getEmployee('a')).toBeUndefined();
   });
 });
+
+function jasmineLike(partial: object) { return expect.objectContaining(partial) }
