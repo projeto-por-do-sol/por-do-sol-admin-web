@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { nextOrderStatus, OrderStatus } from '../../models/order';
+import { nextOrderStatus, OrderStatus, orderStatusLabel } from '../../models/order';
 
 @Component({
   selector: 'app-order-status-actions',
@@ -8,9 +8,14 @@ import { nextOrderStatus, OrderStatus } from '../../models/order';
 })
 export class OrderStatusActions {
   status = input.required<OrderStatus>()
+  disabled = input(false)
   statusChange = output<OrderStatus>()
 
   nextStatus(): OrderStatus | undefined {
     return nextOrderStatus(this.status())
+  }
+
+  label(status: OrderStatus): string {
+    return orderStatusLabel(status)
   }
 }

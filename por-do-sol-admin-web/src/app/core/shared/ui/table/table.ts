@@ -1,11 +1,10 @@
 import { AfterViewInit, Component, TemplateRef, ViewChild, computed, input } from '@angular/core';
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Employee } from '../../../models/employee';
-import { MOCK_EMPLOYEE } from '../../../mocks/mocks';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { UserInitials } from '../../../utils/user-initials';
 import { StatusStyle } from '../../../utils/status-style';
+import { OrderStatus, orderStatusLabel } from '../../../models/order';
 
 
 @Component({
@@ -50,8 +49,16 @@ export class Table implements AfterViewInit {
     return UserInitials.getNameInitials(name)
   }
 
-  orderStatus(status: string): string {
+  orderStatus(status: OrderStatus): string {
     return StatusStyle.orderStatus(status)
+  }
+
+  orderStatusLabel(status: OrderStatus): string {
+    return orderStatusLabel(status)
+  }
+
+  isSubItem(item: unknown): boolean {
+    return typeof item === 'string' && (item.startsWith('- ') || item.startsWith('+ '))
   }
 
 }

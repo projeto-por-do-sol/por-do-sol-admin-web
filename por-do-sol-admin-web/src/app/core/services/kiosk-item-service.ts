@@ -33,7 +33,7 @@ export class KioskItemService {
   }
 
   private async fetchCatalog(): Promise<void> {
-    await this.kioskService.loadKiosks()
+    await this.kioskService.ensureKiosks()
     const kiosks = this.kioskService.kiosks()
     const catalogs = await Promise.all(kiosks.map(async kiosk => ({
       kiosk, categories: await firstValueFrom(this.http.get<CategoryResponse[]>(`${API_BASE_URL}/quiosques/${kiosk.id}/categorias`)),

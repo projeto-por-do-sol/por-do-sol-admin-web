@@ -1,5 +1,7 @@
+import { OrderStatus } from '../models/order';
+
 export class StatusStyle {
-  static orderStatus(status: string): string {
-    return status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '_')
+  static orderStatus(status: OrderStatus): string {
+    return status.toLowerCase()
   }
 }

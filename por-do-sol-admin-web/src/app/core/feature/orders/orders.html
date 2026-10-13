@@ -2,6 +2,19 @@
 
 <app-chips [options]="chipOptions" [standardOption]="standardOption" (outputSelected)="onSelectedOption($event)"></app-chips>
 
+@if (loadError()) {
+  @if (ordersService.lastUpdated(); as lastUpdated) {
+    <p class="text-error" role="alert">Não foi possível atualizar os pedidos. Os pedidos exibidos podem estar desatualizados (última atualização às {{ lastUpdated | date:'HH:mm' }}). <button type="button" class="underline cursor-pointer" (click)="loadOrders()">Tentar novamente</button></p>
+  } @else {
+    <p class="text-error" role="alert">Não foi possível carregar os pedidos. <button type="button" class="underline cursor-pointer" (click)="loadOrders()">Tentar novamente</button></p>
+  }
+} @else if (ordersService.failedKiosks().length) {
+  <p class="text-error" role="alert">Não foi possível atualizar os pedidos de: {{ ordersService.failedKiosks().join(', ') }}. Os pedidos desses quiosques podem estar desatualizados. <button type="button" class="underline cursor-pointer" (click)="loadOrders()">Tentar novamente</button></p>
+}
+@if (actionError()) {
+  <p class="text-error" role="alert">{{ actionError() }}</p>
+}
+
 <ng-template #orderCard let-order>
   <div class="cardTemplate overflow-hidden">
     <p class="mb-3 font-semibold text-lg truncate border-b border-outline">{{order.kioskName}}</p>
@@ -15,28 +28,27 @@
       <p class="infoTemplate font-medium">{{order.time}}</p>
     </div>
 
-    <p class="infoTemplate font-semibold">Valor total: R${{order.value.toFixed(2)}}</p>
-    <p class="infoTemplate">{{order.kiosk}}</p>
+    <p class="infoTemplate font-semibold">Valor total: {{formatCurrency(order.value)}}</p>
 
     <div class="grid grid-cols-1 gap-1 mb-5">
 
       <ul class="list-disc ml-5">
         @for(item of order.items; track $index){
-        <li class="">{{item}}</li>
+        <li [class]="isSubItem(item) ? 'ml-6 list-none' : ''">{{item}}</li>
         }
       </ul>
     </div>
 
-    <p [ngClass]="orderStatus(order.status)">{{order.status}}</p>
+    <p [ngClass]="orderStatus(order.status)">{{orderStatusLabel(order.status)}}</p>
     <div class="mt-3 flex items-center justify-between gap-3">
       <span class="text-sm font-medium text-sub-text">Alterar status</span>
-      <app-order-status-actions [status]="order.status" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
+      <app-order-status-actions [status]="order.status" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
     </div>
   </div>
 </ng-template>
 
 <ng-template #statusActions let-order>
-  <app-order-status-actions [status]="order.status" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
+  <app-order-status-actions [status]="order.status" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
 </ng-template>
 
 <app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders()" [cardTemplate]="orderCard" [cellTemplate]="statusActions"></app-table-or-card>
@@ -48,6 +60,25 @@
     <div class="grid gap-3 sm:flex sm:justify-end">
       <app-cancel-button (onClickButton)="closeFinishDialog()"></app-cancel-button>
       <app-button labelButton="Finalizar pedido" (onClickButton)="confirmFinishOrder()"></app-button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #codeDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="order-code-title" aria-describedby="order-code-description" (close)="pendingOrder.set(null)">
+  <div class="grid gap-5">
+    <h2 id="order-code-title">Código de verificação</h2>
+    <p id="order-code-description" class="text-sub-text">Peça ao cliente {{ pendingOrder()?.clientName }} o código de {{ codeLength }} caracteres para confirmar a entrega do pedido.</p>
+    <div class="flex justify-center gap-3" role="group" aria-label="Código de verificação">
+      @for (slot of codeSlots; track slot) {
+        <input #codeInput type="text" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" autocomplete="one-time-code" maxlength="4" class="size-14 rounded-2xl border-2 bg-fundo text-center text-2xl font-semibold uppercase text-input-text focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface" [class.border-border]="!codeError()" [class.border-red-500]="codeError()" [attr.aria-label]="'Caractere ' + (slot + 1) + ' do código'" [value]="codeDigits()[slot]" (input)="onCodeInput(slot, $event)" (keydown)="onCodeKeydown(slot, $event)" (focus)="$any($event.target).select()">
+      }
+    </div>
+    @if (codeError()) {
+      <p class="text-center text-sm text-red-500" role="alert">{{ codeError() }}</p>
+    }
+    <div class="grid gap-3 sm:flex sm:justify-end">
+      <app-cancel-button (onClickButton)="closeCodeDialog()"></app-cancel-button>
+      <app-button labelButton="Finalizar pedido" [disabled]="!isCodeComplete() || submittingCode()" (onClickButton)="confirmCode()"></app-button>
     </div>
   </div>
 </dialog>

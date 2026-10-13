@@ -139,6 +139,7 @@ export class EmployeeRegisterForm {
         startShift: employee.startShift ?? '',
         finishShift: employee.finishShift ?? '',
       })
+      this.formFields.controls['email'].disable({ emitEvent: false })
       this.kiosk.set(employee.kioskName ?? '')
       this.role.set(employee.role === 'Funcionario' ? 'Funcionário' : employee.role ?? 'Funcionário')
       this.daysShift = [...(employee.daysShift ?? [])]
@@ -157,7 +158,7 @@ export class EmployeeRegisterForm {
     if (!kiosk) return
     const payload: Employee = {
       name: this.formFields.value.name?.trim(),
-      email: this.formFields.value.email?.trim(),
+      email: this.formFields.getRawValue().email?.trim(),
       phone: this.formFields.value.phone,
       startShift: this.formFields.value.startShift,
       finishShift: this.formFields.value.finishShift,

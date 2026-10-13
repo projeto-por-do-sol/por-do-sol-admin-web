@@ -92,7 +92,7 @@ body {
 }
 
 /* status */
-.esperando_confirmacao {
+.criado {
   background: #D6EFFF;
   color: #355C82;
 }
@@ -107,35 +107,37 @@ body {
   color: #824F35;
 }
 
-.atrasado {
-  background-color: #FFF3E0;
-  color: #E65100;
-}
-
 .cancelado {
   background-color: #FFEBEE;
   color: #C62828;
 }
 
-.entregando {
+.rejeitado {
+  background-color: #FCE4EC;
+  color: #AD1457;
+}
+
+.em_entrega {
   background-color: #E0F7FA;
   color: #006064;
 }
 
-.finalizado {
+.finalizado,
+.avaliado {
   background-color: #E8F5E9;
   color: #1B5E20;
 }
 
 .status,
-.esperando_confirmacao,
+.criado,
 .aceito,
 .preparando,
-.atrasado,
 .cancelado,
+.rejeitado,
 .status_active,
-.entregando,
+.em_entrega,
 .finalizado,
+.avaliado,
 .status_inactive {
   display: block;
   align-items: center;

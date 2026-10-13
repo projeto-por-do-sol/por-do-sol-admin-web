@@ -17,6 +17,14 @@
   border: 1px solid var(--color-border);
 }
 
+.select.mat-mdc-select-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: color-mix(in srgb, var(--color-border) 30%, transparent);
+  --mat-select-disabled-trigger-text-color: var(--color-outline);
+  --mat-select-disabled-arrow-color: var(--color-outline);
+}
+
 .select .mat-mdc-select-value {
   display: block;
   overflow: hidden;

@@ -414,14 +414,14 @@ export const MOCK_EMPLOYEE: Employee[] = [
 export const MOCK_ORDERS: Order[] = [
   {
     id: 'order1',
-    items: ['Porção de Peixe Frito', 'Cerveja Gelada (600ml)'],
+    items: ['Porção de Peixe Frito', '- Limão', '+ Molho tártaro', 'Cerveja Gelada (600ml)'],
     kioskName: 'Quiosque teste',
     kioskId: 'kiosk_01',
     clientName: 'Osvaldo Cunha',
     clientId: 'client1',
     value: 42.00,
     time: '12:38',
-    status: 'Esperando confirmação'
+    status: 'CRIADO'
   },
   {
     id: 'order2',
@@ -432,7 +432,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client2',
     value: 27.50,
     time: '12:45',
-    status: 'Preparando'
+    status: 'PREPARANDO'
   },
   {
     id: 'order3',
@@ -443,18 +443,18 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client3',
     value: 15.00,
     time: '13:02',
-    status: 'Esperando confirmação'
+    status: 'CRIADO'
   },
   {
     id: 'order4',
-    items: ['Açaí 500ml com Leite em Pó', 'Adicional de Banana', 'Adicional de Granola', 'Suco de Laranja'],
+    items: ['Açaí 500ml com Leite em Pó', '+ Banana', '+ Granola', 'Suco de Laranja'],
     kioskName: 'Santos Quiosque',
     kioskId: 'kiosk_03',
     clientName: 'Mariana Lima',
     clientId: 'client4',
     value: 58.90,
     time: '13:15',
-    status: 'Aceito'
+    status: 'ACEITO'
   },
   {
     id: 'order5',
@@ -465,7 +465,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client5',
     value: 31.00,
     time: '13:22',
-    status: 'Finalizado'
+    status: 'FINALIZADO'
   },
   {
     id: 'order6',
@@ -476,7 +476,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client6',
     value: 12.00,
     time: '13:30',
-    status: 'Cancelado'
+    status: 'CANCELADO'
   },
   {
     id: 'order7',
@@ -487,7 +487,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client7',
     value: 85.00,
     time: '13:40',
-    status: 'Entregando'
+    status: 'EM_ENTREGA'
   },
   /* {
     id: 'order8',
@@ -498,7 +498,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client8',
     value: 8.00,
     time: '13:42',
-    status: 'Atrasado'
+    status: 'PREPARANDO'
   }, */
   {
     id: 'order9',
@@ -509,7 +509,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client9',
     value: 55.00,
     time: '13:50',
-    status: 'Preparando'
+    status: 'PREPARANDO'
   },
   {
     id: 'order10',
@@ -520,7 +520,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client10',
     value: 28.50,
     time: '13:55',
-    status: 'Entregando'
+    status: 'EM_ENTREGA'
   },
   {
     id: 'order11',
@@ -531,7 +531,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client11',
     value: 45.00,
     time: '14:00',
-    status: 'Entregando'
+    status: 'EM_ENTREGA'
   },
   {
     id: 'order12',
@@ -542,7 +542,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client12',
     value: 22.00,
     time: '14:05',
-    status: 'Finalizado'
+    status: 'FINALIZADO'
   },
   /* {
     id: 'order13',
@@ -553,7 +553,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client13',
     value: 35.00,
     time: '14:10',
-    status: 'Atrasado'
+    status: 'PREPARANDO'
   }, */
   {
     id: 'order14',
@@ -564,7 +564,7 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client14',
     value: 24.00,
     time: '14:15',
-    status: 'Esperando confirmação'
+    status: 'CRIADO'
   },
   {
     id: 'order15',
@@ -575,6 +575,6 @@ export const MOCK_ORDERS: Order[] = [
     clientId: 'client15',
     value: 65.00,
     time: '14:20',
-    status: 'Cancelado'
+    status: 'CANCELADO'
   }
 ];

@@ -19,7 +19,22 @@ export class KioskService {
   private _kiosks = signal<KioskModel[]>([])
   kiosks = this._kiosks.asReadonly()
 
-  async loadKiosks(): Promise<void> {
+  // Garante que seja exibido para o usuário correto. Caso o usuário troque de conta, os dados que estavam carregados, ficam invalidados.
+  private loadedForUser: string | null = null
+  private loading: Promise<void> | null = null
+
+  ensureKiosks(): Promise<void> {
+    const userId = this.userService.user()?.id
+    return userId && userId === this.loadedForUser ? Promise.resolve() : this.loadKiosks()
+  }
+
+  loadKiosks(): Promise<void> {
+    if (this.loading) return this.loading
+    this.loading = this.fetchKiosks().finally(() => this.loading = null)
+    return this.loading
+  }
+
+  private async fetchKiosks(): Promise<void> {
     const user = await firstValueFrom(this.userService.restoreSession())
     const endpoint = user.role === 'proprietario' ? '/empresas/me/overview/quiosques' : '/quiosques/me'
     const response = await firstValueFrom(this.http.get<CatalogKioskResponse | CatalogKioskResponse[]>(`${API_BASE_URL}${endpoint}`))
@@ -31,6 +46,7 @@ export class KioskService {
       urlImg: apiImageUrl(record.imagem), rating: String(record.nota ?? 0),
       todaysOrders: record.pedidosHoje ?? 0, averageTime: record.tempoMedio ?? 0, invoicing: record.faturamentoHoje ?? 0,
     })))
+    this.loadedForUser = user.id ?? null
     this.isOpen()
   }
 

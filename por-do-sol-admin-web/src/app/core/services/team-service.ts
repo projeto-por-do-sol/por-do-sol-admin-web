@@ -37,7 +37,7 @@ export class TeamService {
   }
 
   private async fetchTeam(): Promise<void> {
-    await this.kioskService.loadKiosks()
+    await this.kioskService.ensureKiosks()
     const kiosks = this.kioskService.kiosks()
     const teams = await Promise.all(kiosks.map(async kiosk => {
       const records = await firstValueFrom(this.http.get<EmployeeResponse[]>(`${API_BASE_URL}/quiosques/${kiosk.id}/funcionarios`))
