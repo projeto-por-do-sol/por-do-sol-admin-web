@@ -26,6 +26,7 @@ export const routes: Routes = [
     children: [
       { path: 'home', component: Home },
       { path: 'kioskRegister', component: KioskRegisterPage },
+      { path: 'kioskRegister/:id', component: KioskRegisterPage },
       { path: 'employeeRegister', component: EmployeeRegisterPage },
       { path: 'employeeRegister/:id', component: EmployeeRegisterPage },
       { path: 'itemRegister', component: KioskItemRegisterPage },

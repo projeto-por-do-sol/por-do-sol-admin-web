@@ -190,6 +190,11 @@ export class KioskItemRegisterForm {
     this.notifications.success(message)
   }
 
+  addOnEnter(event: Event, save: () => boolean): void {
+    event.preventDefault()
+    save.call(this)
+  }
+
   saveIngredient(showFeedback = true): boolean {
     const name = this.ingredientDraft.value.trim().replace(/\s+/g, ' ')
     if (!name) {

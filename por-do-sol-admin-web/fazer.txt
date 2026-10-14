@@ -33,3 +33,13 @@ Opção para abrir ou fechar o quiosque antes/depois do esperado (talvez um moda
 
 
 Filtrar os itens vendidos pelo quiosques por categorias.
+
+
+
+** API
+Não retorna erro ao tentar cadastrar funcionários
+Não retorna todos os dados dos quiosque quando vou editar os dados dele. Não é retornado: distância de atendimento, e-mail, cnpj, rua, número e ponto de referência.
+Ainda não tem o cadastro dos dias da semana que o quiosque abre.
+Ainda não retorna as estatísticas.
+No KPI, a variação do tempo médio está em porcentagem ao invés da diferença em minutos.
+Ao cadastrar ou editar um quiosque, a imagem retorna erro e é preciso recarregar a página para carregar a imagem.

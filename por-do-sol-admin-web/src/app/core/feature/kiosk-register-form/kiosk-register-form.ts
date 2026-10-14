@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, output, signal, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, output, signal, Signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Input } from "../../shared/ui/input/input";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
@@ -9,10 +9,12 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { finalize, of, switchMap, tap } from 'rxjs';
 import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
 import { ImageInput } from '../../shared/ui/image-input/image-input';
-import { cnpjValidator } from '../../utils/cnpj';
+import { cnpjValidator, formatCnpj } from '../../utils/cnpj';
 import { LocationMap, MapLocation } from '../../shared/ui/location-map/location-map';
 import { KioskService } from '../../services/kiosk-service';
-import { KioskRegistrationRequest } from '../../models/kiosk-registration';
+import { KioskDetailsResponse, KioskRegistrationRequest } from '../../models/kiosk-registration';
+import { NotificationService } from '../../services/notification-service';
+import { apiImageUrl } from '../../utils/api-image-url';
 
 @Component({
   selector: 'app-kiosk-register-form',
@@ -23,7 +25,15 @@ import { KioskRegistrationRequest } from '../../models/kiosk-registration';
 export class KioskRegisterForm {
 
   private readonly kioskService = inject(KioskService)
+  private readonly notifications = inject(NotificationService)
   private readonly destroyRef = inject(DestroyRef)
+  kiosk = input<KioskDetailsResponse | null>(null)
+  readonly isEditing = computed(() => this.kiosk() !== null)
+  readonly existingImageUrl = computed(() => {
+    const kiosk = this.kiosk()
+    if (!kiosk) return null
+    return apiImageUrl(kiosk.imagem) ?? this.kioskService.kiosks().find(item => item.id === String(kiosk.id))?.urlImg ?? null
+  })
   private pendingImage: File | null = null
   readonly isLoading = signal(false)
   readonly errorMessage = signal('')
@@ -46,9 +56,11 @@ export class KioskRegisterForm {
     ]
   })
 
-  previewName = computed(() => this.formValue().kioskName || 'Novo quiosque')
+  previewName = computed(() => this.formValue().kioskName || (this.isEditing() ? 'Quiosque' : 'Novo quiosque'))
 
-  previewLastText = "Esse será o card exibido na aba <span class='text-outline'>Quiosques</span> do painel administrativo assim que o cadastro for concluído."
+  previewLastText = computed(() => this.isEditing()
+    ? "Esse será o card exibido na aba <span class='text-outline'>Quiosques</span> do painel administrativo assim que as alterações forem salvas."
+    : "Esse será o card exibido na aba <span class='text-outline'>Quiosques</span> do painel administrativo assim que o cadastro for concluído.")
 
   formFields: FormGroup
   formValue: Signal<any>
@@ -79,6 +91,28 @@ export class KioskRegisterForm {
 
     this.formValue = toSignal(this.formFields.valueChanges, {
       initialValue: this.formFields.value,
+    })
+
+    effect(() => {
+      const kiosk = this.kiosk()
+      if (!kiosk) return
+      this.formFields.patchValue({
+        kioskName: kiosk.nome ?? '',
+        kioskCnpj: kiosk.cnpj ? formatCnpj(kiosk.cnpj) : '',
+        kioskEmail: kiosk.email ?? '',
+        kioskCep: kiosk.cep ?? '',
+        kioskState: kiosk.uf ?? '',
+        kioskCity: kiosk.cidade ?? '',
+        kioskStreet: kiosk.rua ?? '',
+        kioskNumber: kiosk.numero ?? '',
+        kioskReference: kiosk.referencia ?? '',
+        latitude: kiosk.latitude ?? null,
+        longitude: kiosk.longitude ?? null,
+        openTime: kiosk.openingTime?.slice(0, 5) ?? '08:00',
+        closeTime: kiosk.closingTime?.slice(0, 5) ?? '22:00',
+        distAtendimento: kiosk.distAtendimento !== undefined ? String(kiosk.distAtendimento) : '',
+      })
+      this.imagePreview.set(this.existingImageUrl())
     })
   }
 
@@ -123,12 +157,37 @@ export class KioskRegisterForm {
       return
     }
     this.pendingImage = this.formFields.getRawValue().profileImage
-    this.submitRegistration()
+    if (this.isEditing()) this.submitUpdate()
+    else this.submitRegistration()
   }
 
-  private submitRegistration() {
+  private submitUpdate() {
+    const kioskId = String(this.kiosk()!.id)
+    this.isLoading.set(true)
+    this.errorMessage.set('')
+    this.formFields.disable()
+
+    this.kioskService.updateKiosk(kioskId, this.toPayload()).pipe(
+      switchMap(() => this.pendingImage
+        ? this.kioskService.uploadKioskImage(Number(kioskId), this.pendingImage)
+        : of(null)),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        this.isLoading.set(false)
+        this.formFields.enable()
+      }),
+    ).subscribe({
+      next: () => {
+        this.notifications.success('Quiosque atualizado com sucesso.')
+        this.saved.emit()
+      },
+      error: (error: HttpErrorResponse) => this.errorMessage.set(this.updateErrorMessage(error)),
+    })
+  }
+
+  private toPayload(): KioskRegistrationRequest {
     const values = this.formFields.getRawValue()
-    const payload: KioskRegistrationRequest = {
+    return {
       nome: values.kioskName.trim(),
       email: values.kioskEmail.trim(),
       cnpj: values.kioskCnpj.replace(/\D/g, ''),
@@ -145,6 +204,10 @@ export class KioskRegisterForm {
       longitude: Number(values.longitude),
       // daysOpen: [...this.daysOpen],
     }
+  }
+
+  private submitRegistration() {
+    const payload = this.toPayload()
 
     this.isLoading.set(true)
     this.errorMessage.set('')
@@ -173,6 +236,16 @@ export class KioskRegisterForm {
           : this.registrationErrorMessage(error))
       },
     })
+  }
+
+  private updateErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 0) return 'Não foi possível conectar à API. Verifique sua conexão e tente novamente.'
+    if (error.status === 401) return 'Sua sessão expirou. Entre novamente para editar o quiosque.'
+    if (error.status === 403) return 'Você não tem permissão para editar este quiosque.'
+    if (error.status === 404) return 'Quiosque não encontrado.'
+    if (error.status === 409) return 'Verifique o CNPJ. O e-mail ou o CNPJ também pode estar cadastrado em outro quiosque.'
+    if (error.status === 400) return 'Não foi possível salvar. Verifique os dados informados.'
+    return 'Não foi possível salvar as alterações. Tente novamente.'
   }
 
   private registrationErrorMessage(error: HttpErrorResponse): string {

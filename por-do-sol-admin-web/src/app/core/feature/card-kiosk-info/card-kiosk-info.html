@@ -9,11 +9,16 @@
       <p>Fechado</p>
       }
     </div>
-    <div class="bg-amarelo h-max w-max py-2 px-4 rounded-2xl font-medium text-outline flex gap-1 items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
-        <path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
-      </svg>
-      <p>{{kiosk().rating}}</p>
+    <div class="flex gap-2 h-max items-center">
+      <div class="bg-amarelo h-max w-max py-2 px-4 rounded-2xl font-medium text-outline flex gap-1 items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
+          <path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+        </svg>
+        <p>{{kiosk().rating}}</p>
+      </div>
+      <button type="button" class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary cursor-pointer hover:bg-marrom focus-visible:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline" [attr.aria-label]="'Editar quiosque ' + kiosk().name" (click)="editKiosk()">
+        <img src="assets/icons/edit.svg" class="size-5" alt="" aria-hidden="true">
+      </button>
     </div>
   </div>
 
@@ -51,6 +56,12 @@
           {{ kiosk().invoicing | currency:'BRL'}}
         </span>
         faturamento hoje
+      </p>
+      <p>
+        <span class="text-outline font-semibold">
+          {{ averageTicket() | currency:'BRL'}}
+        </span>
+        ticket médio
       </p>
     </div>
   </div>

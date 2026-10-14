@@ -20,3 +20,9 @@ export interface KioskRegistrationResponse extends Omit<KioskRegistrationRequest
   id: number;
   status: 'Ativa' | 'Desativada';
 }
+
+export interface KioskDetailsResponse extends Partial<Omit<KioskRegistrationResponse, 'id'>> {
+  id: number;
+  cnpj?: string;
+  imagem?: string;
+}

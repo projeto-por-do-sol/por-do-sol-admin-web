@@ -6,7 +6,7 @@ import { CatalogKioskResponse } from '../models/item-api';
 import { UserService } from './user-service';
 import { API_BASE_URL } from '../config/api';
 import { apiImageUrl } from '../utils/api-image-url';
-import { KioskRegistrationRequest, KioskRegistrationResponse } from '../models/kiosk-registration';
+import { KioskDetailsResponse, KioskRegistrationRequest, KioskRegistrationResponse } from '../models/kiosk-registration';
 
 @Injectable({
   providedIn: 'root',
@@ -66,6 +66,27 @@ export class KioskService {
           invoicing: 0,
         }
         this._kiosks.update(kiosks => [...kiosks.filter(item => item.id !== kiosk.id), kiosk])
+        this.isOpen()
+      }),
+    )
+  }
+
+  getKioskDetails(kioskId: string): Observable<KioskDetailsResponse> {
+    return this.http.get<KioskDetailsResponse>(`${API_BASE_URL}/quiosques/${kioskId}`)
+  }
+
+  updateKiosk(kioskId: string, request: KioskRegistrationRequest): Observable<KioskRegistrationResponse> {
+    return this.http.put<KioskRegistrationResponse>(`${API_BASE_URL}/quiosques/${kioskId}`, request).pipe(
+      tap(response => {
+        this._kiosks.update(kiosks => kiosks.map(kiosk => kiosk.id === kioskId
+          ? {
+            ...kiosk,
+            name: response.nome,
+            location: `${response.cidade}, ${response.uf}`,
+            startOperation: response.openingTime.slice(0, 5),
+            finishOperation: response.closingTime.slice(0, 5),
+          }
+          : kiosk))
         this.isOpen()
       }),
     )
