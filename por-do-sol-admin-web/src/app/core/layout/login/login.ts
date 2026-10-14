@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { UserService } from '../../services/user-service';
 import { Input } from "../../shared/ui/input/input";
 import { Button } from "../../shared/ui/button/button";
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,8 +15,13 @@ import { Router, RouterLink } from '@angular/router';
 export class Login {
   private readonly userService = inject(UserService)
   private readonly router = inject(Router)
+  private readonly route = inject(ActivatedRoute)
   readonly isLoading = signal(false)
-  readonly errorMessage = signal('')
+  readonly errorMessage = signal(
+    this.route.snapshot.queryParamMap.has('semQuiosque')
+      ? 'Seu usuário não está vinculado a nenhum quiosque.'
+      : '',
+  )
 
   readonly form = new FormGroup({
     email: new FormControl('', {

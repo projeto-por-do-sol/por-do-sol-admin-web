@@ -8,6 +8,7 @@
         selectTitle="Quiosque"
         [options]="kioskNames()"
         [selectedValue]="selectedKioskName()"
+        [disabled]="!permissions.isOwner()"
         placeholder="Selecione um quiosque"
         (valueChange)="selectKioskByName($event)">
       </app-select>

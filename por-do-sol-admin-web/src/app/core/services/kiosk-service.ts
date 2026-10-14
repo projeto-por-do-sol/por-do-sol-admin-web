@@ -1,6 +1,6 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom, Observable, tap } from 'rxjs';
+import { firstValueFrom, map, Observable, switchMap, tap } from 'rxjs';
 import { KioskModel } from '../models/kiosk-model';
 import { CatalogKioskResponse } from '../models/item-api';
 import { UserService } from './user-service';
@@ -96,14 +96,16 @@ export class KioskService {
     const formData = new FormData()
     formData.append('file', image)
 
+    // A API grava o arquivo como "<uuid>_<nome>" mas devolve só o nome original; a URL real vem do quiosque.
     return this.http.post(`${API_BASE_URL}/quiosques/${kioskId}/imagem`, formData, {
       responseType: 'text',
     }).pipe(
-      tap(fileName => this._kiosks.update(kiosks => kiosks.map(kiosk =>
-        kiosk.id === String(kioskId)
-          ? { ...kiosk, urlImg: apiImageUrl(`/uploads/${encodeURIComponent(fileName.trim())}`) }
-          : kiosk,
-      ))),
+      switchMap(fileName => this.getKioskDetails(String(kioskId)).pipe(
+        tap(details => this._kiosks.update(kiosks => kiosks.map(kiosk =>
+          kiosk.id === String(kioskId) ? { ...kiosk, urlImg: apiImageUrl(details.imagem) } : kiosk,
+        ))),
+        map(() => fileName),
+      )),
     )
   }
 
@@ -125,6 +127,13 @@ export class KioskService {
 
   constructor() {
     this.isOpen()
+
+    // Ao sair da conta, descarta os quiosques do usuário anterior.
+    effect(() => {
+      if (this.userService.user()) return
+      this._kiosks.set([])
+      this.loadedForUser = null
+    })
   }
 
   isOpen() {

@@ -15,6 +15,7 @@ import { KioskService } from '../../services/kiosk-service';
 import { KioskDetailsResponse, KioskRegistrationRequest } from '../../models/kiosk-registration';
 import { NotificationService } from '../../services/notification-service';
 import { apiImageUrl } from '../../utils/api-image-url';
+import { fromWeekFlags, toWeekFlags } from '../../utils/weekdays';
 
 @Component({
   selector: 'app-kiosk-register-form',
@@ -41,6 +42,7 @@ export class KioskRegisterForm {
   saved = output<void>()
 
   daysOpen: string[] = []
+  readonly selectedDays = signal<string[]>([])
   onClickCancelButton = output<void>()
 
   readonly imagePreview = signal<string | null>(null)
@@ -104,7 +106,7 @@ export class KioskRegisterForm {
         kioskState: kiosk.uf ?? '',
         kioskCity: kiosk.cidade ?? '',
         kioskStreet: kiosk.rua ?? '',
-        kioskNumber: kiosk.numero ?? '',
+        kioskNumber: String(kiosk.numero ?? ''),
         kioskReference: kiosk.referencia ?? '',
         latitude: kiosk.latitude ?? null,
         longitude: kiosk.longitude ?? null,
@@ -112,6 +114,8 @@ export class KioskRegisterForm {
         closeTime: kiosk.closingTime?.slice(0, 5) ?? '22:00',
         distAtendimento: kiosk.distAtendimento !== undefined ? String(kiosk.distAtendimento) : '',
       })
+      this.daysOpen = fromWeekFlags(kiosk.diasAtivo)
+      this.selectedDays.set(this.daysOpen)
       this.imagePreview.set(this.existingImageUrl())
     })
   }
@@ -202,7 +206,7 @@ export class KioskRegisterForm {
       referencia: values.kioskReference.trim(),
       latitude: Number(values.latitude),
       longitude: Number(values.longitude),
-      // daysOpen: [...this.daysOpen],
+      diasAtivo: toWeekFlags(this.daysOpen),
     }
   }
 

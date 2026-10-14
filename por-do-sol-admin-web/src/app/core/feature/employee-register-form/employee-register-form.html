@@ -16,8 +16,8 @@
       <h2>Alocação</h2>
 
       <div class="allocation flex gap-8 justify-between min-w-0">
-        <app-select class="flex-1 min-w-0" [selectTitle]="'Quiosque'" [options]="kioskNames()" [selectedValue]="kiosk()" [disabled]="!!employee()" (valueChange)="setKiok($event)"></app-select>
-        <app-select class="flex-1 min-w-0" [selectTitle]="'Cargo'" [options]="['Funcionário', 'Gerente']" [selectedValue]="role()" (valueChange)="setRole($event)"></app-select>
+        <app-select class="flex-1 min-w-0" [selectTitle]="'Quiosque'" [options]="kioskNames()" [selectedValue]="kiosk()" [disabled]="!!employee() || !permissions.isOwner()" (valueChange)="setKiok($event)"></app-select>
+        <app-select class="flex-1 min-w-0" [selectTitle]="'Cargo'" [options]="roleOptions()" [selectedValue]="role()" (valueChange)="setRole($event)"></app-select>
       </div>
 
       <div class="openTime">

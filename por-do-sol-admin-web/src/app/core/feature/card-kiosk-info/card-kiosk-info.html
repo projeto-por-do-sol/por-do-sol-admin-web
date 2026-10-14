@@ -16,9 +16,11 @@
         </svg>
         <p>{{kiosk().rating}}</p>
       </div>
+      @if (permissions.canEditKiosk()) {
       <button type="button" class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary cursor-pointer hover:bg-marrom focus-visible:bg-marrom focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline" [attr.aria-label]="'Editar quiosque ' + kiosk().name" (click)="editKiosk()">
         <img src="assets/icons/edit.svg" class="size-5" alt="" aria-hidden="true">
       </button>
+      }
     </div>
   </div>
 

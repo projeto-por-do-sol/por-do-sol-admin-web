@@ -1,8 +1,14 @@
 <header class="bg-primary w-full px-5 md:px-8 pt-5 pb-8 flex justify-between border-t-2 border-tertiary md:border-none items-center">
   <div class="mb-10 mr-10 md:mb-0">
     <p class="text-amarelo font-light text-xl mb-2">{{cumprimento}}</p>
+    @if (selectionService.selectedKiosk(); as kiosk) {
+    <h1 class="text-creme font-bold text-3xl">{{kiosk.name}}</h1>
+    } @else {
     <h1 class="text-creme font-bold text-3xl">Como está o Quiosque hoje?</h1>
-    <p class="mt-2 text-secondary text-lg">Um resumo rápido de pedidos, equipe e faturamento</p>
+    }
+    <p class="mt-2 text-secondary text-lg">
+      {{permissions.canViewOverview() ? 'Um resumo rápido de pedidos, equipe e faturamento' : 'Acompanhe os pedidos e os itens do seu quiosque'}}
+    </p>
   </div>
 
   <!-- Campo de busca -->

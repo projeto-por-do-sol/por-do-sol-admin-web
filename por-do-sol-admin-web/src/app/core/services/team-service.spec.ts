@@ -37,10 +37,11 @@ describe('TeamService', () => {
   });
 
   it('creates an employee through the API', async () => {
-    const created = service.addEmployee({ name: 'Bia', email: 'b@x.com', phone: '2', role: 'Funcionário', kioskId: '1', kioskName: 'Praia', startShift: '08:00', finishShift: '12:00' });
+    const created = service.addEmployee({ name: 'Bia', email: 'b@x.com', phone: '2', role: 'Funcionário', kioskId: '1', kioskName: 'Praia', startShift: '08:00', finishShift: '12:00', daysShift: ['Segunda', 'Domingo'] });
     const req = http.expectOne(`${API_BASE_URL}/quiosques/1/funcionarios`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toMatchObject({ nome: 'Bia', role: 'FUNCIONARIO', startShift: '08:00', finishShift: '12:00', telefone: '2' });
+    expect(req.request.body).toMatchObject({ nome: 'Bia', role: 'FUNCIONARIO', startShift: '08:00', finishShift: '12:00', telefone: '2', diasTurno: [true, true, false, false, false, false, false] });
+    expect(req.request.body.password).toBeUndefined();
     req.flush({ id: 'b', nome: 'Bia' });
     await created;
     expect(service.getEmployee('b')?.name).toBe('Bia');

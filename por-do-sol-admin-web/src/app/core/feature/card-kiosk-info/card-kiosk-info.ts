@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { KioskModel } from '../../models/kiosk-model';
 import { KioskService } from '../../services/kiosk-service';
 import { CurrencyPipe, NgClass } from '@angular/common';
+import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-card-kiosk-info',
@@ -13,6 +14,7 @@ import { CurrencyPipe, NgClass } from '@angular/common';
 export class CardKioskInfo {
 
   private readonly router = inject(Router)
+  readonly permissions = inject(PermissionService)
 
   kiosk = input.required<KioskModel>()
 

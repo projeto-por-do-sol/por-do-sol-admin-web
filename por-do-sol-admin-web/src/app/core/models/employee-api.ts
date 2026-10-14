@@ -3,10 +3,10 @@ export type EmployeeApiRole = 'FUNCIONARIO' | 'GERENTE'
 export interface EmployeeRequest {
   nome: string;
   email: string;
-  password: string;
   cpf?: string;
   startShift: string;
   finishShift: string;
+  diasTurno: boolean[];
   role: EmployeeApiRole;
   telefone: string;
 }
@@ -21,6 +21,7 @@ export interface EmployeeResponse {
   imagem: string | null;
   startShift: string | null;
   finishShift: string | null;
+  diasAtivo: boolean[] | null;
 }
 
 export interface EmployeeCreatedResponse {

@@ -11,6 +11,8 @@ import { PasswordReset } from './core/layout/password-reset/password-reset';
 import { KioskItemRegisterPage } from './core/layout/kiosk-item-register-page/kiosk-item-register-page';
 import { CreateOrder } from './core/layout/create-order/create-order';
 import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role-guard';
+import { sessionKioskGuard } from './core/guards/session-kiosk-guard';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -22,13 +24,13 @@ export const routes: Routes = [
   {
     path: '',
     component: LoggedUser,
-    canActivate: [authGuard],
+    canActivate: [authGuard, sessionKioskGuard],
     children: [
       { path: 'home', component: Home },
-      { path: 'kioskRegister', component: KioskRegisterPage },
-      { path: 'kioskRegister/:id', component: KioskRegisterPage },
-      { path: 'employeeRegister', component: EmployeeRegisterPage },
-      { path: 'employeeRegister/:id', component: EmployeeRegisterPage },
+      { path: 'kioskRegister', component: KioskRegisterPage, canActivate: [roleGuard], data: { minRole: 'proprietario' } },
+      { path: 'kioskRegister/:id', component: KioskRegisterPage, canActivate: [roleGuard], data: { minRole: 'gerente' } },
+      { path: 'employeeRegister', component: EmployeeRegisterPage, canActivate: [roleGuard], data: { minRole: 'gerente' } },
+      { path: 'employeeRegister/:id', component: EmployeeRegisterPage, canActivate: [roleGuard], data: { minRole: 'gerente' } },
       { path: 'itemRegister', component: KioskItemRegisterPage },
       { path: 'itemRegister/:id', component: KioskItemRegisterPage },
       { path: 'createOrder', component: CreateOrder },

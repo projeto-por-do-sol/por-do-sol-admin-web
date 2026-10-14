@@ -6,6 +6,7 @@ import { EmployeeApiRole, EmployeeCreatedResponse, EmployeeRequest, EmployeeResp
 import { KioskSelectionService } from './kiosk-selection-service';
 import { KioskService } from './kiosk-service';
 import { API_BASE_URL } from '../config/api';
+import { fromWeekFlags, toWeekFlags } from '../utils/weekdays';
 
 @Injectable({
   providedIn: 'root',
@@ -78,13 +79,12 @@ export class TeamService {
   }
 
   private toRequest(employee: Employee): EmployeeRequest {
-    // A API exige e-mail e senha no DTO, mas ignora ambos.
     return {
       nome: employee.name ?? '',
       email: employee.email ?? '',
-      password: crypto.randomUUID().slice(0, 8),
       startShift: employee.startShift ?? '',
       finishShift: employee.finishShift ?? '',
+      diasTurno: toWeekFlags(employee.daysShift),
       role: this.toApiRole(employee.role),
       telefone: employee.phone ?? '',
     }
@@ -104,7 +104,7 @@ export class TeamService {
       phone: record.telefone ?? '',
       role: record.role?.toUpperCase() === 'GERENTE' ? 'Gerente' : 'Funcionário',
       kioskId, kioskName, startShift, finishShift,
-      daysShift: [],
+      daysShift: fromWeekFlags(record.diasAtivo),
       status: this.isOnShift(startShift, finishShift),
     }
   }

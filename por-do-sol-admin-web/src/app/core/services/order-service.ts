@@ -1,8 +1,9 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { KioskSelectionService } from './kiosk-selection-service';
 import { KioskService } from './kiosk-service';
+import { UserService } from './user-service';
 import { FINISHED_ORDER_STATUSES, Order, OrderStatus } from '../models/order';
 import { OrderItemResponse, OrderResponse, OrderStatusResponse } from '../models/order-api';
 import { API_BASE_URL } from '../config/api';
@@ -15,12 +16,14 @@ export class OrderService {
 
   private readonly http = inject(HttpClient)
   private readonly kioskService = inject(KioskService)
+  private readonly userService = inject(UserService)
   private readonly selectionService = inject(KioskSelectionService)
   private readonly _orders = signal<Order[]>([])
   private readonly _failedKiosks = signal<string[]>([])
   private readonly _lastUpdated = signal<Date | null>(null)
   private readonly _savingIds = signal<ReadonlySet<string>>(new Set())
   private readonly loading = new Map<string, Promise<void>>()
+  private session = 0
 
   readonly failedKiosks = this._failedKiosks.asReadonly()
 
@@ -28,15 +31,29 @@ export class OrderService {
 
   readonly savingIds = this._savingIds.asReadonly()
 
+  // Só exibe pedidos de quiosques do usuário logado, mesmo que sobrem pedidos de outra conta em memória.
   readonly orders = computed(() => {
     const selectedKiosk = this.selectionService.selectedKiosk()
+    const ownKioskIds = new Set(this.kioskService.kiosks().map(kiosk => kiosk.id))
+    const orders = this._orders().filter(order => ownKioskIds.has(order.kioskId))
 
     if (!selectedKiosk) {
-      return this._orders()
+      return orders
     }
 
-    return this._orders().filter((order) => order.kioskId === selectedKiosk.id)
+    return orders.filter((order) => order.kioskId === selectedKiosk.id)
   })
+
+  constructor() {
+    // Ao sair da conta, descarta os pedidos do usuário anterior.
+    effect(() => {
+      if (this.userService.user()) return
+      this._orders.set([])
+      this._failedKiosks.set([])
+      this._lastUpdated.set(null)
+      this.session++
+    })
+  }
 
   loadOrders(): Promise<void> {
     return this.load('ativos', kiosk => `${API_BASE_URL}/quiosques/${kiosk.id}/pedidos/ativos`,
@@ -89,6 +106,7 @@ export class OrderService {
   }
 
   private async fetch(url: (kiosk: KioskModel) => string, inScope: (order: Order) => boolean): Promise<void> {
+    const session = this.session
     await this.kioskService.ensureKiosks()
     const kiosks = this.kioskService.kiosks()
 
@@ -109,6 +127,9 @@ export class OrderService {
         failed.push(kiosk.name ?? kiosk.id!)
       }
     })
+
+    // Logout durante a requisição: a resposta pertence ao usuário anterior.
+    if (session !== this.session) return
 
     this._failedKiosks.set(failed)
     if (kiosks.length && !loadedKioskIds.size) {

@@ -8,25 +8,31 @@
 
   <!-- Visão geral -->
   <section id="visao-geral" class="grid grid-cols-1 gap-8" appSectionObserver>
+    @if(permissions.canViewOverview()){
     <app-overview></app-overview>
     @if(selectionService.selectedKiosk()){
     <app-card-kiosk-info [kiosk]="selectionService.selectedKiosk()!"></app-card-kiosk-info>
     }
+    }
   </section>
 
+  @if(permissions.canViewStatistics()){
   <section id="estatisticas" appSectionObserver>
     <app-statistics></app-statistics>
   </section>
+  }
 
-  @if(!selectionService.selectedKiosk()){
+  @if(permissions.isOwner() && !selectionService.selectedKiosk()){
   <section id="quiosques" appSectionObserver>
     <app-kiosk-grid></app-kiosk-grid>
   </section>
   }
 
+  @if(permissions.canViewTeam()){
   <section id="equipe" appSectionObserver>
     <app-team></app-team>
   </section>
+  }
 
   <section id="pedidos" appSectionObserver>
     <app-orders></app-orders>

@@ -7,6 +7,7 @@ import { NavigationService } from '../../services/navigation-service';
 import { UserInitials } from '../../utils/user-initials';
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
 import { KioskService } from '../../services/kiosk-service';
+import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,6 +19,7 @@ export class Sidebar {
   private readonly userService = inject(UserService);
   readonly kioskService = inject(KioskService);
   readonly selectionService = inject(KioskSelectionService);
+  readonly permissions = inject(PermissionService);
   selectedKiosk: string = ''
   viewModalRegister: boolean = false
   readonly registerMenuOpenChange = output<boolean>()
@@ -47,6 +49,9 @@ export class Sidebar {
   ]
 
   readonly user = this.userService.user
+  // O /me não devolve o quiosque; para gerente e funcionário ele é o selecionado automaticamente.
+  readonly userKioskName = computed(() =>
+    this.permissions.isOwner() ? null : this.selectionService.selectedKiosk()?.name ?? null)
   readonly userNameInitials = computed(() => {
     const name = this.user()?.name
     return name ? UserInitials.getNameInitials(name) : ''

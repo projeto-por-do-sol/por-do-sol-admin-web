@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { KioskSelectionService } from '../../services/kiosk-selection-service';
+import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-header',
@@ -7,6 +9,9 @@ import { Component } from '@angular/core';
   styleUrl: './header.css',
 })
 export class Header {
+
+  readonly selectionService = inject(KioskSelectionService)
+  readonly permissions = inject(PermissionService)
 
   hasNotification: boolean = false
 

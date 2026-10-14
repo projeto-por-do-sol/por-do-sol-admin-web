@@ -34,6 +34,7 @@ Opção para abrir ou fechar o quiosque antes/depois do esperado (talvez um moda
 
 Filtrar os itens vendidos pelo quiosques por categorias.
 
+Na tabela de pedidos, quando a tela fica com menos de 850 px, ele corta os ingredientes removidos e os complementos. Talvez seria bom deixar apenas os cards ou colocar uma opção para alternar entre cards e a tabela.
 
 
 ** API
@@ -43,3 +44,15 @@ Ainda não tem o cadastro dos dias da semana que o quiosque abre.
 Ainda não retorna as estatísticas.
 No KPI, a variação do tempo médio está em porcentagem ao invés da diferença em minutos.
 Ao cadastrar ou editar um quiosque, a imagem retorna erro e é preciso recarregar a página para carregar a imagem.
+
+Quando vou cadastrar um funcionário e coloco um telefone que já está cadastrado no banco de dados, a API retorna todo erro, ao invés de apenas retornar uma mensagem para o usuário.
+
+Qualquer pessoa que tenha o cargo de gerente ou proprietário consegue visualizar os dados dos outros quiosque usando o http://localhost:55352/kioskRegister/{id do quiosque}
+
+Funcionário:
+Q1rodolfosilva
+0bae1de1
+
+Gerente:
+Q2andedigmonoliveira
+d4df9ff8

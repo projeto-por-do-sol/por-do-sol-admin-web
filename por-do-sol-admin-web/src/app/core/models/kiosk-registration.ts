@@ -13,7 +13,7 @@ export interface KioskRegistrationRequest {
   numero: string;
   latitude: number;
   longitude: number;
-  // daysOpen: string[];
+  diasAtivo?: boolean[];
 }
 
 export interface KioskRegistrationResponse extends Omit<KioskRegistrationRequest, 'cnpj'> {
@@ -21,8 +21,9 @@ export interface KioskRegistrationResponse extends Omit<KioskRegistrationRequest
   status: 'Ativa' | 'Desativada';
 }
 
-export interface KioskDetailsResponse extends Partial<Omit<KioskRegistrationResponse, 'id'>> {
+export interface KioskDetailsResponse extends Partial<Omit<KioskRegistrationResponse, 'id' | 'numero'>> {
   id: number;
+  numero?: number | string | null;
   cnpj?: string;
   imagem?: string;
 }

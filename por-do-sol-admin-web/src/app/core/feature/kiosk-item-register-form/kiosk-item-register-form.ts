@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { KioskService } from '../../services/kiosk-service';
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
 import { KioskItemService } from '../../services/kiosk-item-service';
+import { PermissionService } from '../../services/permission-service';
 import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
 import { Input } from '../../shared/ui/input/input';
 import { ImageInput } from '../../shared/ui/image-input/image-input';
@@ -28,6 +29,7 @@ export class KioskItemRegisterForm {
   private readonly kioskService = inject(KioskService)
   private readonly selectionService = inject(KioskSelectionService)
   private readonly itemService = inject(KioskItemService)
+  readonly permissions = inject(PermissionService)
   private readonly router = inject(Router)
   private readonly notifications = inject(NotificationService)
 

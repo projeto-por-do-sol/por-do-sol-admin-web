@@ -12,6 +12,7 @@ import { KioskService } from '../../services/kiosk-service';
 import { TeamService } from '../../services/team-service';
 import { Employee } from '../../models/employee';
 import { NotificationService } from '../../services/notification-service';
+import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-employee-register-form',
@@ -24,6 +25,7 @@ export class EmployeeRegisterForm {
   private readonly kiosksService = inject(KioskService)
   private readonly teamService = inject(TeamService)
   private readonly notifications = inject(NotificationService)
+  readonly permissions = inject(PermissionService)
   private readonly removeDialog = viewChild<ElementRef<HTMLDialogElement>>('removeDialog')
   private kiosks = this.kiosksService.kiosks
   employee = input<Employee | null>(null)
@@ -37,6 +39,13 @@ export class EmployeeRegisterForm {
 
   readonly kioskNames = computed(() => this.kiosks().map(kiosk => kiosk.name ?? '').filter(Boolean))
   readonly selectedDays = signal<string[]>([])
+
+  // O backend só deixa o proprietário cadastrar gerentes.
+  readonly roleOptions = computed(() => {
+    if (this.permissions.isOwner()) return ['Funcionário', 'Gerente']
+    const current = this.employee()?.role
+    return current && current !== 'Funcionário' ? ['Funcionário', current] : ['Funcionário']
+  })
 
   previewItems = computed<PreviewItem[]>(() => {
     const d = this.formValue();
@@ -96,6 +105,8 @@ export class EmployeeRegisterForm {
       if (error.status === 401) return 'Sua sessão expirou. Entre novamente.'
       if (error.status === 403) return 'Você não tem permissão para realizar esta operação neste quiosque.'
       if (error.status === 404) return 'Funcionário não encontrado neste quiosque.'
+      if (error.status === 409) return error.error?.message || 'Já existe um funcionário com estes dados.'
+      if (error.status >= 500) return 'Não foi possível salvar. Verifique os dados e tente novamente.'
       return error.error?.message || error.error?.detail || (typeof error.error === 'string' && error.error ? error.error : 'Não foi possível salvar. Tente novamente.')
     }
     return error instanceof Error ? error.message : 'Não foi possível salvar. Tente novamente.'

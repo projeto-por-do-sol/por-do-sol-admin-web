@@ -11,6 +11,7 @@ import { Overview } from "../../feature/overview/overview";
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
 import { SectionObserverDirective } from '../../utils/section-observer-directive';
 import { KioskItems } from '../../feature/kiosk-items/kiosk-items';
+import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ import { KioskItems } from '../../feature/kiosk-items/kiosk-items';
 })
 export class Home {
   readonly selectionService = inject(KioskSelectionService)
+  readonly permissions = inject(PermissionService)
 
   constructor(private navigation: NavigationService) {}
 

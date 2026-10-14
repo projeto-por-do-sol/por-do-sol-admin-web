@@ -13,7 +13,7 @@
 
       <div class="grid md:grid-cols-2 gap-8">
         <div class="grid content-start gap-2">
-          <app-select selectTitle="Quiosque" [disabled]="identityLocked() || saving() || loading()" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
+          <app-select selectTitle="Quiosque" [disabled]="identityLocked() || saving() || loading() || !permissions.isOwner()" [options]="kioskNames()" [selectedValue]="selectedKioskName()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
           @if (formFields.controls.kioskId.invalid && formFields.controls.kioskId.touched) {
           <span class="text-error text-sm">Selecione um quiosque</span>
           }

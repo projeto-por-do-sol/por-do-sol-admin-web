@@ -4,6 +4,8 @@ import { Select } from '../../shared/ui/select/select';
 import { Input } from '../../shared/ui/input/input';
 import { ItemCardForOrder } from '../../feature/item-card-for-order/item-card-for-order';
 import { KioskService } from '../../services/kiosk-service';
+import { KioskSelectionService } from '../../services/kiosk-selection-service';
+import { PermissionService } from '../../services/permission-service';
 import { KioskItemService } from '../../services/kiosk-item-service';
 import { ShoppingCart } from '../../services/shopping-cart';
 import { CartBottomSheet } from '../../feature/cart-bottom-sheet/cart-bottom-sheet';
@@ -21,11 +23,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class CreateOrder {
   readonly kioskService = inject(KioskService)
   readonly kioskItemService = inject(KioskItemService)
+  readonly permissions = inject(PermissionService)
+  private readonly selectionService = inject(KioskSelectionService)
   readonly shoppingCart = inject(ShoppingCart)
   private readonly bottomSheet = inject(MatBottomSheet)
   readonly searchControl = new FormControl('', { nonNullable: true })
   readonly searchTerm = toSignal(this.searchControl.valueChanges, { initialValue: '' })
-  readonly selectedKioskId = signal<string | null>(null)
+  // Gerente e funcionário só criam pedidos no próprio quiosque (já selecionado ao entrar).
+  readonly selectedKioskId = signal<string | null>(
+    this.permissions.isOwner() ? null : this.selectionService.selectedKioskId())
   readonly selectedKiosk = computed(() => this.kioskService.kiosks()
     .find(kiosk => kiosk.id === this.selectedKioskId()) ?? null)
   readonly selectedItems = computed(() => this.kioskItemService.allItems()
