@@ -1,7 +1,11 @@
-import { UserInitial } from './user-initial';
+import { UserInitials } from './user-initials';
 
-describe('UserInitial', () => {
-  it('should create an instance', () => {
-    expect(new UserInitial()).toBeTruthy();
+describe('UserInitials', () => {
+  it('should use the first and last relevant initials', () => {
+    expect(UserInitials.getNameInitials('José da Silva')).toBe('JS');
+  });
+
+  it('should fall back to "!" without a name', () => {
+    expect(UserInitials.getNameInitials(null)).toBe('!');
   });
 });

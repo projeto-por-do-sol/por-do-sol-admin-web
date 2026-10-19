@@ -1,7 +1,7 @@
-import { Kiosk } from './kiosk-model';
+import { KioskModel } from './kiosk-model';
 
-describe('Kiosk', () => {
+describe('KioskModel', () => {
   it('should create an instance', () => {
-    expect(new Kiosk()).toBeTruthy();
+    expect(new KioskModel()).toBeTruthy();
   });
 });

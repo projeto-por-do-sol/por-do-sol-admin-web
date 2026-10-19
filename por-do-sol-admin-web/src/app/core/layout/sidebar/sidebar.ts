@@ -22,6 +22,7 @@ export class Sidebar {
   readonly permissions = inject(PermissionService);
   selectedKiosk: string = ''
   viewModalRegister: boolean = false
+  viewModalOthers: boolean = false
   readonly registerMenuOpenChange = output<boolean>()
 
   readonly registerMenuPositions: ConnectedPosition[] = [
@@ -48,8 +49,24 @@ export class Sidebar {
     },
   ]
 
+  readonly othersMenuPositions: ConnectedPosition[] = [
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetX: 8,
+    },
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetY: -8,
+    },
+  ]
+
   readonly user = this.userService.user
-  // O /me não devolve o quiosque; para gerente e funcionário ele é o selecionado automaticamente.
   readonly userKioskName = computed(() =>
     this.permissions.isOwner() ? null : this.selectionService.selectedKiosk()?.name ?? null)
   readonly userNameInitials = computed(() => {
@@ -86,6 +103,29 @@ export class Sidebar {
   goToItemRegister() {
     this.router.navigate(['itemRegister'])
     this.setViewModal()
+  }
+
+  setViewModalOthers() {
+    this.viewModalOthers = !this.viewModalOthers
+    this.registerMenuOpenChange.emit(this.viewModalOthers)
+  }
+
+  goToHelp() {
+    this.setViewModalOthers()
+  }
+
+  goToEditProfile() {
+    this.router.navigate(['editProfile'])
+    this.setViewModalOthers()
+  }
+
+  goToCoupons() {
+    this.setViewModalOthers()
+  }
+
+  logoutFromMenu() {
+    this.setViewModalOthers()
+    this.logout()
   }
 
   scrollToSection(sectionId: string) {

@@ -1,19 +1,22 @@
-<main class="relative min-h-dvh overflow-x-clip px-4 pt-10 pb-5 md:px-8 md:pt-8">
+<main class="relative overflow-x-clip px-4 pt-10 pb-5 md:px-8 md:pt-8" [class.min-h-dvh]="!isEditMode">
+  <!-- Na edição a tela fica ao lado da sidebar, então as ondas fixas são omitidas -->
+  @if (!isEditMode) {
   <div class="pointer-events-none fixed right-0 bottom-0 left-0 z-0" aria-hidden="true">
     <svg class="block h-36 w-full md:h-52 xl:h-72" viewBox="0 0 1440 260" preserveAspectRatio="none">
       <path d="M0,90 C240,165 460,35 720,105 C990,175 1200,45 1440,95 L1440,260 L0,260 Z" fill="var(--color-tertiary)" opacity=".12" />
       <path d="M0,145 C260,205 490,90 735,155 C980,220 1205,95 1440,145 L1440,260 L0,260 Z" fill="var(--color-primary)" opacity=".2" />
     </svg>
   </div>
+  }
 
-  <app-return-link text="Voltar para o login" pageToReturn="/login" class="relative z-10 hidden md:block mb-4"></app-return-link>
+  <app-return-link [text]="isEditMode ? 'Voltar para home' : 'Voltar para o login'" [pageToReturn]="isEditMode ? '/home' : '/login'" class="relative z-10 hidden md:block mb-4"></app-return-link>
 
   <div class="relative z-1 mx-auto w-full max-w-7xl">
 
     <app-section-title
-      lable="Primeiro acesso"
-      section="Cadastre sua empresa"
-      text="Crie a conta principal para começar a gerenciar sua operação no Apollo.">
+      [lable]="isEditMode ? 'Perfil' : 'Primeiro acesso'"
+      [section]="isEditMode ? 'Alterar perfil' : 'Cadastre sua empresa'"
+      [text]="isEditMode ? 'Atualize os dados da sua conta e, se quiser, a sua senha de acesso.' : 'Crie a conta principal para começar a gerenciar sua operação no Apollo.'">
     </app-section-title>
 
     <div class="relative grid grid-cols-1 items-start lg:grid-cols-5 lg:gap-8">
@@ -25,7 +28,7 @@
               <div><h2 class="text-lg font-bold tracking-wider text-outline">Dados da empresa</h2><p class="mt-1 text-sm text-sub-text">Informações usadas para identificar e contatar sua empresa.</p></div>
             </div>
 
-            <app-image-input formControlName="profileImage" (imageSelected)="imagePreview.set($event)"></app-image-input>
+            <app-image-input formControlName="profileImage" [existingImageUrl]="existingImageUrl" (imageSelected)="onImageSelected($event)"></app-image-input>
             <app-input id="ownerName" label="Nome do proprietário" name="ownerName" formControlName="ownerName" placeholder="Ex.: Maria da Silva"></app-input>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -37,11 +40,14 @@
           <div class="grid grid-cols-1 gap-6 border-b-2 border-dashed border-border py-8">
             <div class="flex items-start gap-3.5">
               <span class="grid size-9 shrink-0 place-items-center rounded-full bg-on-secondary text-xs font-extrabold text-primary">02</span>
-              <div><h2 class="text-lg font-bold tracking-wider text-outline">Credenciais de acesso</h2><p class="mt-1 text-sm text-sub-text">Use pelo menos 8 caracteres para proteger sua conta.</p></div>
+              <div><h2 class="text-lg font-bold tracking-wider text-outline">Credenciais de acesso</h2><p class="mt-1 text-sm text-sub-text">{{ isEditMode ? 'Preencha apenas se quiser alterar a senha. Use pelo menos 8 caracteres.' : 'Use pelo menos 8 caracteres para proteger sua conta.' }}</p></div>
             </div>
+            @if (isEditMode) {
+            <app-input id="currentPassword" label="Senha atual" name="currentPassword" type="password" formControlName="currentPassword" placeholder="Digite sua senha atual" [isObrigatory]="false"></app-input>
+            }
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <app-input id="password" label="Senha" name="password" type="password" formControlName="password" placeholder="Mínimo de 8 caracteres"></app-input>
-              <app-input id="passwordConfirmation" label="Confirmação de senha" name="passwordConfirmation" type="password" formControlName="passwordConfirmation" placeholder="Digite a senha novamente"></app-input>
+              <app-input id="password" [label]="isEditMode ? 'Nova senha' : 'Senha'" name="password" type="password" formControlName="password" placeholder="Mínimo de 8 caracteres" [isObrigatory]="!isEditMode"></app-input>
+              <app-input id="passwordConfirmation" label="Confirmação de senha" name="passwordConfirmation" type="password" formControlName="passwordConfirmation" placeholder="Digite a senha novamente" [isObrigatory]="!isEditMode"></app-input>
             </div>
           </div>
 
@@ -52,9 +58,9 @@
           }
 
           <div class="flex flex-col-reverse gap-4 pt-8 md:flex-row md:justify-end">
-            <app-cancel-button labelButton="Cancelar" (onClickButton)="goToLogin()"></app-cancel-button>
+            <app-cancel-button labelButton="Cancelar" (onClickButton)="onCancel()"></app-cancel-button>
             <app-button
-              [labelButton]="isLoading() ? 'Cadastrando...' : 'Cadastrar empresa'"
+              [labelButton]="isEditMode ? (isLoading() ? 'Salvando...' : 'Salvar alterações') : (isLoading() ? 'Cadastrando...' : 'Cadastrar empresa')"
               icon="arrow-right"
               type="submit"
               [disabled]="isLoading()">
@@ -64,11 +70,11 @@
       </section>
 
       <aside class="lg:sticky lg:top-8 lg:col-span-2">
-        <app-card-preview contextLabel="sua conta" [name]="previewName()" role="Empresa" [items]="previewItems()" [imageUrl]="imagePreview()" lastText="Esta será a identificação da sua empresa no <span class='text-outline'>Painel Administrativo</span>."></app-card-preview>
+        <app-card-preview contextLabel="sua conta" [name]="previewName()" role="Empresa" [items]="previewItems()" [imageUrl]="imagePreview()" [lastText]="previewLastText"></app-card-preview>
         <p class="mx-2 mt-4 text-center text-sm leading-6 text-sub-text">A prévia é atualizada automaticamente conforme você preenche os dados.</p>
       </aside>
     </div>
 
-    <p class="relative my-12 text-sm font-semibold text-sub-text">Painel administrativo Pôr do Sol · cadastro de empresa</p>
+    <p class="relative my-12 text-sm font-semibold text-sub-text">Painel administrativo Pôr do Sol · {{ isEditMode ? 'perfil' : 'cadastro de empresa' }}</p>
   </div>
 </main>

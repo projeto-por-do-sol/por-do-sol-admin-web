@@ -104,8 +104,26 @@
 
   </div>
 
-  <!-- Botão logout -->
-  <button class="cursor-pointer block text-secondary text-base font-medium w-full py-2 rounded-2xl border border-transparent hover:bg-hover-sidebarlink hover:border-secondary" (click)="logout()">Logout</button>
+  <!-- Botão logout (movido para o menu "Outros") -->
+  <!-- <button class="cursor-pointer block text-secondary text-base font-medium w-full py-2 rounded-2xl border border-transparent hover:bg-hover-sidebarlink hover:border-secondary" (click)="logout()">Logout</button> -->
+
+  <!-- Outros -->
+  <div class="flex justify-center">
+    <button cdkOverlayOrigin #othersTrigger="cdkOverlayOrigin" class="cursor-pointer block text-secondary text-base font-medium w-full py-2 rounded-2xl border border-transparent hover:bg-hover-sidebarlink hover:border-secondary" (click)="setViewModalOthers()">
+      Outros
+    </button>
+
+    <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="othersTrigger" [cdkConnectedOverlayOpen]="viewModalOthers" [cdkConnectedOverlayPositions]="othersMenuPositions" [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayViewportMargin]="8" cdkConnectedOverlayPanelClass="register-menu-overlay" cdkConnectedOverlayBackdropClass="bg-black/20" (backdropClick)="setViewModalOthers()">
+      <div class="grid w-max overflow-hidden rounded-2xl border border-border bg-surface shadow-lg">
+        <button class="buttonModal" (click)="goToHelp()">Ajuda</button>
+        @if (permissions.isOwner()) {
+        <button class="buttonModal" (click)="goToEditProfile()">Alterar perfil</button>
+        <button class="buttonModal" (click)="goToCoupons()">Cupons</button>
+        }
+        <button class="buttonModal" (click)="logoutFromMenu()">Logout</button>
+      </div>
+    </ng-template>
+  </div>
 
 
   <!-- Identificação do Usuário -->

@@ -16,10 +16,21 @@ export interface OwnerRegistrationRequest {
   telefone: string
 }
 
+export interface UpdateProfileRequest {
+  nome: string
+  email: string
+  telefone: string
+}
+
+export interface ChangePasswordRequest {
+  senhaAtual: string
+  novaSenha: string
+}
+
 export interface AuthenticatedUserResponse {
   id: string
   nome: string
-  email: string
+  email: string | null
   telefone: string
   dataCadastro: string
   imagem: string | null

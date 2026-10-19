@@ -1,12 +1,14 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, concat, last, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { User } from '../models/user-model';
 import {
   AuthenticatedUserResponse,
   LoginRequest,
   LoginResponse,
+  ChangePasswordRequest,
   OwnerRegistrationRequest,
+  UpdateProfileRequest,
 } from '../models/auth-model';
 import { API_BASE_URL } from '../config/api';
 import { AuthTokenService } from './auth-token-service';
@@ -61,6 +63,36 @@ export class UserService {
       )
   }
 
+  updateProfile(
+    profile: UpdateProfileRequest,
+    options: { password?: ChangePasswordRequest, image?: File | null, removeImage?: boolean } = {},
+  ): Observable<{ emailChanged: boolean }> {
+    const currentEmail = this._user()?.email?.trim().toLowerCase() ?? ''
+    const emailChanged = profile.email.trim().toLowerCase() !== currentEmail
+    const updateData = this.http.put<AuthenticatedUserResponse>(`${API_BASE_URL}/me`, profile)
+    const otherSteps: Observable<unknown>[] = []
+
+    if (options.password) {
+      otherSteps.push(this.http.patch(`${API_BASE_URL}/me`, options.password))
+    }
+
+    if (options.image) {
+      const formData = new FormData()
+      formData.append('file', options.image)
+      otherSteps.push(this.http.post(`${API_BASE_URL}/me/imagem`, formData, { responseType: 'text' }))
+    } else if (options.removeImage) {
+      otherSteps.push(this.http.delete(`${API_BASE_URL}/me/imagem`))
+    }
+
+    const steps = emailChanged ? [...otherSteps, updateData] : [updateData, ...otherSteps]
+
+    return concat(...steps).pipe(
+      last(),
+      switchMap(() => emailChanged ? of(null) : this.loadAuthenticatedUser()),
+      map(() => ({ emailChanged })),
+    )
+  }
+
   restoreSession(): Observable<User> {
     const currentUser = this._user();
     if (currentUser) return of(currentUser);
@@ -103,7 +135,7 @@ export class UserService {
     return {
       id: response.id,
       name: response.nome,
-      email: response.email,
+      email: response.email ?? undefined,
       phone: response.telefone,
       registrationDate: response.dataCadastro,
       image: response.imagem,
