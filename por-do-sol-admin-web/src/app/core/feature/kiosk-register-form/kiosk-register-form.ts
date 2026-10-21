@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, effect, inject, input, output, signal, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, ElementRef, inject, input, output, signal, Signal, viewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Input } from "../../shared/ui/input/input";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
@@ -16,6 +16,7 @@ import { KioskDetailsResponse, KioskRegistrationRequest } from '../../models/kio
 import { NotificationService } from '../../services/notification-service';
 import { apiImageUrl } from '../../utils/api-image-url';
 import { fromWeekFlags, toWeekFlags } from '../../utils/weekdays';
+import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-kiosk-register-form',
@@ -28,6 +29,8 @@ export class KioskRegisterForm {
   private readonly kioskService = inject(KioskService)
   private readonly notifications = inject(NotificationService)
   private readonly destroyRef = inject(DestroyRef)
+  readonly permissions = inject(PermissionService)
+  private readonly removeDialog = viewChild<ElementRef<HTMLDialogElement>>('removeDialog')
   kiosk = input<KioskDetailsResponse | null>(null)
   readonly isEditing = computed(() => this.kiosk() !== null)
   readonly existingImageUrl = computed(() => {
@@ -40,6 +43,7 @@ export class KioskRegisterForm {
   readonly errorMessage = signal('')
   readonly createdKioskId = signal<number | null>(null)
   saved = output<void>()
+  removed = output<void>()
 
   daysOpen: string[] = []
   readonly selectedDays = signal<string[]>([])
@@ -143,6 +147,36 @@ export class KioskRegisterForm {
   onClickCancel() {
     if (this.isLoading()) return
     this.onClickCancelButton.emit()
+  }
+
+  openRemoveDialog() {
+    if (this.isEditing()) this.removeDialog()?.nativeElement.showModal()
+  }
+
+  closeRemoveDialog() {
+    if (this.isLoading()) return
+    this.removeDialog()?.nativeElement.close()
+  }
+
+  confirmRemoveKiosk() {
+    const kiosk = this.kiosk()
+    if (!kiosk || this.isLoading()) return
+    this.isLoading.set(true)
+
+    this.kioskService.deleteKiosk(String(kiosk.id)).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isLoading.set(false)),
+    ).subscribe({
+      next: () => {
+        this.removeDialog()?.nativeElement.close()
+        this.notifications.success('Quiosque desativado com sucesso.')
+        this.removed.emit()
+      },
+      error: (error: HttpErrorResponse) => {
+        this.removeDialog()?.nativeElement.close()
+        this.notifications.error(this.removeErrorMessage(error))
+      },
+    })
   }
 
   isFieldValid(fieldName: string): boolean {
@@ -250,6 +284,14 @@ export class KioskRegisterForm {
     if (error.status === 409) return 'Verifique o CNPJ. O e-mail ou o CNPJ também pode estar cadastrado em outro quiosque.'
     if (error.status === 400) return 'Não foi possível salvar. Verifique os dados informados.'
     return 'Não foi possível salvar as alterações. Tente novamente.'
+  }
+
+  private removeErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 0) return 'Não foi possível conectar à API. Verifique sua conexão e tente novamente.'
+    if (error.status === 401) return 'Sua sessão expirou. Entre novamente para desativar o quiosque.'
+    if (error.status === 403) return 'Somente o proprietário pode desativar quiosques.'
+    if (error.status === 404) return 'Quiosque não encontrado.'
+    return 'Não foi possível desativar o quiosque. Tente novamente.'
   }
 
   private registrationErrorMessage(error: HttpErrorResponse): string {

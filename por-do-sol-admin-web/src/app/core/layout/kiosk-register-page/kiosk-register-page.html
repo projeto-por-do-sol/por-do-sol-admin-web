@@ -8,7 +8,7 @@
   }
   @else {
   <div class="grid lg:grid-cols-5 lg:gap-8 relative items-start">
-    <app-kiosk-register-form #kioskForm class="col-span-3" [kiosk]="kiosk()" (onClickCancelButton)="goToHome()" (saved)="goToHome()"></app-kiosk-register-form>
+    <app-kiosk-register-form #kioskForm class="col-span-3" [kiosk]="kiosk()" (onClickCancelButton)="goToHome()" (saved)="goToHome()" (removed)="goToHome()"></app-kiosk-register-form>
     <app-card-preview class="col-span-2 sticky top-8" [contextLabel]="'rede'" [name]="kioskForm.previewName()" [items]="kioskForm.previewItems()" [lastText]="kioskForm.previewLastText()" [imageUrl]="kioskForm.imagePreview()"></app-card-preview>
   </div>
   }

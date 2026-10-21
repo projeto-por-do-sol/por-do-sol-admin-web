@@ -92,6 +92,12 @@ export class KioskService {
     )
   }
 
+  deleteKiosk(kioskId: string): Observable<void> {
+    return this.http.delete<void>(`${API_BASE_URL}/quiosques/${kioskId}`).pipe(
+      tap(() => this._kiosks.update(kiosks => kiosks.filter(kiosk => kiosk.id !== kioskId))),
+    )
+  }
+
   uploadKioskImage(kioskId: number, image: File): Observable<string> {
     const formData = new FormData()
     formData.append('file', image)

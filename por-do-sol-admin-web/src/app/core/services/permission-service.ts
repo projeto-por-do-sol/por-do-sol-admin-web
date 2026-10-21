@@ -22,6 +22,7 @@ export class PermissionService {
 
   readonly canSelectKiosk = this.isOwner
   readonly canRegisterKiosk = this.isOwner
+  readonly canDeleteKiosk = this.isOwner
 
   readonly canViewOverview = computed(() => this.atLeast('gerente'))
   readonly canViewStatistics = this.canViewOverview

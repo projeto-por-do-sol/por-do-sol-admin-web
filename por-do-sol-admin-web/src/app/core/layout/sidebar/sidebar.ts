@@ -111,6 +111,7 @@ export class Sidebar {
   }
 
   goToHelp() {
+    this.router.navigate(['help'])
     this.setViewModalOthers()
   }
 

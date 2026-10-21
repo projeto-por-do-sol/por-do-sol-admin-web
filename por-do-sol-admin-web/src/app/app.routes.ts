@@ -29,6 +29,7 @@ export const routes: Routes = [
       { path: 'itemRegister', loadComponent: kioskItemRegisterPage },
       { path: 'itemRegister/:id', loadComponent: kioskItemRegisterPage },
       { path: 'createOrder', loadComponent: () => import('./core/layout/create-order/create-order').then(m => m.CreateOrder) },
+      { path: 'help', loadComponent: () => import('./core/layout/help/help').then(m => m.Help) },
       { path: 'editProfile', loadComponent: ownerRegistration, canActivate: [roleGuard], data: { minRole: 'proprietario', editMode: true } },
     ],
   },

@@ -1,0 +1,13 @@
+.wave {
+  display: block;
+  margin-bottom: -1rem;
+  transform: translateY(1px);
+}
+
+.help-category-title {
+  color: var(--color-outline);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}

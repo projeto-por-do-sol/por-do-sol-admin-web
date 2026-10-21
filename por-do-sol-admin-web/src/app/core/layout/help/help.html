@@ -1,0 +1,101 @@
+<!-- Topo com busca -->
+<header class="bg-primary w-full px-5 md:px-8 pt-5 pb-8 border-t-2 border-tertiary md:border-none">
+  <p class="text-amarelo font-light text-xl mb-2">Central de ajuda</p>
+  <h1 class="text-creme font-bold text-3xl">Como podemos ajudar?</h1>
+  <p class="mt-2 text-secondary text-lg">Pesquise um assunto ou navegue pelos temas abaixo.</p>
+
+  <form role="search" class="mt-6 max-w-2xl" (submit)="$event.preventDefault()">
+    <label for="help-search" class="sr-only">Buscar na central de ajuda</label>
+    <div class="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 shadow-sm focus-within:ring-2 focus-within:ring-amarelo">
+      <svg class="shrink-0 text-sub-text" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" aria-hidden="true">
+        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+      </svg>
+      <input
+        id="help-search"
+        type="text"
+        enterkeyhint="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Ex.: recuperar senha, cadastrar funcionário, status do pedido"
+        class="min-w-0 flex-1 bg-transparent text-base text-input-text placeholder:text-input-placeholder focus:outline-none"
+        [formControl]="searchControl">
+      @if (isSearching()) {
+      <button type="button" class="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-sub-text hover:bg-border" aria-label="Limpar busca" (click)="clearSearch()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor" aria-hidden="true">
+          <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+        </svg>
+      </button>
+      }
+    </div>
+  </form>
+</header>
+<div class="bg-primary h-min">
+  <svg class="wave w-full" viewBox="0 0 1440 46" preserveAspectRatio="none">
+    <path d="M0,16 C240,46 480,0 720,18 C960,36 1200,0 1440,16 L1440,46 L0,46 Z" fill="var(--color-fundo)"></path>
+  </svg>
+</div>
+
+<main class="px-5 pb-12 pt-6 md:px-8">
+
+  <!-- Atalhos para os temas -->
+  @if (!isSearching()) {
+  <nav aria-label="Temas de ajuda" class="mt-2 flex flex-wrap gap-2">
+    @for (category of categories; track category.id) {
+    <button type="button" class="cursor-pointer rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-medium text-outline transition-colors hover:border-secondary hover:bg-hover-sidebarlink" (click)="scrollToCategory(category.id)">
+      {{ category.title }}
+    </button>
+    }
+  </nav>
+  <p class="mt-4 text-sub-text">{{ totalArticles }} artigos em {{ categories.length }} temas</p>
+  } @else {
+  <p class="mt-2 text-sub-text" role="status">
+    {{ resultCount() }} {{ resultCount() === 1 ? 'resultado' : 'resultados' }} para "{{ searchTerm().trim() }}"
+  </p>
+  }
+
+  <!-- Temas e artigos -->
+  @for (category of filteredCategories(); track category.id) {
+  <section class="mt-10 scroll-mt-6" [id]="category.id" [attr.aria-labelledby]="category.id + '-title'">
+    <div class="mb-5 flex items-center gap-4 border-b border-border pb-4">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-creme">
+        <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="currentColor" aria-hidden="true">
+          <path [attr.d]="category.icon" />
+        </svg>
+      </div>
+      <div class="min-w-0">
+        <h2 [id]="category.id + '-title'" class="help-category-title">{{ category.title }}</h2>
+        <p class="text-sub-text">{{ category.description }}</p>
+      </div>
+      <span class="ml-auto shrink-0 rounded-full bg-bg-close px-3 py-1 text-sm font-semibold text-primary">
+        {{ category.articles.length }} {{ category.articles.length === 1 ? 'artigo' : 'artigos' }}
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      @for (article of category.articles; track article.id) {
+      <article class="flex flex-col rounded-2xl border border-border bg-surface p-5 transition-shadow hover:border-secondary hover:shadow-md">
+        <div class="flex items-start justify-between gap-3">
+          <h3 class="text-lg font-semibold leading-snug text-outline">{{ article.title }}</h3>
+          @if (roleLabel(article); as role) {
+          <span class="shrink-0 rounded-full bg-complement-background px-2.5 py-0.5 text-xs font-semibold text-complement-text" [title]="'Disponível a partir do cargo de ' + role.toLowerCase()">
+            {{ role }}
+          </span>
+          }
+        </div>
+        <p class="mt-2 text-base text-sub-text">{{ article.summary }}</p>
+      </article>
+      }
+    </div>
+  </section>
+  } @empty {
+  <div class="mt-10 rounded-2xl bg-border p-8 text-center">
+    <p class="text-lg font-semibold text-outline">Nenhum artigo encontrado para "{{ searchTerm().trim() }}".</p>
+    <p class="mt-2 text-sub-text">Tente outras palavras ou procure por um dos temas.</p>
+    <button type="button" class="mt-4 cursor-pointer rounded-2xl bg-primary px-5 py-2 font-semibold text-on-primary hover:bg-fundo-escuro" (click)="clearSearch()">
+      Limpar busca
+    </button>
+  </div>
+  }
+
+  <p class="mt-12 text-base font-medium text-input-placeholder">Painel administrativo Pôr do Sol · central de ajuda</p>
+</main>
