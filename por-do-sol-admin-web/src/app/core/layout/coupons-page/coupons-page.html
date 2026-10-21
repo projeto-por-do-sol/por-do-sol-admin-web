@@ -1,0 +1,28 @@
+<main class="m-8 relative">
+  <app-return-link [text]="'Voltar para home'"></app-return-link>
+  <app-section-title [lable]="'Cupons'" [section]="'Gerenciar cupons'" [text]="'Cadastre cupons de desconto para os seus quiosques e acompanhe, ative ou exclua os que já foram criados.'"></app-section-title>
+
+  <div class="grid gap-8 lg:grid-cols-5 relative items-start">
+    <app-coupon-register-form class="lg:col-span-2 lg:sticky lg:top-8"></app-coupon-register-form>
+
+    <div class="lg:col-span-3">
+      @if (loading()) { <p role="status">Carregando...</p> }
+      @else if (loadError()) {
+        <p role="alert">Não foi possível carregar os cupons.</p>
+        <button type="button" class="mt-3 cursor-pointer font-semibold text-primary hover:underline" (click)="loadCoupons()">Tentar novamente</button>
+      }
+      @else {
+        @if (failedKiosks().length) {
+        <div role="alert" class="mb-6 rounded-2xl border border-complement-border bg-complement-background p-4 text-complement-text">
+          Não foi possível carregar os cupons de: {{ failedKiosks().join(', ') }}.
+          <button type="button" class="ml-1 cursor-pointer font-semibold underline" (click)="loadCoupons()">Tentar novamente</button>
+        </div>
+        }
+        <app-coupon-list></app-coupon-list>
+      }
+    </div>
+  </div>
+
+  <p class="text-input-placeholder font-medium text-base mt-12 mb-4">Painel administrativo Pôr do Sol · cupons</p>
+
+</main>

@@ -14,6 +14,7 @@ export class Input implements ControlValueAccessor {
   label = input.required<string>()
   type = input<string>('text')
   step = input<string>()
+  min = input<string>()
   name = input.required<string>()
   placeholder = input<string>()
   isObrigatory = input<boolean>(true)
@@ -50,6 +51,7 @@ export class Input implements ControlValueAccessor {
     if (!control.errors) return null
 
     if (control.errors['required']) return 'Campo obrigatório'
+    if (typeof control.errors['message'] === 'string') return control.errors['message']
     if (control.errors['duplicate']) return 'Este nome já foi adicionado'
     if (control.errors['email']) return 'E-mail inválido'
     if (control.errors['cnpj']) return 'CNPJ inválido'

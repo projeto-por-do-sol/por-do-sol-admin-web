@@ -121,7 +121,8 @@ export class Sidebar {
   }
 
   goToCoupons() {
-    this.setViewModalOthers()
+    this.router.navigate(['coupons'])
+    this.setViewModal()
   }
 
   logoutFromMenu() {

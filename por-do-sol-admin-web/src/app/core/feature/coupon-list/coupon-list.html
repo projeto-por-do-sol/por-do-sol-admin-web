@@ -1,0 +1,83 @@
+<section aria-label="Cupons cadastrados">
+  <div class="mb-6 flex items-baseline justify-between gap-3">
+    <h2>Cupons cadastrados</h2>
+    <p class="text-sub-text text-sm">
+      {{ coupons().length }} {{ coupons().length === 1 ? 'cupom' : 'cupons' }}
+      @if (selectedKiosk(); as kiosk) { · {{ kiosk.name }} }
+    </p>
+  </div>
+
+  @if (coupons().length === 0) {
+  <div class="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sub-text">
+    <p class="font-semibold text-outline">Nenhum cupom por aqui ainda</p>
+    <p class="mt-1">Use o formulário para cadastrar o primeiro cupom{{ selectedKiosk() ? ' deste quiosque' : '' }}.</p>
+  </div>
+  } @else {
+  <ul class="grid gap-4">
+    @for (coupon of coupons(); track coupon.kioskId + ':' + coupon.id) {
+    <li class="flex items-center gap-4 rounded-2xl border border-border bg-surface p-5" [class.opacity-70]="status(coupon) !== 'Ativo'">
+
+      <!-- Tipo do cupom -->
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-fundo text-primary" aria-hidden="true">
+        @if (coupon.tipoCupom === 'PERCENTUAL') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="7" cy="7" r="2.5" /><circle cx="17" cy="17" r="2.5" /><path d="M19 5 5 19" />
+        </svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="6" width="18" height="12" rx="2" /><circle cx="12" cy="12" r="2.5" /><path d="M6.5 12h.01M17.5 12h.01" />
+        </svg>
+        }
+      </div>
+
+      <!-- Dados -->
+      <div class="min-w-0 flex-1">
+        <p class="text-2xl font-semibold text-outline">
+          @if (coupon.tipoCupom === 'PERCENTUAL') { {{ coupon.valorDesconto | number:'1.0-2' }}% } @else { {{ coupon.valorDesconto | currency:'BRL' }} }
+        </p>
+        <p class="text-outline">Pedido mínimo: {{ coupon.valorMinimo | currency:'BRL' }}</p>
+        @if (coupon.tipoCupom === 'PERCENTUAL' && coupon.descontoMaximo !== null) {
+        <p class="text-outline">Desconto máximo: {{ coupon.descontoMaximo | currency:'BRL' }}</p>
+        }
+        <p class="text-outline">Validade: {{ coupon.dataExpiracao | date:'dd/MM/yyyy HH:mm' }}</p>
+        @if (showKioskName()) {
+        <p class="truncate text-sub-text text-sm" [title]="coupon.kioskName">Quiosque: {{ coupon.kioskName }}</p>
+        }
+        <p class="mt-1 flex items-center gap-1 text-sm font-medium" [class.text-green]="status(coupon) === 'Ativo'" [class.text-sub-text]="status(coupon) === 'Inativo'" [class.text-red]="status(coupon) === 'Expirado'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            @if (status(coupon) === 'Ativo') { <circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /> }
+            @else { <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /> }
+          </svg>
+          {{ status(coupon) }}
+        </p>
+      </div>
+
+      <!-- Ações -->
+      <div class="flex shrink-0 flex-col items-center gap-3">
+        <button type="button" role="switch" [attr.aria-checked]="coupon.ativo && !isExpired(coupon)" [attr.aria-label]="(coupon.ativo ? 'Desativar' : 'Ativar') + ' cupom'" [disabled]="isBusy(coupon) || isExpired(coupon)" (click)="toggle(coupon)" [class]="'relative h-7 w-12 cursor-pointer rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ' + (coupon.ativo && !isExpired(coupon) ? 'bg-primary' : 'bg-input-placeholder')">
+          <span [class]="'absolute top-0.5 left-0.5 size-6 rounded-full bg-surface shadow transition-transform ' + (coupon.ativo && !isExpired(coupon) ? 'translate-x-5' : '')"></span>
+        </button>
+        <button type="button" class="cursor-pointer rounded-full p-1 text-red hover:bg-fundo disabled:cursor-not-allowed disabled:opacity-50" aria-label="Excluir cupom" [disabled]="isBusy(coupon)" (click)="openRemoveDialog(coupon)">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" aria-hidden="true"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360Z" /></svg>
+        </button>
+      </div>
+    </li>
+    }
+  </ul>
+  }
+
+  <dialog #removeDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="remove-coupon-title" aria-describedby="remove-coupon-description" (close)="couponToRemove.set(null)">
+    <div class="grid gap-5">
+      <h2 id="remove-coupon-title">Excluir cupom?</h2>
+      <p id="remove-coupon-description" class="text-sub-text">
+        @if (couponToRemove(); as coupon) {
+        Deseja excluir o cupom de {{ coupon.tipoCupom === 'PERCENTUAL' ? (coupon.valorDesconto | number:'1.0-2') + '%' : (coupon.valorDesconto | currency:'BRL') }}{{ showKioskName() ? ' do quiosque ' + coupon.kioskName : '' }}? Ele deixará de aparecer para os clientes. Pedidos que já usaram o cupom são preservados.
+        }
+      </p>
+      <div class="grid gap-3 sm:flex sm:justify-end">
+        <app-cancel-button (onClickButton)="closeRemoveDialog()"></app-cancel-button>
+        <button type="button" class="inline-flex w-full items-center justify-center rounded-2xl border-2 border-error bg-error px-4 py-2 font-semibold text-on-error cursor-pointer hover:enabled:bg-red focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-outline disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" (click)="confirmRemove()">Excluir cupom</button>
+      </div>
+    </div>
+  </dialog>
+</section>

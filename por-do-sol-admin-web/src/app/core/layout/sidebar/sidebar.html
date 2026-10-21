@@ -93,6 +93,9 @@
           }
           <button class="buttonModal" (click)="goToEmployeeRegister()">Funcionários</button>
           <button class="buttonModal" (click)="goToItemRegister()">Item do cardápio</button>
+          @if (permissions.isOwner()) {
+          <button class="buttonModal" (click)="goToCoupons()">Cupons</button>
+          }
         </div>
       </ng-template>
     </div>
@@ -118,7 +121,6 @@
         <button class="buttonModal" (click)="goToHelp()">Ajuda</button>
         @if (permissions.isOwner()) {
         <button class="buttonModal" (click)="goToEditProfile()">Alterar perfil</button>
-        <button class="buttonModal" (click)="goToCoupons()">Cupons</button>
         }
         <button class="buttonModal" (click)="logoutFromMenu()">Logout</button>
       </div>

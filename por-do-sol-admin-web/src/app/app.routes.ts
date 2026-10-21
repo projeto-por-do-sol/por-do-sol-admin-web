@@ -30,6 +30,7 @@ export const routes: Routes = [
       { path: 'itemRegister/:id', loadComponent: kioskItemRegisterPage },
       { path: 'createOrder', loadComponent: () => import('./core/layout/create-order/create-order').then(m => m.CreateOrder) },
       { path: 'help', loadComponent: () => import('./core/layout/help/help').then(m => m.Help) },
+      { path: 'coupons', loadComponent: () => import('./core/layout/coupons-page/coupons-page').then(m => m.CouponsPage), canActivate: [roleGuard], data: { minRole: 'proprietario' } },
       { path: 'editProfile', loadComponent: ownerRegistration, canActivate: [roleGuard], data: { minRole: 'proprietario', editMode: true } },
     ],
   },

@@ -1,0 +1,52 @@
+<div class="bg-surface p-8 rounded-2xl border border-border">
+  <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
+    <fieldset [disabled]="isLoading()" class="min-w-0">
+      <div class="sectionCard">
+        <h2>Novo cupom</h2>
+
+        <!-- Quiosque -->
+        <div class="grid">
+          <app-select selectTitle="Quiosque" [options]="kioskNames()" [selectedValue]="selectedKioskName()" [disabled]="isLoading()" placeholder="Selecione um quiosque" (valueChange)="selectKiosk($event)"></app-select>
+          @if (formFields.controls.kioskId.invalid && formFields.controls.kioskId.touched) {
+          <span class="text-red-500 text-sm">{{ kiosks().length ? 'Selecione o quiosque do cupom' : 'Cadastre um quiosque antes de criar cupons' }}</span>
+          }
+        </div>
+
+        <!-- Tipo de desconto -->
+        <div class="grid gap-2">
+          <h3 class="font-semibold text-base">Tipo de desconto</h3>
+          <div role="radiogroup" aria-label="Tipo de desconto" class="grid grid-cols-2 overflow-hidden rounded-full border-2 border-primary">
+            <button type="button" role="radio" [attr.aria-checked]="isPercent()" (click)="setType('PERCENTUAL')" [class]="'cursor-pointer px-4 py-2 font-medium transition-all ' + (isPercent() ? 'bg-primary text-creme' : 'bg-surface text-primary hover:bg-fundo')">
+              Percentual
+            </button>
+            <button type="button" role="radio" [attr.aria-checked]="!isPercent()" (click)="setType('FIXO')" [class]="'cursor-pointer px-4 py-2 font-medium transition-all ' + (!isPercent() ? 'bg-primary text-creme' : 'bg-surface text-primary hover:bg-fundo')">
+              Valor fixo
+            </button>
+          </div>
+        </div>
+
+        <!-- Valores -->
+        @if (isPercent()) {
+        <app-input id="couponPercent" label="Percentual do desconto (%)" name="discount" type="number" step="1" formControlName="discount" placeholder="Ex.: 10"></app-input>
+        } @else {
+        <app-input id="couponValue" label="Valor do desconto (R$)" name="discount" mask="currency" formControlName="discount" placeholder="0,00"></app-input>
+        }
+
+        <app-input id="couponMinOrder" label="Valor mínimo do pedido (R$)" name="minOrder" mask="currency" formControlName="minOrder" placeholder="0,00"></app-input>
+
+        @if (isPercent()) {
+        <app-input id="couponMaxDiscount" label="Limite máximo de desconto (R$)" name="maxDiscount" mask="currency" formControlName="maxDiscount" placeholder="0,00" [isObrigatory]="false"></app-input>
+        }
+
+        <!-- Validade -->
+        <app-input id="couponExpiresAt" (focusout)="clampExpiresAt()" label="Validade" name="expiresAt" type="datetime-local" [min]="minExpiresAt()" formControlName="expiresAt"></app-input>
+      </div>
+    </fieldset>
+
+    @if (errorMessage()) {
+    <p role="alert" class="mb-5 text-sm text-error">{{ errorMessage() }}</p>
+    }
+
+    <app-button [labelButton]="isLoading() ? 'Cadastrando...' : 'Cadastrar cupom'" [icon]="'add'" [prefix]="true" type="submit" [disabled]="isLoading()" [fullWidth]="true"></app-button>
+  </form>
+</div>
