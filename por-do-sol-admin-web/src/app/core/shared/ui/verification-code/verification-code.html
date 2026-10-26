@@ -1,0 +1,10 @@
+<div class="grid gap-5">
+  <div class="flex justify-center gap-3" role="group" aria-label="Código de verificação">
+    @for (slot of codeSlots; track slot) {
+      <input #codeInput type="text" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" autocomplete="one-time-code" maxlength="4" class="size-14 rounded-2xl border-2 bg-fundo text-center text-2xl font-semibold uppercase text-input-text focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface" [class.border-border]="!error()" [class.border-red-500]="error()" [attr.aria-label]="'Caractere ' + (slot + 1) + ' do código'" [value]="digits()[slot]" (input)="onCodeInput(slot, $event)" (keydown)="onCodeKeydown(slot, $event)" (focus)="$any($event.target).select()">
+    }
+  </div>
+  @if (error()) {
+    <p class="text-center text-sm text-red-500" role="alert">{{ error() }}</p>
+  }
+</div>

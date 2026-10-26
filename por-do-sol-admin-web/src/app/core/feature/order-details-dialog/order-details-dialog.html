@@ -1,0 +1,147 @@
+<dialog #dialog class="m-auto max-h-[90dvh] w-11/12 max-w-lg overflow-hidden rounded-3xl border border-border bg-surface p-0 text-outline shadow-2xl backdrop:bg-black/20 lg:max-w-5xl" aria-labelledby="order-details-title" (mousedown)="onDialogMousedown($event)" (click)="onDialogClick($event)" (close)="closed.emit()">
+  @if (order(); as order) {
+  <div class="flex max-h-[90dvh] flex-col overflow-y-auto lg:overflow-hidden">
+    <header class="flex shrink-0 items-start justify-between gap-4 px-5 pb-6 pt-5 sm:px-8 sm:pt-8">
+      <div class="grid min-w-0 gap-2">
+        <p class="text-base font-medium tracking-widest text-primary">DETALHES DO PEDIDO</p>
+        <h3 id="order-details-title" class="truncate text-2xl font-bold text-outline sm:text-3xl">{{ order.clientName }}</h3>
+        <p class="text-base text-sub-text">{{ order.kioskName }} · {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        @if (order.delivererName) {
+        <p class="text-base text-sub-text">Entregador: <span class="font-medium text-outline">{{ order.delivererName }}</span></p>
+        }
+        <div class="mt-1 flex flex-wrap items-center gap-3">
+          <span [ngClass]="orderStatus(order.status!)">{{ orderStatusLabel(order.status!) }}</span>
+          @if (order.interno) {
+          <span class="rounded-2xl bg-light-gray px-3 py-2 text-sm font-semibold text-sub-text">Pedido de balcão</span>
+          }
+        </div>
+      </div>
+      <button type="button" class="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-border bg-surface text-2xl text-outline hover:bg-fundo focus-visible:outline-2 focus-visible:outline-primary" aria-label="Fechar detalhes do pedido" (click)="close()">×</button>
+    </header>
+
+    <div class="grid gap-6 border-t border-border bg-surface p-4 sm:p-6 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
+        <section class="grid gap-4" aria-labelledby="order-details-items">
+          <h4 id="order-details-items" class="text-xl font-semibold text-outline">Itens</h4>
+          @for (item of order.itemDetails; track $index) {
+          <article class="rounded-2xl border border-border bg-surface p-4 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+              <h5 class="text-lg font-semibold leading-snug text-outline">{{ item.quantity }}x {{ item.name }}</h5>
+              @if (item.subTotal != null) {
+              <strong class="whitespace-nowrap text-lg text-primary sm:text-xl">{{ formatCurrency(item.subTotal) }}</strong>
+              }
+            </div>
+
+            @if (item.removedIngredients.length || item.complements.length) {
+            <div class="mt-4 grid gap-3 text-base sm:grid-cols-2 sm:gap-0">
+              <div class="sm:pr-4">
+                <p class="font-semibold text-outline">Ingredientes removidos</p>
+                @for (ingredient of item.removedIngredients; track $index) {
+                <p class="text-sub-text">{{ ingredient }}</p>
+                } @empty {
+                <p class="text-sub-text">Nenhum</p>
+                }
+              </div>
+              <div class="sm:border-l sm:border-border sm:pl-4">
+                <p class="font-semibold text-outline">Complementos adicionados</p>
+                @for (complement of item.complements; track $index) {
+                <p class="text-sub-text">{{ complement.name }}@if (complement.value) { <span> (+ {{ formatCurrency(complement.value) }})</span> }</p>
+                } @empty {
+                <p class="text-sub-text">Nenhum</p>
+                }
+              </div>
+            </div>
+            }
+          </article>
+          }
+        </section>
+
+        <section class="grid gap-4" aria-labelledby="order-details-payment">
+          <h4 id="order-details-payment" class="text-xl font-semibold text-outline">Pagamento</h4>
+          <div class="grid gap-3 rounded-2xl border border-border bg-surface p-4 sm:p-6">
+            <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-base">
+              @if (!order.interno) {
+              <dt class="text-sub-text">Forma de pagamento</dt>
+              <dd class="text-right font-medium">{{ paymentMethodLabel(order) }}</dd>
+              }
+              @if (paymentStatusLabel(order); as paymentStatus) {
+              <dt class="text-sub-text">Situação</dt>
+              <dd class="text-right font-medium">{{ paymentStatus }}</dd>
+              }
+              @if (order.subTotal != null) {
+              <dt class="text-sub-text">Subtotal</dt>
+              <dd class="text-right">{{ formatCurrency(order.subTotal) }}</dd>
+              }
+              @if (order.discount) {
+              <dt class="text-sub-text">Desconto</dt>
+              <dd class="text-right">- {{ formatCurrency(order.discount) }}</dd>
+              }
+              @if (order.amountPaid != null) {
+              <dt class="text-sub-text">Cliente paga com</dt>
+              <dd class="text-right">{{ formatCurrency(order.amountPaid) }}</dd>
+              <dt class="text-sub-text">Troco</dt>
+              <dd class="text-right">{{ formatCurrency(order.change) }}</dd>
+              }
+            </dl>
+            @if (order.needsCardMachine) {
+            <p class="rounded-xl bg-complement-background p-3 text-base font-medium text-complement-text">Levar a maquininha de cartão na entrega.</p>
+            }
+            <div class="flex items-center justify-between gap-3 border-t border-border pt-4">
+              <p class="text-lg font-semibold text-outline">Total</p>
+              <strong class="text-2xl text-primary sm:text-3xl">{{ formatCurrency(order.value) }}</strong>
+            </div>
+          </div>
+
+          @if (order.reason) {
+          <p class="rounded-2xl bg-error-container p-4 text-base text-error"><span class="font-semibold">Motivo:</span> {{ order.reason }}</p>
+          }
+        </section>
+      </div>
+
+      <section class="grid gap-3" aria-labelledby="order-details-location">
+        <h4 id="order-details-location" class="text-xl font-semibold text-outline">Local do pedido</h4>
+        @if (hasLocation()) {
+        <app-location-map [readonly]="true" [initialLatitude]="order.latitude!" [initialLongitude]="order.longitude!"></app-location-map>
+        } @else if (order.interno) {
+        <p class="text-base text-sub-text">Pedido feito no balcão do quiosque, sem localização de entrega.</p>
+        } @else {
+        <p class="text-base text-sub-text">O cliente não informou a localização deste pedido.</p>
+        }
+      </section>
+    </div>
+
+    @if (order.status === 'CRIADO' || nextStatus() || error()) {
+    <footer class="grid shrink-0 gap-4 border-t border-border bg-surface px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
+      @if (needsCode()) {
+      <section class="grid gap-4 rounded-2xl border border-border bg-surface p-4 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-center" aria-labelledby="order-details-code">
+        <div class="grid gap-1">
+          <h4 id="order-details-code" class="text-xl font-semibold text-outline">Código de verificação</h4>
+          <p class="text-base text-sub-text">Peça ao cliente {{ order.clientName }} o código de {{ codeLength }} caracteres para confirmar a entrega do pedido.</p>
+        </div>
+        <app-verification-code [digits]="codeDigits()" [error]="codeError()" (digitsChange)="onCodeChange($event)" (confirm)="confirmCode()"></app-verification-code>
+      </section>
+      }
+
+      @if (error()) {
+      <p class="text-base text-error" role="alert">{{ error() }}</p>
+      }
+
+      <div class="grid gap-3 sm:flex sm:justify-end">
+        @if (order.status === 'CRIADO') {
+        <button type="button" [disabled]="saving()" [attr.aria-busy]="saving()" class="flex w-full justify-center rounded-2xl border-2 border-error bg-surface px-4 py-2 text-base font-medium text-error cursor-pointer transition-all hover:bg-error-container disabled:cursor-wait disabled:opacity-50 md:w-max" (click)="statusChange.emit('REJEITADO')">Recusar pedido</button>
+        <app-button labelButton="Aceitar pedido" [disabled]="saving()" (onClickButton)="statusChange.emit('ACEITO')"></app-button>
+        } @else if (nextStatus() === 'FINALIZADO') {
+        @if (needsCode()) {
+        <app-button labelButton="Finalizar pedido" [disabled]="!isCodeComplete() || submittingCode()" (onClickButton)="confirmCode()"></app-button>
+        } @else {
+        <app-button labelButton="Finalizar pedido" [disabled]="saving()" (onClickButton)="statusChange.emit('FINALIZADO')"></app-button>
+        }
+        } @else if (nextStatus(); as next) {
+        <app-button [labelButton]="'Avançar para ' + orderStatusLabel(next)" [disabled]="saving()" (onClickButton)="statusChange.emit(next)"></app-button>
+        }
+      </div>
+    </footer>
+    }
+  </div>
+  }
+</dialog>

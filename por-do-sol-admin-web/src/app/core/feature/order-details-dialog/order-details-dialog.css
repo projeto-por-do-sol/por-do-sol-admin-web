@@ -1,0 +1,9 @@
+app-location-map {
+  --location-map-height: 18rem;
+}
+
+@media (width >= 64rem) {
+  app-location-map {
+    --location-map-height: 22rem;
+  }
+}

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, TemplateRef, ViewChild, computed, input } from '@angular/core';
+import { AfterViewInit, Component, TemplateRef, ViewChild, computed, input, output } from '@angular/core';
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
@@ -18,6 +18,8 @@ export class Table implements AfterViewInit {
   columns = input.required<TableColumn[]>()
   ELEMENT_DATA = input.required<unknown[]>()
   cellTemplate = input<TemplateRef<any>>()
+  clickableRows = input(false)
+  rowClick = output<any>()
   dataSource = new MatTableDataSource()
 
   displayedColumns = computed(() =>
@@ -55,6 +57,13 @@ export class Table implements AfterViewInit {
 
   orderStatusLabel(status: OrderStatus): string {
     return orderStatusLabel(status)
+  }
+
+  // Enter só abre a linha quando o foco está nela, não em um botão dentro dela.
+  onRowKeydown(event: Event, row: unknown): void {
+    if (this.clickableRows() && event.target === event.currentTarget) {
+      this.rowClick.emit(row)
+    }
   }
 
   isSubItem(item: unknown): boolean {

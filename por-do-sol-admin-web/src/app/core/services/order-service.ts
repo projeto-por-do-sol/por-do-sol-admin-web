@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { KioskSelectionService } from './kiosk-selection-service';
 import { KioskService } from './kiosk-service';
 import { UserService } from './user-service';
-import { FINISHED_ORDER_STATUSES, Order, OrderStatus } from '../models/order';
+import { FINISHED_ORDER_STATUSES, Order, OrderItem, OrderStatus } from '../models/order';
 import { OrderItemResponse, OrderResponse, OrderStatusResponse } from '../models/order-api';
 import { API_BASE_URL } from '../config/api';
 import { KioskModel } from '../models/kiosk-model';
@@ -175,11 +175,39 @@ export class OrderService {
       clientId: String(record.id_cliente),
       clientName: record.nome_cliente,
       items: record.itens.flatMap(item => this.mapItem(item)),
+      itemDetails: record.itens.map(item => this.mapItemDetails(item)),
       value: record.valorTotal,
       time: record.dataHoraPedido?.slice(11, 16),
       createdAt: record.dataHoraPedido,
       status: record.status,
       interno: record.interno,
+      delivererName: record.nome_entregador ?? undefined,
+      subTotal: record.subTotal,
+      discount: record.desconto ?? undefined,
+      paymentMethod: record.formaPagamento ?? undefined,
+      paymentStatus: record.statusPagamento ?? undefined,
+      amountPaid: record.valorPagoCliente ?? undefined,
+      change: record.valorTroco ?? undefined,
+      needsCardMachine: record.precisaMaquininha,
+      reason: record.motivo ?? undefined,
+      ...this.mapLocation(record),
+    }
+  }
+
+  // A API devolve 0,0 quando o pedido não tem coordenada (ex.: pedidos de balcão).
+  private mapLocation(record: OrderResponse): Pick<Order, 'latitude' | 'longitude'> {
+    const { latitudeEntrega: latitude, longitudeEntrega: longitude } = record
+    if (record.interno || !latitude || !longitude) return {}
+    return { latitude, longitude }
+  }
+
+  private mapItemDetails(item: OrderItemResponse): OrderItem {
+    return {
+      name: item.nome,
+      quantity: item.quantidade,
+      subTotal: item.subTotal ?? undefined,
+      removedIngredients: (item.ingredientes ?? []).map(ingredient => ingredient.trim()).filter(ingredient => ingredient),
+      complements: (item.acompanhamentos ?? []).map(complement => ({ name: complement.nome, value: complement.valor ?? undefined })),
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, input, signal, TemplateRef } from '@angular/core';
+import { Component, input, output, signal, TemplateRef } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TableColumn, Table } from '../../shared/ui/table/table';
 import { CardTable } from '../card-table/card-table';
@@ -15,6 +15,8 @@ export class TableOrCard {
   ELEMENT_DATA = input.required<unknown[]>();
   cardTemplate = input.required<TemplateRef<any>>()
   cellTemplate = input<TemplateRef<any>>()
+  clickableRows = input(false)
+  rowClick = output<any>()
 
   isMobile = signal(false)
 

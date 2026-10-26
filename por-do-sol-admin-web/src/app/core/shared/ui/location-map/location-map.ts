@@ -25,6 +25,7 @@ export class LocationMap implements AfterViewInit, OnDestroy {
 
   readonly initialLatitude = input<number | null>(null)
   readonly initialLongitude = input<number | null>(null)
+  readonly readonly = input(false)
   readonly locationChange = output<MapLocation>()
 
   private map?: L.Map
@@ -57,11 +58,13 @@ export class LocationMap implements AfterViewInit, OnDestroy {
       )
     }
 
-    this.map.on('click', (event: L.LeafletMouseEvent) => {
-      this.selectLocation(event.latlng.lat, event.latlng.lng)
-    })
+    if (!this.readonly()) {
+      this.map.on('click', (event: L.LeafletMouseEvent) => {
+        this.selectLocation(event.latlng.lat, event.latlng.lng)
+      })
+    }
 
-    if (!hasInitialLocation) {
+    if (!hasInitialLocation && !this.readonly()) {
       this.centerOnUserLocation()
     }
 

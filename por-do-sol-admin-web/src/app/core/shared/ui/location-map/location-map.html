@@ -3,10 +3,12 @@
     #mapElement
     class="location-map"
     role="application"
-    aria-label="Mapa para selecionar a localização do quiosque"
+    [attr.aria-label]="readonly() ? 'Mapa com a localização do pedido' : 'Mapa para selecionar a localização do quiosque'"
   ></div>
 
+  @if (!readonly()) {
   <p class="text-sm text-sub-text">
     Clique ou toque no mapa para marcar a localização exata do quiosque.
   </p>
+  }
 </div>

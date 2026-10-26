@@ -37,6 +37,15 @@
   background: var(--color-on-secondary);
 }
 
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
 .mat-mdc-cell {
   border-bottom: 1px solid #f3e0d1;
   color: var(--color-outline);

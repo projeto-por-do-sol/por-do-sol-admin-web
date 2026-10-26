@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, signal, viewChild, viewChildren } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { Chips } from "../../shared/ui/chips/chips";
 import { TableColumn } from "../../shared/ui/table/table";
@@ -12,10 +12,12 @@ import { Router } from '@angular/router';
 import { OrderStatusActions } from '../order-status-actions/order-status-actions';
 import { Button } from '../../shared/ui/button/button';
 import { CancelButton } from '../../shared/ui/cancel-button/cancel-button';
+import { emptyVerificationCode, VERIFICATION_CODE_LENGTH, VerificationCode } from '../../shared/ui/verification-code/verification-code';
+import { OrderDetailsDialog } from '../order-details-dialog/order-details-dialog';
 
 @Component({
   selector: 'app-orders',
-  imports: [Chips, TableOrCard, NgClass, DatePipe, SectionTitle, OrderStatusActions, Button, CancelButton],
+  imports: [Chips, TableOrCard, NgClass, DatePipe, SectionTitle, OrderStatusActions, Button, CancelButton, VerificationCode, OrderDetailsDialog],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -30,11 +32,15 @@ export class Orders {
   readonly pendingOrder = signal<Order | null>(null)
   private readonly finishDialog = viewChild<ElementRef<HTMLDialogElement>>('finishDialog')
   private readonly codeDialog = viewChild<ElementRef<HTMLDialogElement>>('codeDialog')
-  private readonly codeInputs = viewChildren<ElementRef<HTMLInputElement>>('codeInput')
+  private readonly codeInput = viewChild(VerificationCode)
 
-  readonly codeLength = 4
-  readonly codeSlots = Array.from({ length: this.codeLength }, (_, index) => index)
-  readonly codeDigits = signal<string[]>(Array(this.codeLength).fill(''))
+  // Guarda só o id para que o modal acompanhe as atualizações do pedido.
+  readonly detailsOrderId = signal<string | null>(null)
+  readonly detailsOrder = computed(() =>
+    this.ordersService.orders().find(order => order.id === this.detailsOrderId()) ?? null)
+
+  readonly codeLength = VERIFICATION_CODE_LENGTH
+  readonly codeDigits = signal<string[]>(emptyVerificationCode())
   readonly codeError = signal<string | null>(null)
   readonly submittingCode = signal(false)
   readonly loadError = signal(false)
@@ -135,6 +141,32 @@ export class Orders {
     this.pendingOrder.set(null)
   }
 
+  openDetails(order: Order): void {
+    if (!order.id) return
+    this.actionError.set(null)
+    this.codeError.set(null)
+    this.detailsOrderId.set(order.id)
+  }
+
+  closeDetails(): void {
+    this.detailsOrderId.set(null)
+  }
+
+  // O modal continua aberto e passa a exibir o novo status do pedido.
+  async changeDetailsStatus(status: OrderStatus): Promise<void> {
+    const order = this.detailsOrder()
+    if (!order || this.isSaving(order)) return
+
+    await this.updateStatus(order, status)
+  }
+
+  async confirmDetailsCode(code: string): Promise<void> {
+    const order = this.detailsOrder()
+    if (order) {
+      await this.validateCode(order, code)
+    }
+  }
+
   private async updateStatus(order: Order, status: OrderStatus): Promise<void> {
     this.actionError.set(null)
     try {
@@ -150,10 +182,10 @@ export class Orders {
   }
 
   private openCodeDialog(): void {
-    this.codeDigits.set(Array(this.codeLength).fill(''))
+    this.codeDigits.set(emptyVerificationCode())
     this.codeError.set(null)
     this.codeDialog()?.nativeElement.showModal()
-    this.focusCodeInput(0)
+    this.codeInput()?.focus()
   }
 
   closeCodeDialog(): void {
@@ -161,54 +193,35 @@ export class Orders {
     this.pendingOrder.set(null)
   }
 
-  onCodeInput(index: number, event: Event): void {
-    const input = event.target as HTMLInputElement
-    const digits = input.value.replace(/[^a-z0-9]/gi, '').toUpperCase()
+  onCodeChange(digits: string[]): void {
+    this.codeDigits.set(digits)
     this.codeError.set(null)
-
-    const next = [...this.codeDigits()]
-    for (let i = 0; i < digits.length && index + i < this.codeLength; i++) {
-      next[index + i] = digits[i]
-    }
-    if (!digits) next[index] = ''
-    this.codeDigits.set(next)
-    input.value = next[index]
-
-    if (digits) this.focusCodeInput(Math.min(index + digits.length, this.codeLength - 1))
-  }
-
-  onCodeKeydown(index: number, event: KeyboardEvent): void {
-    if (event.key === 'Backspace' && !this.codeDigits()[index] && index > 0) {
-      this.focusCodeInput(index - 1)
-    } else if (event.key === 'ArrowLeft' && index > 0) {
-      this.focusCodeInput(index - 1)
-    } else if (event.key === 'ArrowRight' && index < this.codeLength - 1) {
-      this.focusCodeInput(index + 1)
-    } else if (event.key === 'Enter') {
-      void this.confirmCode()
-    }
-  }
-
-  private focusCodeInput(index: number): void {
-    this.codeInputs()[index]?.nativeElement.focus()
   }
 
   async confirmCode(): Promise<void> {
     const order = this.pendingOrder()
-    if (!order || !this.isCodeComplete() || this.submittingCode()) return
+    if (!order || !this.isCodeComplete()) return
+
+    if (await this.validateCode(order, this.codeDigits().join(''))) {
+      this.closeCodeDialog()
+    }
+  }
+
+  private async validateCode(order: Order, code: string): Promise<boolean> {
+    if (this.submittingCode()) return false
 
     this.submittingCode.set(true)
     this.codeError.set(null)
     try {
-      const valid = await this.ordersService.finishWithCode(order, this.codeDigits().join(''))
-      if (valid) {
-        this.closeCodeDialog()
-      } else {
+      const valid = await this.ordersService.finishWithCode(order, code)
+      if (!valid) {
         this.codeError.set('Código incorreto. Confira com o cliente e tente novamente.')
       }
+      return valid
     } catch (error) {
       this.codeError.set(this.errorMessage(error, 'Não foi possível validar o código.'))
       this.resyncOrders()
+      return false
     } finally {
       this.submittingCode.set(false)
     }
