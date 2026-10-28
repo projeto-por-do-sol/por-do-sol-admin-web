@@ -1,3 +1,6 @@
+@if (failed()) {
+<p class="text-error mb-5" role="alert">Não foi possível carregar o resumo. <button type="button" class="underline cursor-pointer" (click)="reload()">Tentar novamente</button></p>
+}
 <div class="md:grid md:grid-cols-2 md:gap-5 lg:flex justify-between">
   @for( kpi of kpis(); track kpi.lable){
   <!-- Card -->
@@ -9,7 +12,7 @@
     <p class="text-outline font-bold text-2xl mb-2 truncate">{{kpi.value}}</p>
 
     <!-- svg com indicador de subida ou queda -->
-    <div [className]="kpi.direction ? 'text-green' : 'text-red'">
+    <div [className]="(kpi.good ?? kpi.direction) ? 'text-green' : 'text-red'">
       <svg class="shrink-0" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
         @if(kpi.direction){
         <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
