@@ -12,12 +12,11 @@ import { Router } from '@angular/router';
 import { OrderStatusActions } from '../order-status-actions/order-status-actions';
 import { Button } from '../../shared/ui/button/button';
 import { CancelButton } from '../../shared/ui/cancel-button/cancel-button';
-import { emptyVerificationCode, VERIFICATION_CODE_LENGTH, VerificationCode } from '../../shared/ui/verification-code/verification-code';
 import { OrderDetailsDialog } from '../order-details-dialog/order-details-dialog';
 
 @Component({
   selector: 'app-orders',
-  imports: [Chips, TableOrCard, NgClass, DatePipe, SectionTitle, OrderStatusActions, Button, CancelButton, VerificationCode, OrderDetailsDialog],
+  imports: [Chips, TableOrCard, NgClass, DatePipe, SectionTitle, OrderStatusActions, Button, CancelButton, OrderDetailsDialog],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -31,21 +30,14 @@ export class Orders {
   readonly selectedFilter = signal<string>(this.standardOption)
   readonly pendingOrder = signal<Order | null>(null)
   private readonly finishDialog = viewChild<ElementRef<HTMLDialogElement>>('finishDialog')
-  private readonly codeDialog = viewChild<ElementRef<HTMLDialogElement>>('codeDialog')
-  private readonly codeInput = viewChild(VerificationCode)
 
   // Guarda só o id para que o modal acompanhe as atualizações do pedido.
   readonly detailsOrderId = signal<string | null>(null)
   readonly detailsOrder = computed(() =>
     this.ordersService.orders().find(order => order.id === this.detailsOrderId()) ?? null)
 
-  readonly codeLength = VERIFICATION_CODE_LENGTH
-  readonly codeDigits = signal<string[]>(emptyVerificationCode())
-  readonly codeError = signal<string | null>(null)
-  readonly submittingCode = signal(false)
   readonly loadError = signal(false)
   readonly actionError = signal<string | null>(null)
-  readonly isCodeComplete = computed(() => this.codeDigits().every(digit => digit !== ''))
 
   readonly tableOrders = computed(() => {
     const orders = this.ordersService.orders()
@@ -116,12 +108,10 @@ export class Orders {
     }
 
     if (status === 'FINALIZADO') {
+      // Só pedidos de balcão são finalizados pelo painel; os demais dependem do código do cliente no app do entregador.
+      if (!order.interno) return
       this.pendingOrder.set(order)
-      if (order.interno) {
-        this.finishDialog()?.nativeElement.showModal()
-      } else {
-        this.openCodeDialog()
-      }
+      this.finishDialog()?.nativeElement.showModal()
       return
     }
 
@@ -144,7 +134,6 @@ export class Orders {
   openDetails(order: Order): void {
     if (!order.id) return
     this.actionError.set(null)
-    this.codeError.set(null)
     this.detailsOrderId.set(order.id)
   }
 
@@ -160,13 +149,6 @@ export class Orders {
     await this.updateStatus(order, status)
   }
 
-  async confirmDetailsCode(code: string): Promise<void> {
-    const order = this.detailsOrder()
-    if (order) {
-      await this.validateCode(order, code)
-    }
-  }
-
   private async updateStatus(order: Order, status: OrderStatus): Promise<void> {
     this.actionError.set(null)
     try {
@@ -179,52 +161,6 @@ export class Orders {
 
   private resyncOrders(): void {
     void this.loadOrders()
-  }
-
-  private openCodeDialog(): void {
-    this.codeDigits.set(emptyVerificationCode())
-    this.codeError.set(null)
-    this.codeDialog()?.nativeElement.showModal()
-    this.codeInput()?.focus()
-  }
-
-  closeCodeDialog(): void {
-    this.codeDialog()?.nativeElement.close()
-    this.pendingOrder.set(null)
-  }
-
-  onCodeChange(digits: string[]): void {
-    this.codeDigits.set(digits)
-    this.codeError.set(null)
-  }
-
-  async confirmCode(): Promise<void> {
-    const order = this.pendingOrder()
-    if (!order || !this.isCodeComplete()) return
-
-    if (await this.validateCode(order, this.codeDigits().join(''))) {
-      this.closeCodeDialog()
-    }
-  }
-
-  private async validateCode(order: Order, code: string): Promise<boolean> {
-    if (this.submittingCode()) return false
-
-    this.submittingCode.set(true)
-    this.codeError.set(null)
-    try {
-      const valid = await this.ordersService.finishWithCode(order, code)
-      if (!valid) {
-        this.codeError.set('Código incorreto. Confira com o cliente e tente novamente.')
-      }
-      return valid
-    } catch (error) {
-      this.codeError.set(this.errorMessage(error, 'Não foi possível validar o código.'))
-      this.resyncOrders()
-      return false
-    } finally {
-      this.submittingCode.set(false)
-    }
   }
 
   private errorMessage(error: unknown, fallback: string): string {

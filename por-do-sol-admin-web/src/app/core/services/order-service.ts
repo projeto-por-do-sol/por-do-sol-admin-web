@@ -85,17 +85,6 @@ export class OrderService {
     })
   }
 
-  async finishWithCode(order: Order, code: string): Promise<boolean> {
-    if (!order.id) return false
-
-    return this.whileSaving(order.id, async () => {
-      const valid = await firstValueFrom(this.http.post<boolean>(
-        `${API_BASE_URL}/quiosques/${order.kioskId}/pedidos/${order.id}/validar-codigo`, { codigo: code }))
-      if (valid) this.setStatus(order.id!, 'FINALIZADO')
-      return valid
-    })
-  }
-
   private load(key: string, url: (kiosk: KioskModel) => string, inScope: (order: Order) => boolean): Promise<void> {
     const current = this.loading.get(key)
     if (current) return current

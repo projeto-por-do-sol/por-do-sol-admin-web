@@ -42,14 +42,10 @@ export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
 
 export const FINISHED_ORDER_STATUSES: readonly OrderStatus[] = ['FINALIZADO', 'AVALIADO', 'CANCELADO', 'REJEITADO']
 
-const NEXT_ORDER_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
-  ACEITO: 'PREPARANDO',
-  PREPARANDO: 'EM_ENTREGA',
-  EM_ENTREGA: 'FINALIZADO',
-}
-
-export function nextOrderStatus(status: OrderStatus): OrderStatus | undefined {
-  return NEXT_ORDER_STATUS[status]
+export function nextOrderStatus(status: OrderStatus, interno = false): OrderStatus | undefined {
+  if (status === 'ACEITO') return 'PREPARANDO'
+  if (interno && (status === 'PREPARANDO' || status === 'EM_ENTREGA')) return 'FINALIZADO'
+  return undefined
 }
 
 export function orderStatusLabel(status?: OrderStatus): string {

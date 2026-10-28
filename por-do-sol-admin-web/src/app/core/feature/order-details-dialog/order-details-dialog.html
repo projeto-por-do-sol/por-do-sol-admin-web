@@ -110,16 +110,12 @@
       </section>
     </div>
 
-    @if (order.status === 'CRIADO' || nextStatus() || error()) {
+    @if (order.status === 'CRIADO' || nextStatus() || deliveryInApp() || error()) {
     <footer class="grid shrink-0 gap-4 border-t border-border bg-surface px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
-      @if (needsCode()) {
-      <section class="grid gap-4 rounded-2xl border border-border bg-surface p-4 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-center" aria-labelledby="order-details-code">
-        <div class="grid gap-1">
-          <h4 id="order-details-code" class="text-xl font-semibold text-outline">Código de verificação</h4>
-          <p class="text-base text-sub-text">Peça ao cliente {{ order.clientName }} o código de {{ codeLength }} caracteres para confirmar a entrega do pedido.</p>
-        </div>
-        <app-verification-code [digits]="codeDigits()" [error]="codeError()" (digitsChange)="onCodeChange($event)" (confirm)="confirmCode()"></app-verification-code>
-      </section>
+      @if (deliveryInApp()) {
+      <p class="text-base text-sub-text" role="note">{{ order.status === 'PREPARANDO'
+        ? 'A entrega é iniciada pelo funcionário no aplicativo do entregador.'
+        : 'A entrega está em andamento. Ela é finalizada pelo funcionário no aplicativo do entregador, com o código do cliente.' }}</p>
       }
 
       @if (error()) {
@@ -131,11 +127,7 @@
         <button type="button" [disabled]="saving()" [attr.aria-busy]="saving()" class="flex w-full justify-center rounded-2xl border-2 border-error bg-surface px-4 py-2 text-base font-medium text-error cursor-pointer transition-all hover:bg-error-container disabled:cursor-wait disabled:opacity-50 md:w-max" (click)="statusChange.emit('REJEITADO')">Recusar pedido</button>
         <app-button labelButton="Aceitar pedido" [disabled]="saving()" (onClickButton)="statusChange.emit('ACEITO')"></app-button>
         } @else if (nextStatus() === 'FINALIZADO') {
-        @if (needsCode()) {
-        <app-button labelButton="Finalizar pedido" [disabled]="!isCodeComplete() || submittingCode()" (onClickButton)="confirmCode()"></app-button>
-        } @else {
         <app-button labelButton="Finalizar pedido" [disabled]="saving()" (onClickButton)="statusChange.emit('FINALIZADO')"></app-button>
-        }
         } @else if (nextStatus(); as next) {
         <app-button [labelButton]="'Avançar para ' + orderStatusLabel(next)" [disabled]="saving()" (onClickButton)="statusChange.emit(next)"></app-button>
         }

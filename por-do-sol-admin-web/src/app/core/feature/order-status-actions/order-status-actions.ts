@@ -8,11 +8,12 @@ import { nextOrderStatus, OrderStatus, orderStatusLabel } from '../../models/ord
 })
 export class OrderStatusActions {
   status = input.required<OrderStatus>()
+  interno = input(false)
   disabled = input(false)
   statusChange = output<OrderStatus>()
 
   nextStatus(): OrderStatus | undefined {
-    return nextOrderStatus(this.status())
+    return nextOrderStatus(this.status(), this.interno())
   }
 
   label(status: OrderStatus): string {

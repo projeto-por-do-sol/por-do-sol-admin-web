@@ -1,14 +1,13 @@
-import { Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, input, output, viewChild } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { nextOrderStatus, Order, OrderStatus, orderStatusLabel, PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL } from '../../models/order';
 import { StatusStyle } from '../../utils/status-style';
 import { LocationMap } from '../../shared/ui/location-map/location-map';
 import { Button } from '../../shared/ui/button/button';
-import { emptyVerificationCode, VERIFICATION_CODE_LENGTH, VerificationCode } from '../../shared/ui/verification-code/verification-code';
 
 @Component({
   selector: 'app-order-details-dialog',
-  imports: [DatePipe, NgClass, LocationMap, Button, VerificationCode],
+  imports: [DatePipe, NgClass, LocationMap, Button],
   templateUrl: './order-details-dialog.html',
   styleUrl: './order-details-dialog.css',
 })
@@ -18,24 +17,20 @@ export class OrderDetailsDialog {
   readonly order = input<Order | null>(null)
   readonly saving = input(false)
   readonly error = input<string | null>(null)
-  readonly codeError = input<string | null>(null)
-  readonly submittingCode = input(false)
 
   readonly statusChange = output<OrderStatus>()
-  readonly codeConfirm = output<string>()
-  readonly codeChange = output<void>()
   readonly closed = output<void>()
 
-  readonly codeLength = VERIFICATION_CODE_LENGTH
-  readonly codeDigits = signal<string[]>(emptyVerificationCode())
-  readonly isCodeComplete = computed(() => this.codeDigits().every(digit => digit !== ''))
-
   readonly nextStatus = computed(() => {
-    const status = this.order()?.status
-    return status ? nextOrderStatus(status) : undefined
+    const order = this.order()
+    return order?.status ? nextOrderStatus(order.status, !!order.interno) : undefined
   })
 
-  readonly needsCode = computed(() => this.order()?.status === 'EM_ENTREGA' && !this.order()?.interno)
+  // Pedidos de cliente em preparo ou em entrega não avançam pelo painel.
+  readonly deliveryInApp = computed(() => {
+    const order = this.order()
+    return !!order && !order.interno && (order.status === 'PREPARANDO' || order.status === 'EM_ENTREGA')
+  })
 
   readonly hasLocation = computed(() => {
     const order = this.order()
@@ -51,7 +46,6 @@ export class OrderDetailsDialog {
       const dialog = this.dialog().nativeElement
       if (this.order()) {
         if (!dialog.open) {
-          this.codeDigits.set(emptyVerificationCode())
           dialog.showModal()
         }
       } else if (dialog.open) {
@@ -74,16 +68,6 @@ export class OrderDetailsDialog {
       this.close()
     }
     this.pressedBackdrop = false
-  }
-
-  onCodeChange(digits: string[]): void {
-    this.codeDigits.set(digits)
-    this.codeChange.emit()
-  }
-
-  confirmCode(): void {
-    if (!this.isCodeComplete() || this.submittingCode()) return
-    this.codeConfirm.emit(this.codeDigits().join(''))
   }
 
   formatCurrency(value?: number): string {

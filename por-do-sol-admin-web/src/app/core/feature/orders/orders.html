@@ -42,13 +42,13 @@
     <p [ngClass]="orderStatus(order.status)">{{orderStatusLabel(order.status)}}</p>
     <div class="mt-3 flex items-center justify-between gap-3" (click)="$event.stopPropagation()">
       <span class="text-sm font-medium text-sub-text">Alterar status</span>
-      <app-order-status-actions [status]="order.status" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
+      <app-order-status-actions [status]="order.status" [interno]="!!order.interno" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
     </div>
   </div>
 </ng-template>
 
 <ng-template #statusActions let-order>
-  <app-order-status-actions [status]="order.status" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
+  <app-order-status-actions [status]="order.status" [interno]="!!order.interno" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
 </ng-template>
 
 <app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders()" [cardTemplate]="orderCard" [cellTemplate]="statusActions" [clickableRows]="true" (rowClick)="openDetails($event)"></app-table-or-card>
@@ -64,16 +64,4 @@
   </div>
 </dialog>
 
-<dialog #codeDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="order-code-title" aria-describedby="order-code-description" (close)="pendingOrder.set(null)">
-  <div class="grid gap-5">
-    <h2 id="order-code-title">Código de verificação</h2>
-    <p id="order-code-description" class="text-sub-text">Peça ao cliente {{ pendingOrder()?.clientName }} o código de {{ codeLength }} caracteres para confirmar a entrega do pedido.</p>
-    <app-verification-code [digits]="codeDigits()" [error]="codeError()" (digitsChange)="onCodeChange($event)" (confirm)="confirmCode()"></app-verification-code>
-    <div class="grid gap-3 sm:flex sm:justify-end">
-      <app-cancel-button (onClickButton)="closeCodeDialog()"></app-cancel-button>
-      <app-button labelButton="Finalizar pedido" [disabled]="!isCodeComplete() || submittingCode()" (onClickButton)="confirmCode()"></app-button>
-    </div>
-  </div>
-</dialog>
-
-<app-order-details-dialog [order]="detailsOrder()" [saving]="detailsOrder() ? isSaving(detailsOrder()!) : false" [error]="actionError()" [codeError]="codeError()" [submittingCode]="submittingCode()" (statusChange)="changeDetailsStatus($event)" (codeConfirm)="confirmDetailsCode($event)" (codeChange)="codeError.set(null)" (closed)="closeDetails()"></app-order-details-dialog>
+<app-order-details-dialog [order]="detailsOrder()" [saving]="detailsOrder() ? isSaving(detailsOrder()!) : false" [error]="actionError()" (statusChange)="changeDetailsStatus($event)" (closed)="closeDetails()"></app-order-details-dialog>
