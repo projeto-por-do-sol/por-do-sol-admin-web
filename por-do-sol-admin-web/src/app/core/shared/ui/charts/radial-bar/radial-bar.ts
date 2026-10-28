@@ -58,7 +58,7 @@ export class RadialBar {
 
   constructor() {
     this.chartOptions = {
-      series: [4.8, 7.2],
+      series: [4.8],
       chart: {
         height: 350,
         type: 'radialBar',
@@ -74,7 +74,7 @@ export class RadialBar {
         '#632004',
       ],
       title: {
-        text: 'Taxa de cancelamentos e atrasos',
+        text: 'Taxa de cancelamentos',
         align: 'left',
         style: {
           color: "var(--color-outline)",
@@ -117,7 +117,7 @@ export class RadialBar {
           },
         },
       },
-      labels: ['Cancelamentos', 'Atrasos'],
+      labels: ['Cancelamentos'],
     };
   }
 }
