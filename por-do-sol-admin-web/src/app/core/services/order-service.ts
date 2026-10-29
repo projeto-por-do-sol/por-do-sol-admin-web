@@ -9,6 +9,13 @@ import { OrderItemResponse, OrderResponse, OrderStatusResponse } from '../models
 import { API_BASE_URL } from '../config/api';
 import { KioskModel } from '../models/kiosk-model';
 
+export interface CounterOrderItem {
+  itemId: number
+  quantity: number
+  complementIds: number[]
+  removedIngredients: string[]
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -83,6 +90,24 @@ export class OrderService {
         this.replaceOrder(this.mapOrder(response))
       }
     })
+  }
+
+  // Pedido de balcão: a API o cria já em PREPARANDO e sem pagamento.
+  async createCounterOrder(kioskId: string, clientName: string, items: CounterOrderItem[]): Promise<Order> {
+    const body = {
+      nomeCliente: clientName,
+      itens: items.map(item => ({
+        itemId: item.itemId,
+        quantidade: item.quantity,
+        acompanhamentosid: item.complementIds,
+        ingredientes: item.removedIngredients,
+      })),
+    }
+    const response = await firstValueFrom(
+      this.http.post<OrderResponse>(`${API_BASE_URL}/quiosques/${kioskId}/pedidos/interno`, body))
+    const order = this.mapOrder(response)
+    this._orders.update(orders => [order, ...orders.filter(item => item.id !== order.id)])
+    return order
   }
 
   private load(key: string, url: (kiosk: KioskModel) => string, inScope: (order: Order) => boolean): Promise<void> {

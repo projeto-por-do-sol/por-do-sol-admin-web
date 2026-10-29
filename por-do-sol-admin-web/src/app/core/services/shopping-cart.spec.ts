@@ -44,4 +44,20 @@ describe('ShoppingCart', () => {
     service.removeItemFromCart(firstId);
     expect(service.shoppingCartItens()).toEqual([expect.objectContaining({ idCartItem: secondId, quantity: 3 })]);
   });
+
+  it('keeps one cart per kiosk and clears only the sent one', () => {
+    service.setItemQuantity('kiosk_01', 'item_01', 2);
+    service.setItemQuantity('kiosk_02', 'item_02', 1);
+    service.setClientName('kiosk_01', ' Ana ');
+    service.setClientName('kiosk_02', 'Bia');
+
+    expect(service.itemsOf('kiosk_01').map(item => item.idItem)).toEqual(['item_01']);
+    expect(service.clientNameOf('kiosk_01')).toBe('Ana');
+
+    service.clearKiosk('kiosk_01');
+    expect(service.itemsOf('kiosk_01')).toEqual([]);
+    expect(service.clientNameOf('kiosk_01')).toBe('Balcão');
+    expect(service.itemsOf('kiosk_02').length).toBe(1);
+    expect(service.clientNameOf('kiosk_02')).toBe('Bia');
+  });
 });

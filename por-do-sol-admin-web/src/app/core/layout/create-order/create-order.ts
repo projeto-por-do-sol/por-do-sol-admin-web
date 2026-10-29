@@ -59,7 +59,7 @@ export class CreateOrder {
     .filter((name): name is string => !!name))
   readonly selectedKioskName = computed(() => this.selectedKiosk()?.name ?? '')
   readonly cartSummary = computed(() => {
-    const cartItems = this.shoppingCart.shoppingCartItens()
+    const cartItems = this.shoppingCart.itemsOf(this.selectedKioskId())
     const products = this.kioskItemService.allItems()
 
     return cartItems.reduce((summary, cartItem) => {
@@ -80,6 +80,7 @@ export class CreateOrder {
     this.bottomSheet.open(CartBottomSheet, {
       ariaLabel: 'Itens do carrinho',
       panelClass: ['w-full', 'max-w-2xl!', 'cart-bottom-sheet-panel'],
+      data: { kioskId: this.selectedKioskId() },
     })
   }
 

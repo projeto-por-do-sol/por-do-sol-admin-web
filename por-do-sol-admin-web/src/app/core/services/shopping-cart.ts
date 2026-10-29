@@ -9,14 +9,29 @@ import { normalizeCartQuantity } from '../utils/cart-quantity';
 export class ShoppingCart {
   private readonly _shoppingCartItens = signal<ShoppingCartItem[]>([]);
   private nextCartItemId = 0;
-  private readonly _clientName = signal('Balcão')
-  readonly clientName = this._clientName.asReadonly()
+  
+  // Cada quiosque tem o próprio carrinho: itens e nome do cliente nunca se misturam.
+  private readonly _clientNames = signal<Readonly<Record<string, string>>>({})
+  readonly clientNames = this._clientNames.asReadonly()
 
-  setClientName(name: string): void {
-    this._clientName.set(name.trim() || 'Balcão')
+  setClientName(idKiosk: string, name: string): void {
+    this._clientNames.update(names => ({ ...names, [idKiosk]: name.trim() }))
+  }
+
+  clientNameOf(idKiosk: string): string {
+    return this._clientNames()[idKiosk] || 'Balcão'
   }
 
   readonly shoppingCartItens = this._shoppingCartItens.asReadonly()
+
+  itemsOf(idKiosk: string | null): ShoppingCartItem[] {
+    return this._shoppingCartItens().filter(item => item.idKiosk === idKiosk)
+  }
+
+  clearKiosk(idKiosk: string): void {
+    this._shoppingCartItens.update(items => items.filter(item => item.idKiosk !== idKiosk))
+    this._clientNames.update(({ [idKiosk]: _, ...names }) => names)
+  }
 
   addItemToCart(item: ShoppingCartItem): void {
     const quantity = normalizeCartQuantity(item.quantity)

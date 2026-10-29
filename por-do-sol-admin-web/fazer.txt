@@ -56,3 +56,5 @@ Q1rodolfosilva
 Gerente:
 Q2andedigmonoliveira
 d4df9ff8
+
+Proprietário não consegue realizar entregas, rever decisão.

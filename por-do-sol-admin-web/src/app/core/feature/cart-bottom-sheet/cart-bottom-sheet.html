@@ -78,7 +78,8 @@
           [isObrigatory]="false" [formControl]="clientNameControl" />
         <p class="mt-2 text-sm text-sub-text">Se não informar um nome, usaremos Balcão.</p>
       </div>
-      <app-button class="mt-4 block" labelButton="Enviar pedido" icon="arrow-right" [fullWidth]="true" />
+      <app-button class="mt-4 block" [labelButton]="sending() ? 'Enviando...' : 'Enviar pedido'" icon="arrow-right"
+        [fullWidth]="true" [disabled]="sending()" (onClickButton)="send()" />
     </footer>
   }
 </div>

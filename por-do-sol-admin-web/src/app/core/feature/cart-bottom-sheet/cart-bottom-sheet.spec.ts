@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MOCK_KIOSK_ITEMS } from '../../mocks/mocks';
 import { ShoppingCartItem } from '../../models/shopping-cart-item';
 import { ShoppingCart } from '../../services/shopping-cart';
@@ -13,7 +13,10 @@ describe('CartBottomSheet', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CartBottomSheet, ItemCardForOrder],
-      providers: [{ provide: MatBottomSheetRef, useValue: { dismiss: vi.fn() } }],
+      providers: [
+        { provide: MatBottomSheetRef, useValue: { dismiss: vi.fn() } },
+        { provide: MAT_BOTTOM_SHEET_DATA, useValue: { kioskId: MOCK_KIOSK_ITEMS[0].kioskId } },
+      ],
     }).compileComponents();
 
     cart = TestBed.inject(ShoppingCart);
