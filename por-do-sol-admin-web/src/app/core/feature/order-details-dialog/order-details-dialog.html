@@ -110,7 +110,7 @@
       </section>
     </div>
 
-    @if (order.status === 'CRIADO' || nextStatus() || deliveryInApp() || error()) {
+    @if (order.status === 'CRIADO' || nextStatus() || deliveryInApp() || canCancel() || error()) {
     <footer class="grid shrink-0 gap-4 border-t border-border bg-surface px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
       @if (deliveryInApp()) {
       <p class="text-base text-sub-text" role="note">{{ order.status === 'PREPARANDO'
@@ -123,6 +123,9 @@
       }
 
       <div class="grid gap-3 sm:flex sm:justify-end">
+        @if (canCancel() && order.status !== 'CRIADO') {
+        <button type="button" [disabled]="saving()" class="flex w-full justify-center rounded-2xl border-2 border-error bg-surface px-4 py-2 text-base font-medium text-error cursor-pointer transition-all hover:bg-error-container disabled:cursor-wait disabled:opacity-50 md:w-max" (click)="openCancel()">Cancelar pedido</button>
+        }
         @if (order.status === 'CRIADO') {
         <button type="button" [disabled]="saving()" [attr.aria-busy]="saving()" class="flex w-full justify-center rounded-2xl border-2 border-error bg-surface px-4 py-2 text-base font-medium text-error cursor-pointer transition-all hover:bg-error-container disabled:cursor-wait disabled:opacity-50 md:w-max" (click)="statusChange.emit('REJEITADO')">Recusar pedido</button>
         <app-button labelButton="Aceitar pedido" [disabled]="saving()" (onClickButton)="statusChange.emit('ACEITO')"></app-button>
@@ -136,4 +139,28 @@
     }
   </div>
   }
+</dialog>
+
+<dialog #cancelDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="cancel-order-title">
+  <div class="grid gap-5">
+    <h2 id="cancel-order-title">Cancelar pedido?</h2>
+    <p class="text-sub-text">
+      @if (reasonRequired()) {
+      Informe o motivo do cancelamento do pedido de {{ order()?.clientName }}. O cliente será notificado.
+      } @else {
+      Confirma o cancelamento do pedido de balcão de {{ order()?.clientName }}? O motivo é opcional.
+      }
+    </p>
+    <div class="grid gap-2">
+      <label for="cancel-reason" class="font-semibold">Motivo @if (!reasonRequired()) { <span class="font-normal text-sub-text">(opcional)</span> }</label>
+      <textarea id="cancel-reason" rows="4" maxlength="255" class="w-full resize-none rounded-2xl border border-border bg-surface p-3 text-base text-outline focus-visible:outline-2 focus-visible:outline-primary" [attr.aria-invalid]="reasonMissing()" [value]="cancelReason()" (input)="cancelReason.set($any($event.target).value); reasonMissing.set(false)"></textarea>
+      @if (reasonMissing()) {
+      <p class="text-base text-error" role="alert">Informe o motivo do cancelamento.</p>
+      }
+    </div>
+    <div class="grid gap-3 sm:flex sm:justify-end">
+      <app-cancel-button labelButton="Voltar" (onClickButton)="closeCancel()"></app-cancel-button>
+      <button type="button" class="flex w-full justify-center rounded-2xl border-2 border-error bg-error px-4 py-2 text-base font-medium text-white cursor-pointer transition-all hover:opacity-90 md:w-max" (click)="confirmCancel()">Cancelar pedido</button>
+    </div>
+  </div>
 </dialog>

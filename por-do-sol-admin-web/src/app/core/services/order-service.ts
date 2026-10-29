@@ -92,6 +92,17 @@ export class OrderService {
     })
   }
 
+  // A API exige motivo para cancelar pedidos de cliente; nos de balcão ele é opcional.
+  async cancelOrder(order: Order, reason: string): Promise<void> {
+    if (!order.id) return
+
+    await this.whileSaving(order.id, async () => {
+      const response = await firstValueFrom(this.http.post<OrderResponse>(
+        `${API_BASE_URL}/quiosques/${order.kioskId}/pedidos/${order.id}/cancelar`, { motivo: reason }))
+      this.replaceOrder(this.mapOrder(response))
+    })
+  }
+
   // Pedido de balcão: a API o cria já em PREPARANDO e sem pagamento.
   async createCounterOrder(kioskId: string, clientName: string, items: CounterOrderItem[]): Promise<Order> {
     const body = {

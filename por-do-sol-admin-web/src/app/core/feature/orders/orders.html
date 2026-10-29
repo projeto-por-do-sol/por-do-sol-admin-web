@@ -64,4 +64,4 @@
   </div>
 </dialog>
 
-<app-order-details-dialog [order]="detailsOrder()" [saving]="detailsOrder() ? isSaving(detailsOrder()!) : false" [error]="actionError()" (statusChange)="changeDetailsStatus($event)" (closed)="closeDetails()"></app-order-details-dialog>
+<app-order-details-dialog [order]="detailsOrder()" [saving]="detailsOrder() ? isSaving(detailsOrder()!) : false" [error]="actionError()" (statusChange)="changeDetailsStatus($event)" (cancelOrder)="cancelDetailsOrder($event)" (closed)="closeDetails()"></app-order-details-dialog>

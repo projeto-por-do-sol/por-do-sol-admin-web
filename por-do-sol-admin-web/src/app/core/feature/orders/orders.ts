@@ -149,6 +149,19 @@ export class Orders {
     await this.updateStatus(order, status)
   }
 
+  async cancelDetailsOrder(reason: string): Promise<void> {
+    const order = this.detailsOrder()
+    if (!order || this.isSaving(order)) return
+
+    this.actionError.set(null)
+    try {
+      await this.ordersService.cancelOrder(order, reason)
+    } catch (error) {
+      this.actionError.set(this.errorMessage(error, 'Não foi possível cancelar o pedido.'))
+      this.resyncOrders()
+    }
+  }
+
   private async updateStatus(order: Order, status: OrderStatus): Promise<void> {
     this.actionError.set(null)
     try {

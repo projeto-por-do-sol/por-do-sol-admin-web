@@ -1,25 +1,31 @@
-import { Component, computed, effect, ElementRef, input, output, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
-import { nextOrderStatus, Order, OrderStatus, orderStatusLabel, PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL } from '../../models/order';
+import { FINISHED_ORDER_STATUSES, nextOrderStatus, Order, OrderStatus, orderStatusLabel, PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL } from '../../models/order';
 import { StatusStyle } from '../../utils/status-style';
 import { LocationMap } from '../../shared/ui/location-map/location-map';
 import { Button } from '../../shared/ui/button/button';
+import { CancelButton } from '../../shared/ui/cancel-button/cancel-button';
 
 @Component({
   selector: 'app-order-details-dialog',
-  imports: [DatePipe, NgClass, LocationMap, Button],
+  imports: [DatePipe, NgClass, LocationMap, Button, CancelButton],
   templateUrl: './order-details-dialog.html',
   styleUrl: './order-details-dialog.css',
 })
 export class OrderDetailsDialog {
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog')
+  private readonly cancelDialog = viewChild.required<ElementRef<HTMLDialogElement>>('cancelDialog')
 
   readonly order = input<Order | null>(null)
   readonly saving = input(false)
   readonly error = input<string | null>(null)
 
   readonly statusChange = output<OrderStatus>()
+  readonly cancelOrder = output<string>()
   readonly closed = output<void>()
+
+  readonly cancelReason = signal('')
+  readonly reasonMissing = signal(false)
 
   readonly nextStatus = computed(() => {
     const order = this.order()
@@ -31,6 +37,14 @@ export class OrderDetailsDialog {
     const order = this.order()
     return !!order && !order.interno && (order.status === 'PREPARANDO' || order.status === 'EM_ENTREGA')
   })
+
+  readonly canCancel = computed(() => {
+    const status = this.order()?.status
+    return !!status && !FINISHED_ORDER_STATUSES.includes(status)
+  })
+
+  // Pedidos de cliente exigem motivo; os de balcão não.
+  readonly reasonRequired = computed(() => !this.order()?.interno)
 
   readonly hasLocation = computed(() => {
     const order = this.order()
@@ -52,6 +66,26 @@ export class OrderDetailsDialog {
         dialog.close()
       }
     })
+  }
+
+  openCancel(): void {
+    this.cancelReason.set('')
+    this.reasonMissing.set(false)
+    this.cancelDialog().nativeElement.showModal()
+  }
+
+  closeCancel(): void {
+    this.cancelDialog().nativeElement.close()
+  }
+
+  confirmCancel(): void {
+    const reason = this.cancelReason().trim()
+    if (this.reasonRequired() && !reason) {
+      this.reasonMissing.set(true)
+      return
+    }
+    this.closeCancel()
+    this.cancelOrder.emit(reason)
   }
 
   close(): void {
