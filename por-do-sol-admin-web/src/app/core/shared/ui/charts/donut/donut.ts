@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Signal, computed, inject, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -15,6 +15,7 @@ import {
   // ApexMarkers,
   ApexPlotOptions,
   ApexResponsive,
+  ApexNoData,
   // ApexGrid,
   // ApexAnnotations,
   // ApexStates,
@@ -43,7 +44,10 @@ export type ChartOptions = {
   theme?: ApexTheme;
   colors?: string[];
   labels?: any;
+  noData?: ApexNoData;
 };
+
+import { StatisticsService } from '../../../../services/statistics-service';
 
 @Component({
   selector: 'app-donut',
@@ -54,10 +58,13 @@ export type ChartOptions = {
 export class Donut {
 
   @ViewChild('chart') chart!: ChartComponent;
-  public chartOptions!: ChartOptions
+  private readonly statisticsService = inject(StatisticsService)
+  public chartOptions!: Signal<ChartOptions>
   constructor() {
-    this.chartOptions = {
-      series: [96, 82, 67, 54, 41],
+    this.chartOptions = computed((): ChartOptions => {
+      const categories = this.statisticsService.statistics()?.ordersByCategory.categories ?? []
+      return {
+      series: categories.map(category => category.orderCount),
       chart: {
         type: 'donut',
         width: '100%',
@@ -94,7 +101,8 @@ export class Donut {
           }
         },
       },
-      labels: ['Frutos do mar', 'Porções', 'Lanches', 'Caipirinhas', 'Açaí'],
+      labels: categories.map(category => category.categoryName),
+      noData: { text: 'Sem pedidos no período' },
       dataLabels: {
         enabled: false,
       },
@@ -172,5 +180,6 @@ export class Donut {
         // }
       ]
     };
+    });
   }
 }

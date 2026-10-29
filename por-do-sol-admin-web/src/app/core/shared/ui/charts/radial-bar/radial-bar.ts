@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Signal, computed, inject, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -45,6 +45,8 @@ export type ChartOptions = {
   labels?: any;
 };
 
+import { StatisticsService } from '../../../../services/statistics-service';
+
 @Component({
   selector: 'app-radial-bar',
   imports: [NgApexchartsModule],
@@ -54,11 +56,14 @@ export type ChartOptions = {
 export class RadialBar {
 
   @ViewChild('chart') chart!: ChartComponent;
-  public chartOptions!: ChartOptions
+  private readonly statisticsService = inject(StatisticsService)
+  public chartOptions!: Signal<ChartOptions>
 
   constructor() {
-    this.chartOptions = {
-      series: [4.8],
+    this.chartOptions = computed((): ChartOptions => {
+      const cancellations = this.statisticsService.statistics()?.cancellations
+      return {
+      series: [Math.round((cancellations?.rate ?? 0) * 10) / 10],
       chart: {
         height: 350,
         type: 'radialBar',
@@ -85,7 +90,7 @@ export class RadialBar {
         }
       },
       subtitle: {
-        text: 'Percentual sobre os pedidos dos últimos 7 dias',
+        text: 'Cancelados e rejeitados sobre os pedidos concluídos dos últimos 7 dias',
         align: 'left',
         style: {
           color: "var(--color-sub-text)",
@@ -102,22 +107,18 @@ export class RadialBar {
             },
             value: {
               fontSize: '16px',
+              formatter: (value) => `${value}%`,
             },
             total: {
               show: true,
-              label: 'Média',
-              formatter: (w) => {
-                // custom formatter: rounded average across all series, with a unit
-                var total = w.globals.seriesTotals.reduce(function (a: any, b: any) {
-                  return a + b
-                }, 0)
-                return Math.round(total / w.globals.series.length) + '%'
-              },
+              label: 'Cancelados',
+              formatter: () => `${cancellations?.cancelledOrders ?? 0} de ${cancellations?.totalOrders ?? 0}`,
             },
           },
         },
       },
       labels: ['Cancelamentos'],
     };
+    });
   }
 }

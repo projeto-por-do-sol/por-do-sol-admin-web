@@ -1,4 +1,7 @@
 <app-section-title [lable]="'Desempenho'" [section]="'Estatísticas'" [text]="'Pedidos, vendas por categoria e faturamento da semana deste quiosque'"></app-section-title>
+@if (failed()) {
+<p class="text-error mb-5" role="alert">Não foi possível carregar as estatísticas. <button type="button" class="underline cursor-pointer" (click)="reload()">Tentar novamente</button></p>
+}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
   <app-stacked-column class="lg:col-span-2"></app-stacked-column>
   <app-donut></app-donut>

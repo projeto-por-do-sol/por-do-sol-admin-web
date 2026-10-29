@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, computed, inject, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -13,9 +13,14 @@ import {
   ApexPlotOptions,
   ApexResponsive,
   ApexTheme,
+  ApexNoData,
   NgApexchartsModule,
 } from 'ng-apexcharts';
 import { KioskSelectionService } from '../../../../services/kiosk-selection-service';
+import { PermissionService } from '../../../../services/permission-service';
+import { StatisticsService } from '../../../../services/statistics-service';
+
+import { StatisticsResponse } from '../../../../models/statistics-model';
 
 export type ChartOptions = {
   series?: ApexAxisChartSeries | ApexNonAxisChartSeries;
@@ -32,6 +37,7 @@ export type ChartOptions = {
   theme?: ApexTheme;
   colors?: string[];
   labels?: any;
+  noData?: ApexNoData;
 };
 
 @Component({
@@ -43,20 +49,21 @@ export type ChartOptions = {
 export class StackedColumn {
   @ViewChild('chart') chart!: ChartComponent;
   private readonly selectionService = inject(KioskSelectionService);
+  private readonly permissionService = inject(PermissionService);
+  private readonly statisticsService = inject(StatisticsService);
 
-  get chartOptions(): ChartOptions {
-    return this.selectionService.selectedKiosk()
-      ? this.productChartOptions
-      : this.companyChartOptions;
-  }
+  // Com um quiosque em foco (selecionado, ou o único do gerente) mostra os produtos; senão, o faturamento por quiosque.
+  readonly chartOptions = computed((): ChartOptions => {
+    const statistics = this.statisticsService.statistics();
+    return this.selectionService.selectedKiosk() || !this.permissionService.isOwner()
+      ? this.productChartOptions(statistics?.topProducts.products ?? [])
+      : this.companyChartOptions(statistics?.revenueByKiosk);
+  });
 
-  private readonly companyChartOptions: ChartOptions = {
-    series: [
-      { name: 'Quiosque Teste', data: [1620, 1840, 2110, 1980, 2450, 2860, 2710] },
-      { name: 'Praia Quiosque', data: [980, 1120, 1050, 1230, 1320, 1680, 1590] },
-      { name: 'Santos Quiosque', data: [2540, 2780, 3010, 3260, 3890, 4210, 3980] },
-      { name: 'Beira Mar Quiosque', data: [720, 810, 760, 890, 980, 1260, 1170] },
-    ],
+  private companyChartOptions(revenue?: StatisticsResponse['revenueByKiosk']): ChartOptions {
+    return {
+    series: (revenue?.kiosks ?? []).map(kiosk => ({ name: kiosk.kioskName, data: kiosk.revenue })),
+    noData: { text: 'Sem faturamento no período' },
     chart: {
       type: 'bar',
       height: 350,
@@ -126,7 +133,7 @@ export class StackedColumn {
       },
     },
     xaxis: {
-      categories: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      categories: (revenue?.dates ?? []).map(date => this.weekday(date)),
     },
     yaxis: {
       labels: {
@@ -146,15 +153,18 @@ export class StackedColumn {
       fontSize: '0.8rem',
     },
     fill: { opacity: 1 },
-  };
+    };
+  }
 
-  private readonly productChartOptions: ChartOptions = {
+  private productChartOptions(products: StatisticsResponse['topProducts']['products']): ChartOptions {
+    return {
     series: [
       {
         name: 'Unidades vendidas',
-        data: [58, 46, 39, 32, 25],
+        data: products.map(product => product.unitsSold),
       },
     ],
+    noData: { text: 'Sem vendas no período' },
     chart: {
       type: 'bar',
       height: 350,
@@ -207,13 +217,7 @@ export class StackedColumn {
       },
     },
     xaxis: {
-      categories: [
-        'Porção de Peixe Frito',
-        'Casquinha de Siri',
-        'Pastel de Carne com Queijo',
-        'Caipirinha de Limão',
-        'Água de Coco Gelada',
-      ],
+      categories: products.map(product => product.productName),
       labels: {
         formatter: (value) => `${Math.round(Number(value))}`,
       },
@@ -223,5 +227,12 @@ export class StackedColumn {
     },
     legend: { show: false },
     fill: { opacity: 1 },
-  };
+    };
+  }
+
+  // A API devolve datas ISO (AAAA-MM-DD); montadas como data local para não recuar um dia pelo fuso.
+  private weekday(date: string): string {
+    const [year, month, day] = date.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+  }
 }

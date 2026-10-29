@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Signal, computed, inject, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -15,6 +15,7 @@ import {
   ApexMarkers,
   ApexPlotOptions,
   ApexResponsive,
+  ApexNoData,
   // ApexGrid,
   // ApexAnnotations,
   // ApexStates,
@@ -43,7 +44,10 @@ export type ChartOptions = {
   theme?: ApexTheme;
   colors?: string[];
   labels?: any;
+  noData?: ApexNoData;
 };
+
+import { StatisticsService } from '../../../../services/statistics-service';
 
 @Component({
   selector: 'app-zoomable-timeseries',
@@ -54,48 +58,17 @@ export type ChartOptions = {
 export class ZoomableTimeseries {
 
   @ViewChild('chart') chart!: ChartComponent;
-  private dataSeries: any = [
-    {
-      "date": "2026-10-03T12:00:00",
-      "value": 5540
-    },
-    {
-      "date": "2026-10-04T12:00:00",
-      "value": 6120
-    },
-    {
-      "date": "2026-10-05T12:00:00",
-      "value": 4860
-    },
-    {
-      "date": "2026-10-06T12:00:00",
-      "value": 5390
-    },
-    {
-      "date": "2026-10-07T12:00:00",
-      "value": 6480
-    },
-    {
-      "date": "2026-10-08T12:00:00",
-      "value": 7310
-    },
-    {
-      "date": "2026-10-09T12:00:00",
-      "value": 6890
-    },
-  ]
-
-  // private ts2: any = new Date('14 Jan 2025').getTime();
-
-  private dates: any = [];
-  public chartOptions!: ChartOptions
+  private readonly statisticsService = inject(StatisticsService)
+  public chartOptions!: Signal<ChartOptions>
 
   constructor() {
-    this.chartOptions = {
+    this.chartOptions = computed((): ChartOptions => {
+      const points = this.statisticsService.statistics()?.dailyRevenue.points ?? []
+      return {
       series: [
         {
           name: 'Faturamento Total',
-          data: this.dates,
+          data: points.map(point => [new Date(point.date).getTime(), point.value]) as any,
           color: '#C0420a'
         },
       ],
@@ -169,6 +142,7 @@ export class ZoomableTimeseries {
       xaxis: {
         type: 'datetime',
       },
+      noData: { text: 'Sem faturamento no período' },
       tooltip: {
         shared: false,
         y: {
@@ -182,22 +156,7 @@ export class ZoomableTimeseries {
         },
       },
     };
-  }
-
-  ngAfterViewInit() {
-    this.dataSeries.forEach((item: { date: string | number | Date; value: any; }) => {
-      this.dates.push([
-        new Date(item.date).getTime(),
-        item.value
-      ]);
     });
-
-    this.chart?.updateSeries([
-      {
-        name: 'Faturamento Total',
-        data: this.dates
-      }
-    ]);
   }
 
 }
