@@ -31,6 +31,7 @@ export interface AuthenticatedUserResponse {
   id: string
   nome: string
   email: string | null
+  login?: string
   telefone: string
   dataCadastro: string
   imagem: string | null

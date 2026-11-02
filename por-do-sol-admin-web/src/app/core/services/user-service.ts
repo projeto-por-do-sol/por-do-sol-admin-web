@@ -23,7 +23,11 @@ export class UserService {
   private readonly pushService = inject(PushService);
   private readonly _user = signal<User | null>(null);
 
+  private readonly _mustChangePassword = signal(false);
+
   readonly user = this._user.asReadonly();
+  /** True enquanto o funcionário/gerente usa a senha provisória e precisa trocá-la. */
+  readonly mustChangePassword = this._mustChangePassword.asReadonly();
 
   login(credentials: LoginRequest, rememberMe = false): Observable<User> {
     return this.http.post<LoginResponse>(`${API_BASE_URL}/auth/login/quiosque`, credentials).pipe(
@@ -95,6 +99,19 @@ export class UserService {
     )
   }
 
+  /**
+   * Troca a senha provisória. O JWT atual ainda carrega `trocarSenha`, então
+   * o login é refeito com a nova senha para obter um token já liberado.
+   */
+  changeTemporaryPassword(request: ChangePasswordRequest): Observable<User> {
+    const login = this._user()?.login ?? this._user()?.email ?? '';
+    const rememberMe = this.tokenService.isPersistent();
+
+    return this.http.patch<void>(`${API_BASE_URL}/me`, request).pipe(
+      switchMap(() => this.login({ email: login, password: request.novaSenha }, rememberMe)),
+    );
+  }
+
   restoreSession(): Observable<User> {
     const currentUser = this._user();
     if (currentUser) return of(currentUser);
@@ -119,13 +136,17 @@ export class UserService {
   private loadAuthenticatedUser(): Observable<User> {
     return this.http.get<AuthenticatedUserResponse>(`${API_BASE_URL}/me`).pipe(
       map(response => this.mapUser(response)),
-      tap(user => this._user.set(user)),
+      tap(user => {
+        this._user.set(user);
+        this._mustChangePassword.set(this.tokenService.mustChangePassword());
+      }),
     )
   }
 
   private clearSession(): void {
     this.tokenService.clear();
     this._user.set(null);
+    this._mustChangePassword.set(false);
   }
 
   private mapUser(response: AuthenticatedUserResponse): User {
@@ -139,6 +160,7 @@ export class UserService {
       id: response.id,
       name: response.nome,
       email: response.email ?? undefined,
+      login: response.login,
       phone: response.telefone,
       registrationDate: response.dataCadastro,
       image: response.imagem,

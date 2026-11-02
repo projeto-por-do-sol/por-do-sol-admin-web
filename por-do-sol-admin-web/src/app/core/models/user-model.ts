@@ -4,6 +4,7 @@ export class User {
   position?: string
   kiosk?: string
   email?: string
+  login?: string
   phone?: string
   registrationDate?: string
   image?: string | null

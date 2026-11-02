@@ -9,16 +9,19 @@ import { KpiService } from '../../services/kpi-service';
 import { StatisticsService } from '../../services/statistics-service';
 import { NotificationService } from '../../services/notification-service';
 import { PushService } from '../../services/push-service';
+import { UserService } from '../../services/user-service';
+import { ForcePasswordChangeDialog } from '../../feature/force-password-change-dialog/force-password-change-dialog';
 
 @Component({
   selector: 'app-logged-user',
-  imports: [RouterOutlet, Sidebar],
+  imports: [RouterOutlet, Sidebar, ForcePasswordChangeDialog],
   templateUrl: './logged-user.html',
   styleUrl: './logged-user.css',
 })
 export class LoggedUser {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLElement>;
   isRegisterMenuOpen = false;
+  readonly userService = inject(UserService);
   private readonly pushService = inject(PushService);
   private readonly orderService = inject(OrderService);
   private readonly notification = inject(NotificationService);

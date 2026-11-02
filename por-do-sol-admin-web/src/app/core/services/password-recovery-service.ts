@@ -22,7 +22,7 @@ export class PasswordRecoveryService {
     return this._accountType
   }
 
-  /** Momento (ms) do último envio aceito pela API; a API ignora novos envios por 5 minutos. */
+  // Momento (ms) do último envio aceito pela API; a API ignora novos envios por 5 minutos.
   get lastSentAt(): number {
     return this._lastSentAt
   }
@@ -47,7 +47,7 @@ export class PasswordRecoveryService {
     return this.send()
   }
 
-  /** Confirma na API que o código pertence a este e-mail, sem consumi-lo. */
+  // Confirma na API que o código pertence a este e-mail, sem consumi-lo.
   validateCode(code: string): Observable<void> {
     return this.http
       .post<void>(

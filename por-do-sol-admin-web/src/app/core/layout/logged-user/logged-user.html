@@ -6,3 +6,7 @@
     <router-outlet></router-outlet>
   </main>
 </div>
+
+@if (userService.mustChangePassword()) {
+  <app-force-password-change-dialog></app-force-password-change-dialog>
+}

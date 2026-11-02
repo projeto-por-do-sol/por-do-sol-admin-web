@@ -7,7 +7,7 @@ import { PasswordRecoveryService, recoveryErrorMessage } from '../../services/pa
 import { HttpErrorResponse } from '@angular/common/http';
 
 // A API só reenvia o código após 5 minutos; antes disso ela ignora a solicitação.
-const RESEND_INTERVAL_MS = 5 * 60_000 + 5_000 // margem para diferença de relógio com a API
+const RESEND_INTERVAL_MS = 5 * 60_000 + 5_000
 
 @Component({
   selector: 'app-password-recovery',
