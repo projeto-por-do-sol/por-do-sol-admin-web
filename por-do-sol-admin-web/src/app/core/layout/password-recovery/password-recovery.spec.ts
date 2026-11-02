@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { provideRouter, Router } from '@angular/router'
+import { provideHttpClient } from '@angular/common/http'
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing'
+import { PasswordRecoveryService } from '../../services/password-recovery-service'
 
 import { PasswordRecovery } from './password-recovery'
 
@@ -8,12 +11,14 @@ describe('PasswordRecovery', () => {
   let fixture: ComponentFixture<PasswordRecovery>
 
   beforeEach(async () => {
-    localStorage.removeItem('password-recovery-state-v2')
+    localStorage.removeItem('password-recovery-state-v3')
     await TestBed.configureTestingModule({
       imports: [PasswordRecovery],
-      providers: [provideRouter([])]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents()
 
+    TestBed.inject(PasswordRecoveryService).request('a@b.com', 'QUIOSQUE').subscribe()
+    TestBed.inject(HttpTestingController).expectOne(r => r.url.endsWith('/auth/forgot-password')).flush(null)
     fixture = TestBed.createComponent(PasswordRecovery)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -101,110 +106,75 @@ describe('PasswordRecovery', () => {
     expect(component.codeErrorMessage()).toContain('quatro caracteres')
   })
 
-  it('confirms the code when the form is submitted', () => {
+  it('rejects a wrong code returned as invalid by the API and stays on the page', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl')
-    component.code.splice(0, 4, '1', '2', '3', '4')
+    component.code.splice(0, 4, '5', 'P', 'G', 'B')
+
+    component.confirmCode()
+    const req = TestBed.inject(HttpTestingController).expectOne(r => r.url.endsWith('/auth/validate-reset-code'))
+    expect(req.request.params.get('token')).toBe('5PGB')
+    req.flush({ message: 'Código inválido ou expirado' }, { status: 400, statusText: 'Bad Request' })
+
+    expect(component.codeErrorMessage()).toContain('incorreto')
+    expect(TestBed.inject(PasswordRecoveryService).hasCode).toBe(false)
+    expect(navigate).not.toHaveBeenCalledWith('/passwordReset')
+  })
+
+  it('stores the code and goes to the reset step when the API accepts it', () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl')
+    component.code.splice(0, 4, 'A', '2', 'B', '4')
     fixture.changeDetectorRef.markForCheck()
     fixture.detectChanges()
 
     const form = fixture.nativeElement.querySelector('form') as HTMLFormElement
-    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement
-    expect(button).toBeTruthy()
-
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    TestBed.inject(HttpTestingController).expectOne(r => r.url.endsWith('/auth/validate-reset-code')).flush(null)
 
-    expect(component.codeSuccessMessage()).toBe('Código confirmado.')
+    expect(TestBed.inject(PasswordRecoveryService).hasCode).toBe(true)
     expect(navigate).toHaveBeenCalledWith('/passwordReset')
   })
 
-  it('shows an error when the code is incorrect', () => {
-    component.code.splice(0, 4, 'A', 'B', 'C', 'D')
-
-    component.confirmCode()
-
-    expect(component.codeErrorMessage()).toContain('incorreto')
-    expect(component.remainingAttempts()).toBe(4)
-  })
-
-  it('locks confirmation for ten minutes after five complete incorrect codes', () => {
-    component.code[0] = 'A'
-    component.confirmCode()
-    expect(component.remainingAttempts()).toBe(5)
-
-    component.code.splice(0, 4, 'A', 'B', 'C', 'D')
-    for (let attempt = 0; attempt < 4; attempt++) component.confirmCode()
-    component.now.set(Date.now() - 2_000)
-    component.confirmCode()
-
-    expect(component.isLocked()).toBe(true)
-    expect(component.lockSeconds()).toBe(600)
-    expect(component.remainingAttempts()).toBe(0)
-
-    component.code.splice(0, 4, '1', '2', '3', '4')
-    component.confirmCode()
-    expect(component.codeSuccessMessage()).toBe('')
-  })
-
-  it('starts another one-minute countdown after a simulated resend request', () => {
-    expect(component.resendSeconds()).toBe(60)
-    component.resendAvailableAt.set(0)
-    component.now.set(Date.now() - 2_000)
-
-    component.requestNewCode()
-
-    expect(component.resendSeconds()).toBe(60)
-    expect(component.resendMessage()).toContain('simulada')
-    expect(component.remainingRequests()).toBe(4)
-    expect(component.remainingAttempts()).toBe(5)
-  })
-
-  it('locks only new requests after five requests', () => {
-    for (let request = 0; request < 5; request++) {
-      component.resendAvailableAt.set(0)
-      component.requestNewCode()
-    }
-
-    expect(component.remainingRequests()).toBe(0)
-    expect(component.areRequestsLocked()).toBe(true)
-    expect(component.requestLockSeconds()).toBe(600)
-    expect(component.remainingAttempts()).toBe(5)
-    expect(component.isLocked()).toBe(false)
-    component.resendAvailableAt.set(0)
-    component.requestNewCode()
-    expect(component.remainingRequests()).toBe(0)
-  })
-
-  it('keeps requests available when code attempts are locked', () => {
-    component.code.splice(0, 4, 'A', 'B', 'C', 'D')
-    for (let attempt = 0; attempt < 5; attempt++) component.confirmCode()
-    component.resendAvailableAt.set(0)
-
-    component.requestNewCode()
-
-    expect(component.isLocked()).toBe(true)
-    expect(component.remainingRequests()).toBe(4)
-  })
-
-  it('keeps the lock after the component is recreated', () => {
-    component.code.splice(0, 4, 'A', 'B', 'C', 'D')
-    for (let attempt = 0; attempt < 5; attempt++) component.confirmCode()
-
+  it('keeps resend blocked right after arriving, even with stale localStorage', () => {
+    localStorage.setItem('password-recovery-state-v3', JSON.stringify({ usedRequests: 0, requestsLockedUntil: 0, resendAvailableAt: 0 }))
     fixture.destroy()
     fixture = TestBed.createComponent(PasswordRecovery)
     component = fixture.componentInstance
     fixture.detectChanges()
 
-    expect(component.isLocked()).toBe(true)
-    expect(component.lockSeconds()).toBeGreaterThan(0)
+    expect(component.resendSeconds()).toBeGreaterThan(290)
+    component.requestNewCode()
+    TestBed.inject(HttpTestingController).expectNone(r => r.url.endsWith('/auth/forgot-password'))
+  })
+
+  it('requests a new code from the API and starts the cooldown', () => {
+    component.resendAvailableAt.set(0)
+    component.now.set(Date.now() - 2_000)
+
+    component.requestNewCode()
+    const req = TestBed.inject(HttpTestingController).expectOne(r => r.url.endsWith('/auth/forgot-password'))
+    expect(req.request.body).toEqual({ email: 'a@b.com', tipoConta: 'QUIOSQUE' })
+    req.flush(null)
+
+    expect(component.resendSeconds()).toBe(305)
+    expect(component.remainingRequests()).toBe(4)
+  })
+
+  it('locks new requests after five requests', () => {
+    const http = TestBed.inject(HttpTestingController)
+    for (let request = 0; request < 5; request++) {
+      component.resendAvailableAt.set(0)
+      component.requestNewCode()
+      http.expectOne(r => r.url.endsWith('/auth/forgot-password')).flush(null)
+    }
+
+    expect(component.areRequestsLocked()).toBe(true)
+    expect(component.requestLockSeconds()).toBe(600)
   })
 
   it('restores requests after their ten-minute lock expires', () => {
-    localStorage.setItem('password-recovery-state-v2', JSON.stringify({
-      usedAttempts: 2,
-      lockedUntil: 0,
+    localStorage.setItem('password-recovery-state-v3', JSON.stringify({
       usedRequests: 5,
       requestsLockedUntil: Date.now() - 1,
-      resendAvailableAt: 0,
     }))
 
     fixture.destroy()
@@ -214,6 +184,5 @@ describe('PasswordRecovery', () => {
 
     expect(component.remainingRequests()).toBe(5)
     expect(component.areRequestsLocked()).toBe(false)
-    expect(component.remainingAttempts()).toBe(3)
   })
 })

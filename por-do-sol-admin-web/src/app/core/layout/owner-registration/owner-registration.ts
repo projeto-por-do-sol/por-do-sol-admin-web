@@ -132,8 +132,10 @@ export class OwnerRegistration {
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false)
         this.errorMessage.set(
-          error.status === 400
-            ? 'Não foi possível cadastrar. Verifique se o e-mail já está em uso.'
+          error.status === 409
+            ? 'Já existe um usuário cadastrado com este e-mail.'
+            : error.status === 400
+            ? 'Não foi possível cadastrar. Verifique os dados informados.'
             : 'Não foi possível concluir o cadastro. Verifique sua conexão e tente novamente.',
         )
       },

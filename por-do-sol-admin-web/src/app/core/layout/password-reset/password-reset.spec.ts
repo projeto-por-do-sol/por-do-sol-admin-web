@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { PasswordRecoveryService } from '../../services/password-recovery-service';
 
 import { PasswordReset } from './password-reset';
 
@@ -10,8 +13,15 @@ describe('PasswordReset', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PasswordReset],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
+
+    const recovery = TestBed.inject(PasswordRecoveryService);
+    recovery.request('a@b.com', 'QUIOSQUE').subscribe();
+    recovery.validateCode('A2B4').subscribe();
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne(r => r.url.endsWith('/auth/forgot-password')).flush(null);
+    http.expectOne(r => r.url.endsWith('/auth/validate-reset-code')).flush(null);
 
     fixture = TestBed.createComponent(PasswordReset);
     component = fixture.componentInstance;
@@ -61,17 +71,29 @@ describe('PasswordReset', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it('returns to login after matching valid passwords are submitted', () => {
+  it('sends the code and new password to the API, then returns to login', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
-    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
-    const inputs = form.querySelectorAll('input[type="password"]') as NodeListOf<HTMLInputElement>;
+    component.form.patchValue({ password: 'password123', passwordConfirmation: 'password123' });
 
-    for (const input of inputs) {
-      input.value = 'password123';
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    component.onSubmit();
+    const req = TestBed.inject(HttpTestingController).expectOne(r => r.url.endsWith('/auth/reset-password'));
+    expect(req.request.params.get('token')).toBe('A2B4');
+    expect(req.request.body).toEqual({ password: 'password123', email: 'a@b.com', tipoConta: 'QUIOSQUE' });
+    req.flush(null);
 
     expect(navigate).toHaveBeenCalledWith('/login');
+  });
+
+  it('shows an error and stays on the page when the API rejects the code', () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
+    component.form.patchValue({ password: 'password123', passwordConfirmation: 'password123' });
+
+    component.onSubmit();
+    TestBed.inject(HttpTestingController)
+      .expectOne(r => r.url.endsWith('/auth/reset-password'))
+      .flush({ message: 'Token inválido' }, { status: 500, statusText: 'Server Error' });
+
+    expect(component.errorMessage()).toContain('Código inválido');
+    expect(navigate).not.toHaveBeenCalledWith('/login');
   });
 });

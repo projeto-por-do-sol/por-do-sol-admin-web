@@ -3,6 +3,11 @@ import { FormsModule } from '@angular/forms'
 import { ReturnLink } from '../../shared/ui/return-link/return-link'
 import { Button } from '../../shared/ui/button/button';
 import { Router } from '@angular/router';
+import { PasswordRecoveryService, recoveryErrorMessage } from '../../services/password-recovery-service';
+import { HttpErrorResponse } from '@angular/common/http';
+
+// A API só reenvia o código após 5 minutos; antes disso ela ignora a solicitação.
+const RESEND_INTERVAL_MS = 5 * 60_000 + 5_000 // margem para diferença de relógio com a API
 
 @Component({
   selector: 'app-password-recovery',
@@ -10,30 +15,35 @@ import { Router } from '@angular/router';
   templateUrl: './password-recovery.html'
 })
 export class PasswordRecovery {
-  private readonly storageKey = 'password-recovery-state-v2'
+  private readonly storageKey = 'password-recovery-state-v3'
   private readonly destroyRef = inject(DestroyRef)
   private readonly router = inject(Router)
+  private readonly recovery = inject(PasswordRecoveryService)
   readonly code = ['', '', '', '']
   readonly codeErrorMessage = signal('')
   readonly codeSuccessMessage = signal('')
   readonly resendMessage = signal('')
+  readonly isResending = signal(false)
+  readonly isValidating = signal(false)
   readonly now = signal(Date.now())
-  readonly usedAttempts = signal(0)
-  readonly lockedUntil = signal(0)
   readonly usedRequests = signal(0)
   readonly requestsLockedUntil = signal(0)
-  readonly resendAvailableAt = signal(this.now() + 60_000)
-  readonly lockSeconds = computed(() => Math.max(0, Math.ceil((this.lockedUntil() - this.now()) / 1000)))
+  readonly resendAvailableAt = signal(0)
   readonly requestLockSeconds = computed(() => Math.max(0, Math.ceil((this.requestsLockedUntil() - this.now()) / 1000)))
   readonly resendSeconds = computed(() => Math.max(0, Math.ceil((this.resendAvailableAt() - this.now()) / 1000)))
-  readonly isLocked = computed(() => this.lockSeconds() > 0)
   readonly areRequestsLocked = computed(() => this.requestLockSeconds() > 0)
-  readonly remainingAttempts = computed(() => 5 - this.usedAttempts())
   readonly remainingRequests = computed(() => 5 - this.usedRequests())
   private readonly codeInputs = viewChildren<ElementRef<HTMLInputElement>>('codeInput')
 
   constructor() {
+    if (!this.recovery.hasPendingRecovery) {
+      this.router.navigateByUrl('/informEmailForRecovery')
+    } else if (this.recovery.accountType === 'FUNCIONARIO') {
+      this.router.navigateByUrl('/login')
+    }
     this.restoreState()
+    // O prazo parte do envio real da API, não do carregamento da tela nem do localStorage.
+    this.resendAvailableAt.set(this.recovery.lastSentAt + RESEND_INTERVAL_MS)
     this.saveState()
     const timer = setInterval(() => this.updateTime(), 1000)
     this.destroyRef.onDestroy(() => clearInterval(timer))
@@ -75,38 +85,49 @@ export class PasswordRecovery {
   confirmCode(): void {
     this.codeSuccessMessage.set('')
 
-    if (this.isLocked()) return
-
     if (this.code.some(character => !character)) {
       this.codeErrorMessage.set('Preencha os quatro caracteres do código.')
       return
     }
 
-    // TODO: Substituir pelo serviço de validação quando a API de recuperação estiver disponível.
-    if (this.code.join('') !== '1234') {
-      const remaining = this.consumeAttempt()
-      this.codeErrorMessage.set(remaining === 0
-        ? 'Limite de tentativas atingido.'
-        : `Código incorreto. Restam ${remaining} tentativas.`)
-      return
-    }
+    if (this.isValidating()) return
 
-    this.usedAttempts.set(0)
-    this.saveState()
-    this.codeErrorMessage.set('')
-    this.codeSuccessMessage.set('Código confirmado.')
-    this.router.navigateByUrl('/passwordReset')
+    this.isValidating.set(true)
+    this.recovery.validateCode(this.code.join('')).subscribe({
+      next: () => {
+        this.isValidating.set(false)
+        this.codeErrorMessage.set('')
+        this.codeSuccessMessage.set('Código confirmado.')
+        this.router.navigateByUrl('/passwordReset')
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isValidating.set(false)
+        this.codeErrorMessage.set(error.status === 400
+          ? 'Código incorreto ou expirado.'
+          : recoveryErrorMessage(error, 'Não foi possível confirmar o código. Tente novamente.'))
+      },
+    })
   }
 
   requestNewCode(): void {
-    if (this.areRequestsLocked() || this.resendSeconds() > 0) return
+    if (this.areRequestsLocked() || this.resendSeconds() > 0 || this.isResending()) return
 
-    // TODO: Integrar o envio real por e-mail quando houver um serviço de recuperação.
-    const currentTime = Date.now()
-    this.now.set(currentTime)
-    this.resendMessage.set('Solicitação simulada: o envio por e-mail ainda não está configurado.')
-    this.resendAvailableAt.set(currentTime + 60_000)
-    this.consumeRequest(currentTime)
+    this.isResending.set(true)
+    this.resendMessage.set('')
+    this.recovery.resend().subscribe({
+      next: () => {
+        const currentTime = Date.now()
+        this.now.set(currentTime)
+        this.resendMessage.set('Se o e-mail estiver cadastrado, um novo código foi enviado.')
+        this.resendAvailableAt.set(currentTime + RESEND_INTERVAL_MS)
+        this.consumeRequest(currentTime)
+        this.isResending.set(false)
+      },
+      error: (error: HttpErrorResponse) => {
+        this.resendMessage.set(recoveryErrorMessage(error, 'Não foi possível reenviar o código. Tente novamente.'))
+        this.isResending.set(false)
+      },
+    })
   }
 
   formatTime(seconds: number): string {
@@ -141,18 +162,6 @@ export class PasswordRecovery {
     this.codeSuccessMessage.set('')
   }
 
-  private consumeAttempt(): number {
-    const used = this.usedAttempts() + 1
-    this.usedAttempts.set(used)
-    if (used >= 5) {
-      const currentTime = Date.now()
-      this.now.set(currentTime)
-      this.lockedUntil.set(currentTime + 10 * 60_000)
-    }
-    this.saveState()
-    return Math.max(0, 5 - used)
-  }
-
   private consumeRequest(currentTime: number): void {
     const used = this.usedRequests() + 1
     this.usedRequests.set(used)
@@ -163,12 +172,6 @@ export class PasswordRecovery {
   private updateTime(): void {
     this.now.set(Date.now())
     let changed = false
-    if (this.lockedUntil() && !this.isLocked()) {
-      this.lockedUntil.set(0)
-      this.usedAttempts.set(0)
-      this.codeErrorMessage.set('')
-      changed = true
-    }
     if (this.requestsLockedUntil() && !this.areRequestsLocked()) {
       this.requestsLockedUntil.set(0)
       this.usedRequests.set(0)
@@ -182,15 +185,11 @@ export class PasswordRecovery {
       const saved = localStorage.getItem(this.storageKey)
       if (!saved) return
 
-      const state = JSON.parse(saved) as { usedAttempts: number; lockedUntil: number; usedRequests: number; requestsLockedUntil: number; resendAvailableAt: number }
+      const state = JSON.parse(saved) as { usedRequests: number; requestsLockedUntil: number }
       const currentTime = Date.now()
-      const attemptsExpired = state.lockedUntil > 0 && state.lockedUntil <= currentTime
       const requestsExpired = state.requestsLockedUntil > 0 && state.requestsLockedUntil <= currentTime
-      this.lockedUntil.set(state.lockedUntil > currentTime ? state.lockedUntil : 0)
       this.requestsLockedUntil.set(state.requestsLockedUntil > currentTime ? state.requestsLockedUntil : 0)
-      this.usedAttempts.set(attemptsExpired ? 0 : this.lockedUntil() ? 5 : Math.min(4, Math.max(0, state.usedAttempts || 0)))
       this.usedRequests.set(requestsExpired ? 0 : this.areRequestsLocked() ? 5 : Math.min(4, Math.max(0, state.usedRequests || 0)))
-      this.resendAvailableAt.set(state.resendAvailableAt > Date.now() ? state.resendAvailableAt : 0)
     } catch {
       // O formulário continua funcionando se o armazenamento do navegador estiver indisponível.
     }
@@ -199,11 +198,8 @@ export class PasswordRecovery {
   private saveState(): void {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify({
-        usedAttempts: this.usedAttempts(),
-        lockedUntil: this.lockedUntil(),
         usedRequests: this.usedRequests(),
         requestsLockedUntil: this.requestsLockedUntil(),
-        resendAvailableAt: this.resendAvailableAt(),
       }))
     } catch {
       // O formulário continua funcionando se o armazenamento do navegador estiver indisponível.

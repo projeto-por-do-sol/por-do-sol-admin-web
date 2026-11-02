@@ -13,9 +13,38 @@
         <p class="text-outline text-lg font-medium mb-3">INFORME SEU E-MAIL</p>
         <p class="text-sub-text text-base mb-6">Digite o e-mail da sua conta para continuar com a recuperação de senha.</p>
 
+        <div class="grid gap-2 mb-5">
+          <h3 class="font-semibold text-base">Tipo de conta</h3>
+          <div role="radiogroup" aria-label="Tipo de conta" class="grid grid-cols-2 overflow-hidden rounded-full border-2 border-primary">
+            <button type="button" role="radio" [attr.aria-checked]="accountType() === 'QUIOSQUE'" (click)="setAccountType('QUIOSQUE')" [class]="'cursor-pointer px-4 py-2 font-medium transition-all ' + (accountType() === 'QUIOSQUE' ? 'bg-primary text-creme' : 'bg-surface text-primary hover:bg-fundo')">
+              Proprietário
+            </button>
+            <button type="button" role="radio" [attr.aria-checked]="accountType() === 'FUNCIONARIO'" (click)="setAccountType('FUNCIONARIO')" [class]="'cursor-pointer px-4 py-2 font-medium transition-all ' + (accountType() === 'FUNCIONARIO' ? 'bg-primary text-creme' : 'bg-surface text-primary hover:bg-fundo')">
+              Equipe
+            </button>
+          </div>
+          <p class="text-sub-text text-sm">
+            @if (accountType() === 'QUIOSQUE') {
+            Você receberá um código de confirmação por e-mail.
+            } @else {
+            Gerentes e funcionários recebem uma senha provisória por e-mail e precisam trocá-la no próximo acesso.
+            }
+          </p>
+        </div>
+
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <app-input id="recovery-email" name="email" label="E-mail" type="email" placeholder="seu@email.com" formControlName="email"></app-input>
-          <app-button labelButton="Continuar" icon="arrow-right" type="submit" [fullWidth]="true" class="block mt-7"></app-button>
+
+          @if (errorMessage()) {
+          <p role="alert" class="mt-4 text-sm text-error">{{ errorMessage() }}</p>
+          }
+          @if (teamEmailSent()) {
+          <p role="status" class="mt-4 text-sm text-primary">
+            Se o e-mail estiver cadastrado, enviamos uma senha provisória. Use-a para <a routerLink="/login" class="underline font-medium">entrar</a>.
+          </p>
+          }
+
+          <app-button [labelButton]="isLoading() ? 'Enviando...' : (accountType() === 'QUIOSQUE' ? 'Continuar' : 'Enviar senha provisória')" icon="arrow-right" type="submit" [disabled]="isLoading()" [fullWidth]="true" class="block mt-7"></app-button>
         </form>
       </div>
     </div>

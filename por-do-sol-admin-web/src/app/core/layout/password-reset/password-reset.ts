@@ -1,4 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
+import { PasswordRecoveryService, recoveryErrorMessage } from '../../services/password-recovery-service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Button } from '../../shared/ui/button/button';
@@ -19,11 +22,19 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 })
 export class PasswordReset {
   private readonly router = inject(Router);
+  private readonly recovery = inject(PasswordRecoveryService);
+
+  readonly isLoading = signal(false);
+  readonly errorMessage = signal('');
 
   readonly form = new FormGroup({
     password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] }),
     passwordConfirmation: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   }, { validators: passwordsMatch });
+
+  constructor() {
+    if (!this.recovery.hasCode) this.router.navigateByUrl('/informEmailForRecovery');
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -31,7 +42,20 @@ export class PasswordReset {
       return;
     }
 
-    // TODO: Enviar a nova senha para a API quando a recuperação estiver integrada.
-    this.router.navigateByUrl('/login');
+    if (this.isLoading()) return;
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+    this.recovery
+      .reset(this.form.controls.password.value)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: () => {
+          this.recovery.clear();
+          this.router.navigateByUrl('/login');
+        },
+        error: (error: HttpErrorResponse) =>
+          this.errorMessage.set(recoveryErrorMessage(error, 'Código inválido ou expirado. Volte e solicite um novo código.')),
+      });
   }
 }

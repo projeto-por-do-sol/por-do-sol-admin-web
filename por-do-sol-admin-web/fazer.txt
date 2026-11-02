@@ -59,3 +59,12 @@ d4df9ff8
 
 Proprietário não consegue realizar entregas, rever decisão.
 Aplicação só permite um token do FCM por usuário, se ele estiver usando a aplicação no celular e em web quebra tudo as bagaças.
+
+
+
+
+
+
+CNPJ do quiosque não aceita alfanumérico
+Tela para mudar a senha do funcionário no primeiro login
+Sidebar não está com um tamanho fixo
