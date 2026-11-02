@@ -12,6 +12,7 @@ import {
 } from '../models/auth-model';
 import { API_BASE_URL } from '../config/api';
 import { AuthTokenService } from './auth-token-service';
+import { PushService } from './push-service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ import { AuthTokenService } from './auth-token-service';
 export class UserService {
   private readonly http = inject(HttpClient);
   private readonly tokenService = inject(AuthTokenService);
+  private readonly pushService = inject(PushService);
   private readonly _user = signal<User | null>(null);
 
   readonly user = this._user.asReadonly();
@@ -110,6 +112,7 @@ export class UserService {
   }
 
   logout() {
+    void this.pushService.unregister();
     this.clearSession();
   }
 
