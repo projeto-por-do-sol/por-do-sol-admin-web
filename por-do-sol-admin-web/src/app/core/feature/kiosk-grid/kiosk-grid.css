@@ -1,0 +1,5 @@
+mat-paginator {
+  width: 100%;
+  background: var(--color-surface);
+  border-radius: 1rem;
+}

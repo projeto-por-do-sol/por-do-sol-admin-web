@@ -5,8 +5,10 @@
 
 <!-- Conteúdos -->
 <main class="px-8 pb-8">
+  @if(!kiosksLoading()){
 
   <!-- Visão geral -->
+  @if(!onlyKiosksSection()){
   <section id="visao-geral" class="grid grid-cols-1 gap-8" appSectionObserver>
     @if(permissions.canViewOverview()){
     <app-overview></app-overview>
@@ -15,19 +17,25 @@
     }
     }
   </section>
+  }
 
-  @if(permissions.canViewStatistics()){
+  @if(permissions.canViewStatistics() && !onlyKiosksSection()){
   <section id="estatisticas" appSectionObserver>
     <app-statistics></app-statistics>
   </section>
   }
 
-  @if(permissions.isOwner() && !selectionService.selectedKiosk()){
+  @if(onlyKiosksSection()){
+  <section id="quiosques" class="mt-8">
+    <app-first-kiosk-card></app-first-kiosk-card>
+  </section>
+  } @else if(permissions.isOwner() && !selectionService.selectedKiosk()){
   <section id="quiosques" appSectionObserver>
     <app-kiosk-grid></app-kiosk-grid>
   </section>
   }
 
+  @if(!onlyKiosksSection()){
   @if(permissions.canViewTeam()){
   <section id="equipe" appSectionObserver>
     <app-team></app-team>
@@ -41,4 +49,6 @@
   <section id="itens" appSectionObserver>
     <app-kiosk-items></app-kiosk-items>
   </section>
+  }
+  }
 </main>

@@ -66,6 +66,11 @@ export class Sidebar {
     },
   ]
 
+  readonly kiosksLoading = computed(() => this.permissions.isOwner() && !this.kioskService.loaded())
+
+  readonly onlyKiosksSection = computed(() =>
+    this.permissions.isOwner() && this.kioskService.loaded() && this.kioskService.kiosks().length === 0)
+
   readonly user = this.userService.user
   readonly userKioskName = computed(() =>
     this.permissions.isOwner() ? null : this.selectionService.selectedKiosk()?.name ?? null)

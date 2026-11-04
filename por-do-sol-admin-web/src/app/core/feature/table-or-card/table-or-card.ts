@@ -17,6 +17,8 @@ export class TableOrCard {
   cellTemplate = input<TemplateRef<any>>()
   clickableRows = input(false)
   rowClick = output<any>()
+  /** Mensagem exibida no lugar da tabela/cards quando não há registros. */
+  emptyMessage = input('')
 
   isMobile = signal(false)
 

@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Header } from "../header/header";
 import { CardKioskInfo } from "../../feature/card-kiosk-info/card-kiosk-info";
 import { NavigationService } from '../../services/navigation-service';
+import { FirstKioskCard } from '../../feature/first-kiosk-card/first-kiosk-card';
 import { KioskGrid } from "../../feature/kiosk-grid/kiosk-grid";
 import { Orders } from '../../feature/orders/orders';
 import { Team } from "../../feature/team/team";
@@ -11,17 +12,30 @@ import { Overview } from "../../feature/overview/overview";
 import { KioskSelectionService } from '../../services/kiosk-selection-service';
 import { SectionObserverDirective } from '../../utils/section-observer-directive';
 import { KioskItems } from '../../feature/kiosk-items/kiosk-items';
+import { KioskService } from '../../services/kiosk-service';
 import { PermissionService } from '../../services/permission-service';
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, Header, CardKioskInfo, KioskGrid, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems],
+  imports: [MatButtonModule, Header, CardKioskInfo, KioskGrid, FirstKioskCard, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit {
+  private readonly kioskService = inject(KioskService)
   readonly selectionService = inject(KioskSelectionService)
   readonly permissions = inject(PermissionService)
+
+  // Proprietário sem nenhum quiosque cadastrado vê apenas a seção "Quiosques".
+  // Evita exibir o layout completo antes de saber se o proprietário tem quiosques.
+  readonly kiosksLoading = computed(() => this.permissions.isOwner() && !this.kioskService.loaded())
+
+  readonly onlyKiosksSection = computed(() =>
+    this.permissions.isOwner() && this.kioskService.loaded() && this.kioskService.kiosks().length === 0)
+
+  ngOnInit() {
+    void this.kioskService.ensureKiosks().catch(() => undefined)
+  }
 
   constructor(private navigation: NavigationService) {}
 

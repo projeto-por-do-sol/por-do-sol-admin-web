@@ -22,6 +22,8 @@ export class KioskService {
   // Garante que seja exibido para o usuário correto. Caso o usuário troque de conta, os dados que estavam carregados, ficam invalidados.
   private loadedForUser: string | null = null
   private loading: Promise<void> | null = null
+  private _loaded = signal(false)
+  readonly loaded = this._loaded.asReadonly()
 
   ensureKiosks(): Promise<void> {
     const userId = this.userService.user()?.id
@@ -47,6 +49,7 @@ export class KioskService {
       todaysOrders: record.pedidosHoje ?? 0, averageTime: record.tempoMedio ?? 0, invoicing: record.faturamentoHoje ?? 0,
     })))
     this.loadedForUser = user.id ?? null
+    this._loaded.set(true)
     this.isOpen()
   }
 
@@ -139,6 +142,7 @@ export class KioskService {
       if (this.userService.user()) return
       this._kiosks.set([])
       this.loadedForUser = null
+      this._loaded.set(false)
     })
   }
 

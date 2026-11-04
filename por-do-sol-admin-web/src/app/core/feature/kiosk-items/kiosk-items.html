@@ -40,5 +40,6 @@
   [columns]="itemColumns"
   [ELEMENT_DATA]="kioskItemService.items()"
   [cardTemplate]="itemCard"
+  [emptyMessage]="loadError() || loading() ? '' : 'Nenhum item!'"
   [cellTemplate]="editCell">
 </app-table-or-card>

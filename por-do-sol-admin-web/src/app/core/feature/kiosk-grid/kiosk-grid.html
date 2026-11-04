@@ -5,7 +5,12 @@
   @if(selectedKiosk().length === 0){
   <p class="text-center col-span-2 text-outline font-semibold text-lg bg-border">Nenhum quiosque!</p>
   }
-  @for(kiosk of selectedKiosk(); track kiosk.id){
+  @for(kiosk of pagedKiosks(); track kiosk.id){
   <app-card-kiosk-info [kiosk]="kiosk"></app-card-kiosk-info>
   }
 </div>
+
+@if(selectedKiosk().length > pageSizeOptions[0]){
+<mat-paginator class="mt-4" [length]="selectedKiosk().length" [pageSize]="pageSize()" [pageIndex]="currentPageIndex()" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="onPageChange($event)">
+</mat-paginator>
+}
