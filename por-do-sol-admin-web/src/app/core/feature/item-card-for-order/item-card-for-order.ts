@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { KioskItem } from '../../models/kiosk-item';
 import { QuantitySelector } from '../quantity-selector/quantity-selector';
 import { ShoppingCart } from '../../services/shopping-cart';
@@ -14,6 +14,18 @@ export class ItemCardForOrder {
   readonly item = input<KioskItem | null>(null)
   readonly removedIngredients = signal<string[]>([])
   readonly selectedComplements = signal<string[]>([])
+
+  constructor() {
+    effect(() => {
+      const kioskId = this.item()?.kioskId
+      if (kioskId != null) this.shoppingCart.kioskResets()[kioskId]
+      untracked(() => {
+        this.removedIngredients.set([])
+        this.selectedComplements.set([])
+      })
+    })
+  }
+
   readonly quantity = computed(() => {
     const item = this.item()
     if (!item) return 0

@@ -28,7 +28,11 @@ export class ShoppingCart {
     return this._shoppingCartItens().filter(item => item.idKiosk === idKiosk)
   }
 
+  private readonly _kioskResets = signal<Readonly<Record<string, number>>>({})
+  readonly kioskResets = this._kioskResets.asReadonly()
+
   clearKiosk(idKiosk: string): void {
+    this._kioskResets.update(resets => ({ ...resets, [idKiosk]: (resets[idKiosk] ?? 0) + 1 }))
     this._shoppingCartItens.update(items => items.filter(item => item.idKiosk !== idKiosk))
     this._clientNames.update(({ [idKiosk]: _, ...names }) => names)
   }
