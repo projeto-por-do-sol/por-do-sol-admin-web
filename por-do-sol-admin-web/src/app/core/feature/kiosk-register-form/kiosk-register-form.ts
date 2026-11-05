@@ -1,6 +1,6 @@
 import { Component, computed, DestroyRef, effect, ElementRef, inject, input, output, signal, Signal, viewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Input } from "../../shared/ui/input/input";
+import { Input, formatCep } from "../../shared/ui/input/input";
 import { CancelButton } from "../../shared/ui/cancel-button/cancel-button";
 import { Button } from "../../shared/ui/button/button";
 import { ChipMultiChoice } from "../../shared/ui/chip-multi-choice/chip-multi-choice";
@@ -9,7 +9,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { finalize, of, switchMap, tap } from 'rxjs';
 import { PreviewItem } from '../../shared/ui/card-preview/card-preview';
 import { ImageInput } from '../../shared/ui/image-input/image-input';
-import { cnpjValidator, formatCnpj } from '../../utils/cnpj';
+import { cnpjValidator, formatCnpj, unmaskCnpj } from '../../utils/cnpj';
 import { LocationMap, MapLocation } from '../../shared/ui/location-map/location-map';
 import { KioskService } from '../../services/kiosk-service';
 import { KioskDetailsResponse, KioskRegistrationRequest } from '../../models/kiosk-registration';
@@ -74,19 +74,19 @@ export class KioskRegisterForm {
   constructor() {
     this.formFields = new FormGroup({
       kioskName: new FormControl("", [Validators.required, Validators.pattern(/\S/)]),
-      kioskCnpj: new FormControl("", [Validators.required, cnpjValidator(), Validators.pattern(/^[\d./-]+$/)]),
+      kioskCnpj: new FormControl("", [Validators.required, cnpjValidator()]),
       kioskEmail: new FormControl("", [Validators.required, Validators.email]),
       kioskCep: new FormControl("", [Validators.required, Validators.pattern(/^\d{5}-?\d{3}$/)]),
       kioskState: new FormControl("", [Validators.required, Validators.pattern(/^[a-zA-Z]{2}$/)]),
       kioskCity: new FormControl("", [Validators.required, Validators.pattern(/\S/)]),
       kioskStreet: new FormControl(""),
-      kioskNumber: new FormControl(""),
+      kioskNumber: new FormControl("", Validators.pattern(/^\d*$/)),
       kioskReference: new FormControl(""),
       latitude: new FormControl<number | null>(null, [Validators.required, Validators.min(-90), Validators.max(90)]),
       longitude: new FormControl<number | null>(null, [Validators.required, Validators.min(-180), Validators.max(180)]),
       openTime: new FormControl("08:00", Validators.required),
       closeTime: new FormControl("22:00", Validators.required),
-      distAtendimento: new FormControl("", [Validators.required, Validators.min(0), Validators.pattern(/^\d+$/)]),
+      distAtendimento: new FormControl("", [Validators.required, Validators.min(1), Validators.max(500), Validators.pattern(/^\d+$/)]),
 
       // Cadastro de gestor desativado temporariamente.
       // managerName: new FormControl("", Validators.required),
@@ -106,11 +106,11 @@ export class KioskRegisterForm {
         kioskName: kiosk.nome ?? '',
         kioskCnpj: kiosk.cnpj ? formatCnpj(kiosk.cnpj) : '',
         kioskEmail: kiosk.email ?? '',
-        kioskCep: kiosk.cep ?? '',
+        kioskCep: formatCep(kiosk.cep ?? ''),
         kioskState: kiosk.uf ?? '',
         kioskCity: kiosk.cidade ?? '',
         kioskStreet: kiosk.rua ?? '',
-        kioskNumber: String(kiosk.numero ?? ''),
+        kioskNumber: String(kiosk.numero ?? '').replace(/\D/g, ''),
         kioskReference: kiosk.referencia ?? '',
         latitude: kiosk.latitude ?? null,
         longitude: kiosk.longitude ?? null,
@@ -228,7 +228,7 @@ export class KioskRegisterForm {
     return {
       nome: values.kioskName.trim(),
       email: values.kioskEmail.trim(),
-      cnpj: values.kioskCnpj.replace(/\D/g, ''),
+      cnpj: unmaskCnpj(values.kioskCnpj),
       openingTime: values.openTime.length === 5 ? `${values.openTime}:00` : values.openTime,
       closingTime: values.closeTime.length === 5 ? `${values.closeTime}:00` : values.closeTime,
       distAtendimento: Number(values.distAtendimento),

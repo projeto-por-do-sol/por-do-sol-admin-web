@@ -17,11 +17,11 @@
     <!-- Localização -->
     <div class="sectionCard">
       <h2>Localização</h2>
-      <app-input [id]="'kioskCep'" [label]="'CEP'" [name]="'kioskCep'" formControlName="kioskCep" [placeholder]="'00000-000'"></app-input>
-      <app-input [id]="'kioskState'" [label]="'Estado (UF)'" [name]="'kioskState'" formControlName="kioskState" [placeholder]="'SP'"></app-input>
+      <app-input [id]="'kioskCep'" [label]="'CEP'" [name]="'kioskCep'" formControlName="kioskCep" mask="cep" [placeholder]="'00000-000'"></app-input>
+      <app-input [id]="'kioskState'" [label]="'Estado (UF)'" [name]="'kioskState'" formControlName="kioskState" mask="uf" [placeholder]="'SP'"></app-input>
       <app-input [id]="'kioskCity'" [label]="'Cidade'" [name]="'kioskCity'" formControlName="kioskCity" [placeholder]="'Santos'"></app-input>
       <app-input [id]="'kioskStreet'" [label]="'Rua'" [name]="'kioskStreet'" formControlName="kioskStreet" [placeholder]="'Av. Vicent de Carvalho'" [isObrigatory]="false"></app-input>
-      <app-input [id]="'kioskNumber'" [label]="'Número'" [name]="'kioskNumber'" formControlName="kioskNumber" [placeholder]="'200'" [isObrigatory]="false"></app-input>
+      <app-input [id]="'kioskNumber'" [label]="'Número'" [name]="'kioskNumber'" formControlName="kioskNumber" mask="digits" [placeholder]="'200'" [isObrigatory]="false"></app-input>
       <app-input [id]="'kioskReference'" [label]="'Ponto de referência'" [name]="'kioskReference'" formControlName="kioskReference" [placeholder]="'Ex.: Em frente ao posto 3'" [isObrigatory]="false"></app-input>
 
       <div class="grid gap-3">
@@ -64,8 +64,10 @@
           name="distAtendimento"
           type="number"
           step="1"
+          min="1"
+          max="500"
           formControlName="distAtendimento"
-          placeholder="Ex.: 100"
+          placeholder="Máx.: 500"
         ></app-input>
       </div>
 

@@ -68,7 +68,7 @@ export class ZoomableTimeseries {
       series: [
         {
           name: 'Faturamento Total',
-          data: points.map(point => [new Date(point.date).getTime(), point.value]) as any,
+          data: points.map(point => [new Date(point.date).getTime(), Math.round((point.value + Number.EPSILON) * 100) / 100]) as any,
           color: '#C0420a'
         },
       ],
@@ -151,6 +151,7 @@ export class ZoomableTimeseries {
               style: 'currency',
               currency: 'BRL',
               minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
             }).format(val)
           },
         },

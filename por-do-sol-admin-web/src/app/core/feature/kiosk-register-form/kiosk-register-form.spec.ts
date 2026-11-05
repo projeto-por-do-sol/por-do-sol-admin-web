@@ -20,6 +20,26 @@ describe('KioskRegisterForm', () => {
     expect(component).toBeTruthy();
   });
 
+  it('limits the service distance to 500 meters', () => {
+    const dist = component.formFields.get('distAtendimento');
+
+    dist?.setValue('500');
+    expect(dist?.valid).toBe(true);
+
+    dist?.setValue('501');
+    expect(dist?.hasError('max')).toBe(true);
+  });
+
+  it('accepts only digits in the address number', () => {
+    const number = component.formFields.get('kioskNumber');
+
+    number?.setValue('200');
+    expect(number?.valid).toBe(true);
+
+    number?.setValue('20A');
+    expect(number?.invalid).toBe(true);
+  });
+
   it('requires a valid CNPJ for the kiosk', () => {
     const cnpj = component.formFields.get('kioskCnpj');
 
@@ -27,6 +47,9 @@ describe('KioskRegisterForm', () => {
     expect(cnpj?.hasError('cnpj')).toBe(true);
 
     cnpj?.setValue('11.222.333/0001-81');
+    expect(cnpj?.valid).toBe(true);
+
+    cnpj?.setValue('12.ABC.345/01DE-35');
     expect(cnpj?.valid).toBe(true);
   });
 

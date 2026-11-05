@@ -2,6 +2,11 @@ import { Component, ElementRef, input, Optional, Self, viewChild } from '@angula
 import { ControlValueAccessor, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { formatCnpj } from '../../../utils/cnpj';
 
+export function formatCep(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 8)
+  return digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits
+}
+
 @Component({
   selector: 'app-input',
   imports: [ReactiveFormsModule],
@@ -18,7 +23,8 @@ export class Input implements ControlValueAccessor {
   name = input.required<string>()
   placeholder = input<string>()
   isObrigatory = input<boolean>(true)
-  mask = input<'cnpj' | 'phone' | 'currency' | null>(null)
+  mask = input<'cnpj' | 'phone' | 'currency' | 'cep' | 'uf' | 'digits' | null>(null)
+  max = input<string>()
   viewPassword = false
   private readonly inputElement = viewChild<ElementRef<HTMLInputElement>>('inputElement')
 
@@ -56,6 +62,8 @@ export class Input implements ControlValueAccessor {
     if (control.errors['email']) return 'E-mail inválido'
     if (control.errors['cnpj']) return 'CNPJ inválido'
     if (control.errors['minlength']) return `Mínimo de ${control.errors['minlength'].requiredLength} caracteres`
+    if (control.errors['max']) return `Valor máximo: ${control.errors['max'].max}`
+    if (control.errors['min']) return `Valor mínimo: ${control.errors['min'].min}`
     if (control.errors['pattern']) return 'Formato inválido'
 
     return 'Campo inválido'
@@ -80,6 +88,12 @@ export class Input implements ControlValueAccessor {
   handleInput(value: string) {
     if (this.mask() === 'cnpj') {
       this.value = formatCnpj(value)
+    } else if (this.mask() === 'cep') {
+      this.value = formatCep(value)
+    } else if (this.mask() === 'uf') {
+      this.value = value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2)
+    } else if (this.mask() === 'digits') {
+      this.value = value.replace(/\D/g, '')
     } else if (this.mask() === 'phone') {
       this.value = this.formatPhone(value)
     } else if (this.mask() === 'currency') {

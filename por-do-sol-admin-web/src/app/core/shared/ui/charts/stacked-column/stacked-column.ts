@@ -10,6 +10,7 @@ import {
   ApexDataLabels,
   ApexFill,
   ApexLegend,
+  ApexTooltip,
   ApexPlotOptions,
   ApexResponsive,
   ApexTheme,
@@ -32,6 +33,7 @@ export type ChartOptions = {
   dataLabels?: ApexDataLabels;
   fill?: ApexFill;
   legend?: ApexLegend;
+  tooltip?: ApexTooltip;
   plotOptions?: ApexPlotOptions;
   responsive?: ApexResponsive[];
   theme?: ApexTheme;
@@ -62,7 +64,7 @@ export class StackedColumn {
 
   private companyChartOptions(revenue?: StatisticsResponse['revenueByKiosk']): ChartOptions {
     return {
-    series: (revenue?.kiosks ?? []).map(kiosk => ({ name: kiosk.kioskName, data: kiosk.revenue })),
+    series: (revenue?.kiosks ?? []).map(kiosk => ({ name: kiosk.kioskName, data: kiosk.revenue.map(value => this.round2(value)) })),
     noData: { text: 'Sem faturamento no período' },
     chart: {
       type: 'bar',
@@ -105,6 +107,7 @@ export class StackedColumn {
         dataLabels: {
           total: {
             enabled: true,
+            formatter: (value) => this.currency(Number(value)),
             style: {
               fontSize: '14px',
               fontWeight: 900,
@@ -141,9 +144,12 @@ export class StackedColumn {
           style: 'currency',
           currency: 'BRL',
           notation: 'compact',
-          maximumFractionDigits: 1,
+          maximumFractionDigits: 2,
         }).format(value),
       },
+    },
+    tooltip: {
+      y: { formatter: (value) => this.currency(value) },
     },
     legend: {
       position: 'right',
@@ -228,6 +234,19 @@ export class StackedColumn {
     legend: { show: false },
     fill: { opacity: 1 },
     };
+  }
+
+  private round2(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
+
+  // Valores monetários com no máximo 2 casas decimais.
+  private currency(value: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      maximumFractionDigits: 2,
+    }).format(this.round2(value));
   }
 
   // A API devolve datas ISO (AAAA-MM-DD); montadas como data local para não recuar um dia pelo fuso.
