@@ -104,11 +104,7 @@ export class KioskItemRegisterForm {
   readonly complementNameDraft = new FormControl('', { nonNullable: true, validators: [Validators.required] })
   readonly complementValueDraft = new FormControl('', {
     nonNullable: true,
-    validators: [
-      Validators.required,
-      Validators.pattern(/^\d{1,3}(?:\.\d{3})*,\d{2}$/),
-      control => !control.value || this.parseCurrency(control.value) > 0 ? null : { min: true },
-    ],
+    validators: [Validators.pattern(/^\d{1,3}(?:\.\d{3})*,\d{2}$/)],
   })
   readonly categoryDraft = new FormControl('', { nonNullable: true, validators: [Validators.required] })
 

@@ -81,14 +81,11 @@
 
     <div class="sectionCard">
       <h2>Complementos</h2>
-      <p class="text-sub-text">Adicione opções extras e informe o preço de cada uma.</p>
+      <p class="text-sub-text">Adicione opções extras e informe o preço de cada uma. Deixe o valor em branco para um complemento sem custo (R$ 0,00).</p>
       <div class="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_16rem] md:items-start gap-x-4 gap-y-8 md:gap-y-2">
         <app-input class="min-w-0" id="complementName" label="Nome do complemento" name="complementName" [isObrigatory]="false" [formControl]="complementNameDraft" placeholder="Ex.: Queijo extra" (keydown.enter)="addOnEnter($event, saveComplement)"></app-input>
         <div class="min-w-0">
           <app-input id="complementValue" label="Valor (R$)" name="complementValue" mask="currency" [isObrigatory]="false" [formControl]="complementValueDraft" placeholder="0,00" (keydown.enter)="addOnEnter($event, saveComplement)"></app-input>
-          @if (complementValueDraft.hasError('min') && complementValueDraft.touched) {
-          <span class="text-error text-sm">Informe um valor maior que zero</span>
-          }
         </div>
         <app-button class="whitespace-nowrap md:mt-8" [labelButton]="editingComplementIndex() === null ? 'Adicionar complemento' : 'Salvar complemento'" [fullWidth]="true" (onClickButton)="saveComplement()"></app-button>
         @if (editingComplementIndex() !== null) {

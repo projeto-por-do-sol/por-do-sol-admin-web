@@ -150,7 +150,11 @@ export class EmployeeRegisterForm {
         startShift: employee.startShift ?? '',
         finishShift: employee.finishShift ?? '',
       })
-      this.formFields.controls['email'].disable({ emitEvent: false })
+      
+      if (employee.email?.trim()) 
+        this.formFields.controls['email'].disable({ emitEvent: false })
+      else 
+        this.formFields.controls['email'].enable({ emitEvent: false })
       this.kiosk.set(employee.kioskName ?? '')
       this.role.set(employee.role === 'Funcionario' ? 'Funcionário' : employee.role ?? 'Funcionário')
       this.daysShift = [...(employee.daysShift ?? [])]
