@@ -299,3 +299,8 @@ h2 {
 .app-snackbar-error .mdc-snackbar__label {
   text-align: center;
 }
+
+.menu-backdrop {
+  background-color: rgb(0 0 0 / 0.2);
+  backdrop-filter: blur(1px);
+}

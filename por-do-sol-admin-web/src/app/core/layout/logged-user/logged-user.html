@@ -1,6 +1,6 @@
-<div class="md:flex h-dvh" [class.register-menu-open]="isRegisterMenuOpen">
+<div class="md:flex h-dvh">
   <aside class="md:h-dvh shrink-0">
-    <app-sidebar (registerMenuOpenChange)="isRegisterMenuOpen = $event"></app-sidebar>
+    <app-sidebar></app-sidebar>
   </aside>
   <main #mainContent class="flex-1 min-w-0 overflow-y-auto">
     <router-outlet></router-outlet>

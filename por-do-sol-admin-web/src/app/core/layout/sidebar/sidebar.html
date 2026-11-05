@@ -97,7 +97,7 @@
         Cadastros
       </button>
 
-      <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="registerTrigger" [cdkConnectedOverlayOpen]="viewModalRegister" [cdkConnectedOverlayPositions]="registerMenuPositions" [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayViewportMargin]="8" cdkConnectedOverlayPanelClass="register-menu-overlay" cdkConnectedOverlayBackdropClass="bg-black/20" (backdropClick)="setViewModal()">
+      <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="registerTrigger" [cdkConnectedOverlayOpen]="viewModalRegister" [cdkConnectedOverlayPositions]="registerMenuPositions" [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayViewportMargin]="8" cdkConnectedOverlayPanelClass="register-menu-overlay" cdkConnectedOverlayBackdropClass="menu-backdrop" (backdropClick)="setViewModal()">
         <div class="grid w-max overflow-hidden rounded-2xl border border-border bg-surface shadow-lg">
           @if(permissions.canRegisterKiosk() && !selectionService.selectedKioskId()){
           <button class="buttonModal" (click)="goToKioskRegister()">Quiosque</button>
@@ -129,7 +129,7 @@
       Outros
     </button>
 
-    <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="othersTrigger" [cdkConnectedOverlayOpen]="viewModalOthers" [cdkConnectedOverlayPositions]="othersMenuPositions" [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayViewportMargin]="8" cdkConnectedOverlayPanelClass="register-menu-overlay" cdkConnectedOverlayBackdropClass="bg-black/20" (backdropClick)="setViewModalOthers()">
+    <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="othersTrigger" [cdkConnectedOverlayOpen]="viewModalOthers" [cdkConnectedOverlayPositions]="othersMenuPositions" [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayViewportMargin]="8" cdkConnectedOverlayPanelClass="register-menu-overlay" cdkConnectedOverlayBackdropClass="menu-backdrop" (backdropClick)="setViewModalOthers()">
       <div class="grid w-max overflow-hidden rounded-2xl border border-border bg-surface shadow-lg">
         <button class="buttonModal" (click)="goToHelp()">Ajuda</button>
         @if (permissions.isOwner()) {

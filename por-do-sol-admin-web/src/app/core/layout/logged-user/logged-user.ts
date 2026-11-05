@@ -21,7 +21,6 @@ import { ForcePasswordChangeDialog } from '../../feature/force-password-change-d
 })
 export class LoggedUser {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLElement>;
-  isRegisterMenuOpen = false;
   readonly userService = inject(UserService);
   private readonly pushService = inject(PushService);
   private readonly orderService = inject(OrderService);
