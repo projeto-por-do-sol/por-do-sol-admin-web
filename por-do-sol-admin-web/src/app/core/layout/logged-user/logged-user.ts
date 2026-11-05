@@ -21,6 +21,7 @@ import { ForcePasswordChangeDialog } from '../../feature/force-password-change-d
 })
 export class LoggedUser {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLElement>;
+  private previousPath = '';
   readonly userService = inject(UserService);
   private readonly pushService = inject(PushService);
   private readonly orderService = inject(OrderService);
@@ -64,17 +65,54 @@ export class LoggedUser {
         takeUntilDestroyed(),
       )
       .subscribe(() => {
-        const fragment = this.router.parseUrl(this.router.url).fragment;
+        const tree = this.router.parseUrl(this.router.url);
+        const fragment = tree.fragment;
+        const path = tree.root.children['primary']?.segments.map(segment => segment.path).join('/') ?? '';
+        const cameFromHome = this.previousPath === 'home';
+        this.previousPath = path;
 
         setTimeout(() => {
-          if (fragment) {
+          if (fragment && cameFromHome && path === 'home') {
+            
+            // Já está na Home (conteúdo carregado): scroll suave.
             document
               .getElementById(fragment)
               ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else if (fragment) {
+
+            // Vindo de outra rota (ex.: formulários): scroll instantâneo e realinhado enquanto carrega.
+            this.alignToFragment(fragment);
           } else {
             this.mainContent?.nativeElement.scrollTo({ top: 0, behavior: 'auto' });
           }
         });
       });
+  }
+
+  private alignToFragment(id: string): void {
+    const container = this.mainContent?.nativeElement;
+    if (!container) return;
+
+    const maxDuration = 2500;
+    const start = performance.now();
+    let frame = 0;
+    const userEvents = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
+
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      userEvents.forEach(name => container.removeEventListener(name, stop));
+    };
+    userEvents.forEach(name => container.addEventListener(name, stop, { passive: true }));
+
+    const tick = () => {
+      const target = document.getElementById(id);
+      if (target) {
+        const delta = target.getBoundingClientRect().top - container.getBoundingClientRect().top;
+        if (Math.abs(delta) > 1) container.scrollTop += delta;
+      }
+      if (performance.now() - start < maxDuration) frame = requestAnimationFrame(tick);
+      else stop();
+    };
+    frame = requestAnimationFrame(tick);
   }
 }
