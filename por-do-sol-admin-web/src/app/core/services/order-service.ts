@@ -72,6 +72,12 @@ export class OrderService {
       order => order.status === status)
   }
 
+  // Busca sem o filtro de quiosque selecionado, para avisos de qualquer quiosque do usuário.
+  findOrder(id: string): Order | undefined {
+    const ownKioskIds = new Set(this.kioskService.kiosks().map(kiosk => kiosk.id))
+    return this._orders().find(order => order.id === id && ownKioskIds.has(order.kioskId))
+  }
+
   isSaving(order: Order): boolean {
     return !!order.id && this._savingIds().has(order.id)
   }

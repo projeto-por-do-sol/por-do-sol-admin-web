@@ -23,8 +23,8 @@
     </div> -->
 
   <!-- Notificações -->
-  <button class="flex bg-tertiary shrink-0 h-12 w-12 justify-center items-center rounded-full">
-    @if(hasNotification){
+  <button type="button" class="flex bg-tertiary shrink-0 h-12 w-12 justify-center items-center rounded-full cursor-pointer" aria-label="Notificações de novos pedidos" (click)="openNotifications()">
+    @if(alerts.hasUnread()){
     <img src="/assets/icons/notification_unread.svg" alt="">
     } @else {
     <img src="/assets/icons/notification_not_fill.svg" alt="">
@@ -33,6 +33,7 @@
   <!-- </div> -->
 
 </header>
+<app-new-orders-dialog [open]="dialogOpen()" [orders]="alerts.alertOrders()" [showKiosk]="selectionService.isAllSelected()" (closed)="dialogOpen.set(false)" (selected)="goToOrder()"></app-new-orders-dialog>
 <div class=" bg-primary h-min">
   <svg class="wave w-full" viewBox="0 0 1440 46" preserveAspectRatio="none">
     <path d="M0,16 C240,46 480,0 720,18 C960,36 1200,0 1440,16 L1440,46 L0,46 Z" fill="var(--color-fundo)"></path>

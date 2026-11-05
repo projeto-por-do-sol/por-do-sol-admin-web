@@ -8,6 +8,7 @@ import { KioskService } from '../../services/kiosk-service';
 import { KpiService } from '../../services/kpi-service';
 import { StatisticsService } from '../../services/statistics-service';
 import { NotificationService } from '../../services/notification-service';
+import { NewOrderAlertService } from '../../services/new-order-alert-service';
 import { PushService } from '../../services/push-service';
 import { UserService } from '../../services/user-service';
 import { ForcePasswordChangeDialog } from '../../feature/force-password-change-dialog/force-password-change-dialog';
@@ -24,6 +25,7 @@ export class LoggedUser {
   readonly userService = inject(UserService);
   private readonly pushService = inject(PushService);
   private readonly orderService = inject(OrderService);
+  private readonly newOrderAlerts = inject(NewOrderAlertService);
   private readonly notification = inject(NotificationService);
   private readonly kpiService = inject(KpiService);
   private readonly kioskService = inject(KioskService);
@@ -49,8 +51,12 @@ export class LoggedUser {
           return;
         }
         if (!message.title) return;
-        this.notification.success([message.title, message.body].filter(Boolean).join(': '));
-        void this.orderService.loadOrders().catch(() => undefined);
+        const text = [message.title, message.body].filter(Boolean).join(': ');
+        // Pedido finalizado não gera aviso: ele sai da lista de ativos e não é cancelado, então track() retorna false.
+        void this.orderService.loadOrders()
+          .then(() => message.orderId ? this.newOrderAlerts.track(message.orderId) : true)
+          .catch(() => true)
+          .then(notify => { if (notify) this.notification.success(text); });
       });
 
     this.router.events
