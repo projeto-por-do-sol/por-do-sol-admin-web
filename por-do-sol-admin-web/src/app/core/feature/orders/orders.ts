@@ -39,6 +39,9 @@ export class Orders {
   readonly loadError = signal(false)
   readonly actionError = signal<string | null>(null)
 
+  private readonly pendingLoads = signal(0)
+  readonly loading = computed(() => this.pendingLoads() > 0)
+
   readonly tableOrders = computed(() => {
     const orders = this.ordersService.orders()
 
@@ -59,6 +62,7 @@ export class Orders {
   async loadOrders(): Promise<void> {
     this.loadError.set(false)
     const status = this.selectedStatus()
+    this.pendingLoads.update(count => count + 1)
     try {
       await Promise.all([
         this.ordersService.loadOrders(),
@@ -66,6 +70,8 @@ export class Orders {
       ])
     } catch {
       this.loadError.set(true)
+    } finally {
+      this.pendingLoads.update(count => count - 1)
     }
   }
 
@@ -74,7 +80,10 @@ export class Orders {
     const status = this.selectedStatus()
     if (status && FINISHED_ORDER_STATUSES.includes(status)) {
       this.loadError.set(false)
-      this.ordersService.loadOrdersByStatus(status).catch(() => this.loadError.set(true))
+      this.pendingLoads.update(count => count + 1)
+      this.ordersService.loadOrdersByStatus(status)
+        .catch(() => this.loadError.set(true))
+        .finally(() => this.pendingLoads.update(count => count - 1))
     }
   }
 

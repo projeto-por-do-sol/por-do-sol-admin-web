@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Header } from "../header/header";
 import { CardKioskInfo } from "../../feature/card-kiosk-info/card-kiosk-info";
@@ -14,10 +14,13 @@ import { SectionObserverDirective } from '../../utils/section-observer-directive
 import { KioskItems } from '../../feature/kiosk-items/kiosk-items';
 import { KioskService } from '../../services/kiosk-service';
 import { PermissionService } from '../../services/permission-service';
+import { Skeleton } from '../../shared/ui/skeleton/skeleton';
+import { KpiCardSkeleton } from '../../shared/ui/kpi-card-skeleton/kpi-card-skeleton';
+import { StatisticsSkeleton } from '../../feature/statistics-skeleton/statistics-skeleton';
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule, Header, CardKioskInfo, KioskGrid, FirstKioskCard, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems],
+  imports: [MatButtonModule, Header, CardKioskInfo, KioskGrid, FirstKioskCard, Orders, Team, Statistics, Overview, SectionObserverDirective, KioskItems, Skeleton, KpiCardSkeleton, StatisticsSkeleton],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -33,8 +36,15 @@ export class Home implements OnInit {
   readonly onlyKiosksSection = computed(() =>
     this.permissions.isOwner() && this.kioskService.loaded() && this.kioskService.kiosks().length === 0)
 
+  readonly kiosksFailed = signal(false)
+
   ngOnInit() {
-    void this.kioskService.ensureKiosks().catch(() => undefined)
+    this.loadKiosks()
+  }
+
+  loadKiosks() {
+    this.kiosksFailed.set(false)
+    void this.kioskService.ensureKiosks().catch(() => this.kiosksFailed.set(true))
   }
 
   constructor(private navigation: NavigationService) {}

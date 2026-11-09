@@ -1,0 +1,14 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+  @for (chart of charts; track $index) {
+  <div class="charts" [class.lg:col-span-2]="chart.wide">
+    <app-skeleton class="mb-4 h-5 w-1/2"></app-skeleton>
+    @if (chart.wide) {
+    <app-skeleton shape="block" class="w-full" [style.height.px]="chart.height"></app-skeleton>
+    } @else {
+    <div class="flex items-center justify-center" [style.height.px]="chart.height">
+      <app-skeleton shape="round" class="size-52"></app-skeleton>
+    </div>
+    }
+  </div>
+  }
+</div>

@@ -51,7 +51,7 @@
   <app-order-status-actions [status]="order.status" [interno]="!!order.interno" [disabled]="isSaving(order)" (statusChange)="changeStatus(order, $event)"></app-order-status-actions>
 </ng-template>
 
-<app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders()" [cardTemplate]="orderCard" [cellTemplate]="statusActions" [emptyMessage]="loadError() ? '' : 'Nenhum pedido!'" [clickableRows]="true" (rowClick)="openDetails($event)"></app-table-or-card>
+<app-table-or-card [columns]="orderColumns" [ELEMENT_DATA]="tableOrders()" [cardTemplate]="orderCard" [cellTemplate]="statusActions" [emptyMessage]="loadError() ? '' : 'Nenhum pedido!'" [loading]="loading()" loadingLabel="Carregando pedidos..." [clickableRows]="true" (rowClick)="openDetails($event)"></app-table-or-card>
 
 <dialog #finishDialog class="m-auto w-11/12 max-w-md rounded-2xl border border-border bg-surface p-6 text-outline shadow-2xl backdrop:bg-black/20 sm:p-8" aria-labelledby="finish-order-title" aria-describedby="finish-order-description" (close)="pendingOrder.set(null)">
   <div class="grid gap-5">

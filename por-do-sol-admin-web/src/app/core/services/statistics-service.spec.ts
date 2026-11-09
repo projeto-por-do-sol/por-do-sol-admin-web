@@ -85,4 +85,49 @@ describe('StatisticsService', () => {
 
     expect(service.statistics()?.cancellations.rate).toBe(25);
   });
+
+  describe('estado de carregamento', () => {
+    async function loadOnce() {
+      const loading = service.load();
+      statisticsRequest().flush(response);
+      await loading;
+    }
+
+    it('fica carregando até a primeira resposta chegar', async () => {
+      expect(service.loading()).toBe(true);
+      await loadOnce();
+      expect(service.loading()).toBe(false);
+    });
+
+    it('mantém os gráficos na tela ao atualizar o mesmo quiosque', async () => {
+      await loadOnce();
+
+      const refresh = service.load();
+      expect(service.loading()).toBe(false);
+      expect(service.statistics()).not.toBeNull();
+
+      statisticsRequest().flush(response);
+      await refresh;
+    });
+
+    it('não mantém os dados do quiosque anterior ao trocar de quiosque', async () => {
+      await loadOnce();
+
+      selectedKioskId.set('7');
+      const next = service.load();
+      expect(service.statistics()).toBeNull();
+      expect(service.loading()).toBe(true);
+
+      statisticsRequest().flush(response);
+      await next;
+      expect(service.loading()).toBe(false);
+    });
+
+    it('não fica carregando depois de uma falha', async () => {
+      const failed = service.load();
+      statisticsRequest().flush({}, { status: 500, statusText: 'Server Error' });
+      await failed;
+      expect(service.loading()).toBe(false);
+    });
+  });
 });

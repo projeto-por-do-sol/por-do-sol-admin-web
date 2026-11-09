@@ -1,0 +1,62 @@
+@if (asCards()) {
+@for (row of rows; track row) {
+<div class="cardTemplate">
+  <div class="name mb-3">
+    <app-skeleton shape="round" class="size-8 shrink-0"></app-skeleton>
+    <app-skeleton class="h-4 w-1/2"></app-skeleton>
+  </div>
+  <app-skeleton class="mb-2 h-4 w-3/4"></app-skeleton>
+  <app-skeleton class="mb-4 h-4 w-1/2"></app-skeleton>
+  <app-skeleton shape="round" class="h-9 w-full"></app-skeleton>
+</div>
+}
+} @else {
+<div class="w-full overflow-hidden overflow-x-auto rounded-2xl bg-surface">
+  <table class="w-full">
+    <thead>
+      <tr class="h-[3.7rem] bg-light-gray">
+        @for (column of columns(); track column.key) {
+        <th class="border-b border-fundo px-4 text-left text-[0.9rem] font-semibold tracking-[.2rem] text-sub-text">{{ column.header }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows; track row) {
+      <tr class="h-18">
+        @for (column of columns(); track column.key) {
+        <td class="border-b border-border px-4">
+          @switch (column.type) {
+          @case ('image') {
+          <app-skeleton shape="block" class="my-2 size-14"></app-skeleton>
+          }
+          @case ('avatar') {
+          <div class="name">
+            <app-skeleton shape="round" class="size-8 shrink-0"></app-skeleton>
+            <app-skeleton class="h-4 w-24"></app-skeleton>
+          </div>
+          }
+          @case ('statusEmployee') {
+          <app-skeleton shape="round" class="h-8 w-24"></app-skeleton>
+          }
+          @case ('statusOrder') {
+          <app-skeleton shape="round" class="h-8 w-24"></app-skeleton>
+          }
+          @case ('list') {
+          <app-skeleton class="mb-2 h-4 w-32"></app-skeleton>
+          <app-skeleton class="h-4 w-24"></app-skeleton>
+          }
+          @default {
+          <app-skeleton class="h-4 w-3/4"></app-skeleton>
+          }
+          }
+        </td>
+        }
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div class="flex h-14 items-center justify-end px-4">
+    <app-skeleton class="h-4 w-48"></app-skeleton>
+  </div>
+</div>
+}

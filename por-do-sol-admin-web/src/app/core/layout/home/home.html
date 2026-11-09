@@ -50,5 +50,22 @@
     <app-kiosk-items></app-kiosk-items>
   </section>
   }
+  } @else if(kiosksFailed()){
+  <p class="text-error mt-15" role="alert">Não foi possível carregar seus quiosques. <button type="button" class="underline cursor-pointer" (click)="loadKiosks()">Tentar novamente</button></p>
+  } @else {
+
+  <div role="status">
+    <span class="sr-only">Carregando painel...</span>
+    <div class="mt-15 mb-8 h-22">
+      <app-skeleton class="h-4 w-28"></app-skeleton>
+      <app-skeleton class="mt-4 h-9 w-64 max-w-full"></app-skeleton>
+    </div>
+    <app-kpi-card-skeleton></app-kpi-card-skeleton>
+    <div class="mt-15 mb-8 h-22">
+      <app-skeleton class="h-4 w-28"></app-skeleton>
+      <app-skeleton class="mt-4 h-9 w-64 max-w-full"></app-skeleton>
+    </div>
+    <app-statistics-skeleton></app-statistics-skeleton>
+  </div>
   }
 </main>

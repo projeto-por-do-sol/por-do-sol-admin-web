@@ -1,4 +1,3 @@
-@if (loading()) { <p role="status">Carregando itens...</p> }
 @if (loadError()) { <p role="alert">{{ loadError() }}</p><button type="button" (click)="loadItems()">Tentar novamente</button> }
 <app-section-title
   [lable]="'Cardápio'"
@@ -40,6 +39,8 @@
   [columns]="itemColumns"
   [ELEMENT_DATA]="kioskItemService.items()"
   [cardTemplate]="itemCard"
-  [emptyMessage]="loadError() || loading() ? '' : 'Nenhum item!'"
+  [emptyMessage]="loadError() ? '' : 'Nenhum item!'"
+  [loading]="loading()"
+  loadingLabel="Carregando itens..."
   [cellTemplate]="editCell">
 </app-table-or-card>

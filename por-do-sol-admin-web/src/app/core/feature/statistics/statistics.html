@@ -2,9 +2,16 @@
 @if (failed()) {
 <p class="text-error mb-5" role="alert">Não foi possível carregar as estatísticas. <button type="button" class="underline cursor-pointer" (click)="reload()">Tentar novamente</button></p>
 }
+@if (loading()) {
+<div role="status">
+  <span class="sr-only">Carregando estatísticas...</span>
+  <app-statistics-skeleton></app-statistics-skeleton>
+</div>
+} @else {
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
   <app-stacked-column class="lg:col-span-2"></app-stacked-column>
   <app-donut></app-donut>
   <app-zoomable-timeseries class="lg:col-span-2"></app-zoomable-timeseries>
   <app-radial-bar></app-radial-bar>
 </div>
+}

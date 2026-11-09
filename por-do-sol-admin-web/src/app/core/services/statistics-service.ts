@@ -1,4 +1,4 @@
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { API_BASE_URL } from '../config/api';
@@ -24,6 +24,11 @@ export class StatisticsService {
 
   readonly failed = signal(false)
 
+  // Uma resposta com sucesso sempre traz dados: sem dados e sem erro, ainda está carregando.
+  readonly loading = computed(() => !this.failed() && !this._statistics())
+
+  private dataKioskId: string | null = null
+
   constructor() {
     effect(() => {
       if (this.userService.user()) return
@@ -36,6 +41,14 @@ export class StatisticsService {
     // Se a seleção mudar durante a requisição, só a resposta mais recente vale.
     const request = ++this.requestId
     this.failed.set(false)
+
+    // Ao trocar de quiosque, não mantém os gráficos do anterior na tela. Atualizar o mesmo quiosque não limpa nada.
+    const kioskId = this.selectionService.selectedKioskId()
+    if (kioskId !== this.dataKioskId) {
+      this._statistics.set(null)
+      this.dataKioskId = kioskId
+    }
+
     try {
       const statistics = await firstValueFrom(this.http.get<StatisticsResponse>(`${API_BASE_URL}/empresas/me/statistics`, { params: this.params() }))
       if (request === this.requestId) this._statistics.set(statistics)

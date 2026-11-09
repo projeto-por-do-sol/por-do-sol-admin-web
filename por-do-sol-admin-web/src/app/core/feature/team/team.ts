@@ -50,13 +50,16 @@ export class Team {
   ];
 
   readonly loadError = signal(false)
+  readonly loading = signal(false)
 
   constructor(private router: Router) { void this.loadTeam() }
 
   async loadTeam(): Promise<void> {
+    this.loading.set(true)
     this.loadError.set(false)
     try { await this.teamService.loadTeam() }
     catch { this.loadError.set(true) }
+    finally { this.loading.set(false) }
   }
 
   getNameInitials(name: string) {

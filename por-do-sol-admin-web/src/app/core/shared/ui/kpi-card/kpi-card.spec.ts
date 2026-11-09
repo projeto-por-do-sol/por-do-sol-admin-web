@@ -12,18 +12,20 @@ describe('KpiCard', () => {
   let fixture: ComponentFixture<KpiCard>;
   const loadKpi = vi.fn();
   const failed = signal(false);
+  const loading = signal(false);
   const selectedKioskId = signal<string | null>(null);
 
   beforeEach(async () => {
     loadKpi.mockClear();
     failed.set(false);
+    loading.set(false);
     selectedKioskId.set(null);
     await TestBed.configureTestingModule({
       imports: [KpiCard],
       providers: [
         {
           provide: KpiService,
-          useValue: { kpi: signal([new KpiModel('Pedidos hoje', '30', '50%', true)]).asReadonly(), failed, loadKpi },
+          useValue: { kpi: signal([new KpiModel('Pedidos hoje', '30', '50%', true)]).asReadonly(), failed, loading, loadKpi },
         },
         { provide: KioskSelectionService, useValue: { selectedKioskId } },
       ],
@@ -41,6 +43,16 @@ describe('KpiCard', () => {
   it('carrega os KPIs ao iniciar e mostra o valor', () => {
     expect(loadKpi).toHaveBeenCalled();
     expect(fixture.nativeElement.textContent).toContain('30');
+  });
+
+  it('mostra o skeleton e anuncia o carregamento enquanto os KPIs não chegam', async () => {
+    expect(fixture.nativeElement.querySelector('app-kpi-card-skeleton')).toBeNull();
+
+    loading.set(true);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('app-kpi-card-skeleton')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Carregando resumo...');
   });
 
   it('recarrega os KPIs quando outro quiosque é selecionado', async () => {

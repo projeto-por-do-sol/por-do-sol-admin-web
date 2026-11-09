@@ -103,5 +103,59 @@ describe('KpiService', () => {
 
     expect(service.failed()).toBe(true);
     expect(service.kpi()).toEqual([]);
+    expect(service.loading()).toBe(false);
+  });
+
+  describe('estado de carregamento', () => {
+    const companyUrl = `${API_BASE_URL}/empresas/me/overview/resumo`;
+
+    async function loadCompany() {
+      const loading = service.loadKpi();
+      await flushNext(companyUrl, summary);
+      await loading;
+    }
+
+    it('fica carregando até a primeira resposta chegar', async () => {
+      expect(service.loading()).toBe(true);
+      await loadCompany();
+      expect(service.loading()).toBe(false);
+    });
+
+    it('mantém os KPIs na tela ao atualizar o mesmo quiosque', async () => {
+      await loadCompany();
+
+      const refresh = service.loadKpi();
+      expect(service.loading()).toBe(false);
+      expect(service.kpi().length).toBe(4);
+
+      await flushNext(companyUrl, summary);
+      await refresh;
+    });
+
+    it('não mantém os KPIs do quiosque anterior ao trocar de quiosque', async () => {
+      await loadCompany();
+
+      selectedKioskId.set('3');
+      const next = service.loadKpi();
+      expect(service.kpi()).toEqual([]);
+      expect(service.loading()).toBe(true);
+
+      await flushNext(`${API_BASE_URL}/quiosques/3/overview`, { quiosques: [summary] });
+      await next;
+      expect(service.loading()).toBe(false);
+    });
+
+    it('volta a carregar ao tentar novamente depois de uma falha', async () => {
+      const failed = service.loadKpi();
+      await Promise.resolve(); await Promise.resolve();
+      http.expectOne(companyUrl).flush({}, { status: 500, statusText: 'Erro' });
+      await failed;
+
+      const retry = service.loadKpi();
+      expect(service.loading()).toBe(true);
+      await flushNext(companyUrl, summary);
+      await retry;
+      expect(service.loading()).toBe(false);
+    });
   });
 });

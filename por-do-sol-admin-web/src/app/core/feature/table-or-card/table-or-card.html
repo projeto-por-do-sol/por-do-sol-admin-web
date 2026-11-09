@@ -1,4 +1,9 @@
-@if(emptyMessage() && ELEMENT_DATA().length === 0){
+@if(loading() && ELEMENT_DATA().length === 0){
+<div role="status">
+  <span class="sr-only">{{ loadingLabel() }}</span>
+  <app-list-skeleton [columns]="columns()" [asCards]="isMobile()"></app-list-skeleton>
+</div>
+} @else if(emptyMessage() && ELEMENT_DATA().length === 0){
 <p class="text-center text-outline font-semibold text-lg bg-border">{{ emptyMessage() }}</p>
 } @else if(!isMobile()){
 <app-table [columns]="columns()" [ELEMENT_DATA]="ELEMENT_DATA()" [cellTemplate]="cellTemplate()" [clickableRows]="clickableRows()" (rowClick)="rowClick.emit($event)"></app-table>

@@ -1,6 +1,12 @@
 @if (failed()) {
 <p class="text-error mb-5" role="alert">Não foi possível carregar o resumo. <button type="button" class="underline cursor-pointer" (click)="reload()">Tentar novamente</button></p>
 }
+@if (loading()) {
+<div role="status">
+  <span class="sr-only">Carregando resumo...</span>
+  <app-kpi-card-skeleton></app-kpi-card-skeleton>
+</div>
+}
 <div class="md:grid md:grid-cols-2 md:gap-5 lg:flex justify-between">
   @for( kpi of kpis(); track kpi.lable){
   <!-- Card -->
