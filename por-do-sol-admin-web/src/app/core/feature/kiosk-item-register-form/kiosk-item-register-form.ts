@@ -17,10 +17,17 @@ import { Select } from '../../shared/ui/select/select';
 import { KioskItem, KioskItemComplement } from '../../models/kiosk-item';
 import { NotificationService } from '../../services/notification-service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormSkeleton, FormSkeletonRow } from '../../shared/ui/form-skeleton/form-skeleton';
+
+export const KIOSK_ITEM_FORM_SKELETON: FormSkeletonRow[][] = [
+  ['image', 'field', 'pair', 'textarea', 'field'],
+  ['text', 'fieldAction', 'text'],
+  ['text', 'pairAction', 'text'],
+]
 
 @Component({
   selector: 'app-kiosk-item-register-form',
-  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatTooltipModule],
+  imports: [ReactiveFormsModule, Input, ImageInput, CancelButton, Button, Select, MatTooltipModule, FormSkeleton],
   templateUrl: './kiosk-item-register-form.html',
   styleUrl: './kiosk-item-register-form.css',
 })
@@ -42,6 +49,7 @@ export class KioskItemRegisterForm {
   readonly onClickCancelButton = output<void>()
   readonly saving = signal(false)
   readonly loading = signal(true)
+  readonly formSkeleton = KIOSK_ITEM_FORM_SKELETON
   readonly loadError = signal('')
   readonly creatingCategory = signal(false)
   readonly allowedCategories = ITEM_CATEGORIES

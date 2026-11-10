@@ -13,6 +13,12 @@ import { TeamService } from '../../services/team-service';
 import { Employee } from '../../models/employee';
 import { NotificationService } from '../../services/notification-service';
 import { PermissionService } from '../../services/permission-service';
+import { FormSkeletonRow } from '../../shared/ui/form-skeleton/form-skeleton';
+
+export const EMPLOYEE_FORM_SKELETON: FormSkeletonRow[][] = [
+  ['field', 'pair'],
+  ['pair', 'pair', 'chips'],
+]
 
 @Component({
   selector: 'app-employee-register-form',

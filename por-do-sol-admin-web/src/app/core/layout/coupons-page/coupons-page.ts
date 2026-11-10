@@ -4,10 +4,11 @@ import { CouponList } from '../../feature/coupon-list/coupon-list';
 import { SectionTitle } from '../../shared/ui/section-title/section-title';
 import { ReturnLink } from '../../shared/ui/return-link/return-link';
 import { CouponService } from '../../services/coupon-service';
+import { CouponListSkeleton } from '../../feature/coupon-list-skeleton/coupon-list-skeleton';
 
 @Component({
   selector: 'app-coupons-page',
-  imports: [CouponRegisterForm, CouponList, SectionTitle, ReturnLink],
+  imports: [CouponRegisterForm, CouponList, SectionTitle, ReturnLink, CouponListSkeleton],
   templateUrl: './coupons-page.html',
   styleUrl: './coupons-page.css',
 })

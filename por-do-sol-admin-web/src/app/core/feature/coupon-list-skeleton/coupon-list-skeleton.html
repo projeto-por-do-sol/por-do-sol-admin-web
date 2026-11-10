@@ -1,0 +1,23 @@
+<div class="mb-6 flex items-center justify-between gap-3">
+  <app-skeleton class="h-6 w-56 max-w-full"></app-skeleton>
+  <app-skeleton class="h-4 w-16 shrink-0"></app-skeleton>
+</div>
+
+<div class="grid gap-4">
+  @for (row of rows; track row) {
+  <div class="flex items-center gap-4 rounded-2xl border border-border bg-surface p-5">
+    <app-skeleton shape="round" class="size-10 shrink-0"></app-skeleton>
+    <div class="min-w-0 flex-1">
+      <app-skeleton class="my-1 h-6 w-20"></app-skeleton>
+      <app-skeleton class="my-3 h-4 w-3/5"></app-skeleton>
+      <app-skeleton class="my-3 h-4 w-1/2"></app-skeleton>
+      <app-skeleton class="my-3 h-4 w-3/4"></app-skeleton>
+      <app-skeleton class="mt-3 h-4 w-16"></app-skeleton>
+    </div>
+    <div class="flex shrink-0 flex-col items-center gap-3">
+      <app-skeleton shape="round" class="h-7 w-12"></app-skeleton>
+      <app-skeleton shape="round" class="size-8"></app-skeleton>
+    </div>
+  </div>
+  }
+</div>

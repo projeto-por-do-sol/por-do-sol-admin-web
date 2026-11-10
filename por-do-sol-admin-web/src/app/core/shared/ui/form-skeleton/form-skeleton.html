@@ -1,0 +1,88 @@
+<div class="bg-surface p-8 rounded-2xl border border-border">
+  @for (section of sections(); track $index) {
+  <div class="sectionCard">
+    <app-skeleton class="h-5 w-48 max-w-full"></app-skeleton>
+    @for (row of section; track $index) {
+    @switch (row) {
+    @case ('image') {
+    <div class="grid gap-2">
+      <app-skeleton class="my-1 h-4 w-40 max-w-full"></app-skeleton>
+      <app-skeleton shape="block" class="h-48 sm:h-56"></app-skeleton>
+    </div>
+    }
+    @case ('field') {
+    <ng-container [ngTemplateOutlet]="field"></ng-container>
+    }
+    @case ('pair') {
+    <div class="grid gap-10 md:grid-cols-2">
+      <ng-container [ngTemplateOutlet]="field"></ng-container>
+      <ng-container [ngTemplateOutlet]="field"></ng-container>
+    </div>
+    }
+    @case ('textarea') {
+    <div class="grid gap-2">
+      <app-skeleton class="my-1 h-4 w-32 max-w-full"></app-skeleton>
+      <app-skeleton shape="block" class="h-25"></app-skeleton>
+    </div>
+    }
+    @case ('map') {
+    <div class="grid gap-3">
+      <app-skeleton class="h-5 w-40 max-w-full"></app-skeleton>
+      <app-skeleton shape="block" class="h-80"></app-skeleton>
+      <app-skeleton class="h-4 w-3/4"></app-skeleton>
+      <app-skeleton shape="block" class="h-12"></app-skeleton>
+    </div>
+    }
+    @case ('chips') {
+    <ng-container [ngTemplateOutlet]="chipRow"></ng-container>
+    }
+    @case ('chipsField') {
+    <div class="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
+      <ng-container [ngTemplateOutlet]="chipRow"></ng-container>
+      <ng-container [ngTemplateOutlet]="field"></ng-container>
+    </div>
+    }
+    @case ('text') {
+    <app-skeleton class="my-1 h-4 w-3/4"></app-skeleton>
+    }
+    @case ('fieldAction') {
+    <div class="grid gap-x-4 gap-y-2 sm:grid-cols-[minmax(0,1fr)_14rem] sm:items-end">
+      <ng-container [ngTemplateOutlet]="field"></ng-container>
+      <app-skeleton shape="block" class="h-11"></app-skeleton>
+    </div>
+    }
+    @case ('pairAction') {
+    <div class="grid gap-x-4 gap-y-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_16rem] md:items-end">
+      <ng-container [ngTemplateOutlet]="field"></ng-container>
+      <ng-container [ngTemplateOutlet]="field"></ng-container>
+      <app-skeleton shape="block" class="h-11"></app-skeleton>
+    </div>
+    }
+    }
+    }
+  </div>
+  }
+  <div class="grid gap-5 md:flex md:justify-end">
+    <ng-container [ngTemplateOutlet]="button"></ng-container>
+    <ng-container [ngTemplateOutlet]="button"></ng-container>
+  </div>
+</div>
+
+<ng-template #field>
+  <div class="min-w-0">
+    <app-skeleton class="mt-1 mb-3 h-4 w-32 max-w-full"></app-skeleton>
+    <app-skeleton shape="block" class="h-11"></app-skeleton>
+  </div>
+</ng-template>
+
+<ng-template #chipRow>
+  <div class="flex flex-wrap justify-center gap-3">
+    @for (chip of chips; track chip) {
+    <app-skeleton shape="round" class="h-10 w-20"></app-skeleton>
+    }
+  </div>
+</ng-template>
+
+<ng-template #button>
+  <app-skeleton shape="block" class="h-11 md:w-40"></app-skeleton>
+</ng-template>

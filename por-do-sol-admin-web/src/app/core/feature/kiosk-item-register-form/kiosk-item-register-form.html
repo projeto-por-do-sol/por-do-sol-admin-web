@@ -1,9 +1,14 @@
-@if (loading()) { <p role="status">Carregando cardápio...</p> }
+@if (loading()) {
+<div role="status">
+  <span class="sr-only">Carregando cardápio...</span>
+  <app-form-skeleton [sections]="formSkeleton"></app-form-skeleton>
+</div>
+}
 @if (loadError()) {
   <p role="alert">{{ loadError() }}</p>
   <button type="button" (click)="loadCatalog()">Tentar novamente</button>
 }
-<div class="bg-surface p-8 rounded-2xl border border-border">
+<div class="bg-surface p-8 rounded-2xl border border-border" [class.hidden]="loading()">
   <form [formGroup]="formFields" (ngSubmit)="onSubmit()">
     <fieldset [disabled]="saving() || loading() || !!loadError()" class="min-w-0">
     <div class="sectionCard">

@@ -17,6 +17,13 @@ import { NotificationService } from '../../services/notification-service';
 import { apiImageUrl } from '../../utils/api-image-url';
 import { fromWeekFlags, toWeekFlags } from '../../utils/weekdays';
 import { PermissionService } from '../../services/permission-service';
+import { FormSkeletonRow } from '../../shared/ui/form-skeleton/form-skeleton';
+
+export const KIOSK_FORM_SKELETON: FormSkeletonRow[][] = [
+  ['image', 'pair', 'field'],
+  ['field', 'field', 'field', 'field', 'field', 'field', 'map'],
+  ['pair', 'chipsField'],
+]
 
 @Component({
   selector: 'app-kiosk-register-form',
