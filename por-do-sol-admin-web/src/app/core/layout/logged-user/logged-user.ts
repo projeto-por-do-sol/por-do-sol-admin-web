@@ -39,8 +39,10 @@ export class LoggedUser {
     this.pushService.received$
       .pipe(takeUntilDestroyed())
       .subscribe(message => {
-        // Avisos silenciosos não têm texto nem mudam a lista de pedidos. Só recarrega o que a tela já carregou.
+        // Avisos silenciosos não têm texto. Só recarrega o que a tela já carregou.
         if (message.type === 'ATUALIZAR_KPI') {
+          // Mudança de status (ex.: pedido finalizado por outro usuário) só chega como aviso silencioso.
+          if (this.orderService.lastUpdated()) void this.orderService.loadOrders().catch(() => undefined);
           if (this.kpiService.kpi().length || this.kpiService.failed()) void this.kpiService.loadKpi();
           // Os cards dos quiosques mostram pedidos, faturamento e tempo médio do dia.
           if (this.kioskService.kiosks().length) void this.kioskService.loadKiosks().catch(() => undefined);
