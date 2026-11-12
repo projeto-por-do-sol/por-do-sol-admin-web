@@ -95,8 +95,8 @@ export class KioskService {
     )
   }
 
-  deleteKiosk(kioskId: string): Observable<void> {
-    return this.http.delete<void>(`${API_BASE_URL}/quiosques/${kioskId}`).pipe(
+  deactivateKiosk(kioskId: string): Observable<unknown> {
+    return this.http.patch(`${API_BASE_URL}/quiosques/${kioskId}/status`, null).pipe(
       tap(() => this._kiosks.update(kiosks => kiosks.filter(kiosk => kiosk.id !== kioskId))),
     )
   }

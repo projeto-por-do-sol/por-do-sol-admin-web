@@ -170,7 +170,7 @@ export class KioskRegisterForm {
     if (!kiosk || this.isLoading()) return
     this.isLoading.set(true)
 
-    this.kioskService.deleteKiosk(String(kiosk.id)).pipe(
+    this.kioskService.deactivateKiosk(String(kiosk.id)).pipe(
       takeUntilDestroyed(this.destroyRef),
       finalize(() => this.isLoading.set(false)),
     ).subscribe({
