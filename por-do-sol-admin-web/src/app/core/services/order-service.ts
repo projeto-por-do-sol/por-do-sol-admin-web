@@ -72,6 +72,12 @@ export class OrderService {
       order => order.status === status)
   }
 
+  async loadKioskRatings(kioskId: string): Promise<number[]> {
+    const records = await firstValueFrom(
+      this.http.get<OrderResponse[]>(`${API_BASE_URL}/quiosques/${kioskId}/pedidos?status=AVALIADO`))
+    return records.flatMap(record => record.nota == null ? [] : [record.nota])
+  }
+
   // Busca sem o filtro de quiosque selecionado, para avisos de qualquer quiosque do usuário.
   findOrder(id: string): Order | undefined {
     const ownKioskIds = new Set(this.kioskService.kiosks().map(kiosk => kiosk.id))

@@ -1,0 +1,45 @@
+<dialog #dialog class="m-auto w-11/12 max-w-lg rounded-3xl border border-border bg-surface p-0 text-outline shadow-2xl backdrop:bg-black/20" aria-labelledby="kiosk-rating-title" (mousedown)="onDialogMousedown($event)" (click)="onDialogClick($event)" (close)="closed.emit()">
+  <div class="grid gap-6 p-5 sm:p-8">
+    <header class="flex items-start justify-between gap-4">
+      <div class="grid min-w-0 gap-1">
+        <p class="text-base font-medium tracking-widest text-primary">AVALIAÇÕES</p>
+        <h3 id="kiosk-rating-title" class="truncate text-2xl font-bold text-outline">{{ kiosk()?.name }}</h3>
+      </div>
+      <button type="button" class="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-border bg-surface text-2xl text-outline hover:bg-fundo focus-visible:outline-2 focus-visible:outline-primary" aria-label="Fechar avaliações" (click)="close()">×</button>
+    </header>
+
+    @if (loading()) {
+    <p class="text-base text-sub-text" role="status">Carregando avaliações...</p>
+    } @else if (error()) {
+    <p class="text-base text-error" role="alert">Não foi possível carregar as avaliações.</p>
+    } @else if (summary(); as summary) {
+    @if (summary.total) {
+    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-6">
+      <ul class="grid gap-2" aria-label="Quantidade de avaliações por nota">
+        @for (rating of ratingValues; track rating) {
+        <li class="grid grid-cols-[1rem_minmax(0,1fr)_2rem] items-center gap-3 text-base">
+          <span class="font-medium">{{ rating }}</span>
+          <div class="h-2.5 overflow-hidden rounded-full bg-light-gray" role="presentation">
+            <div class="h-full rounded-full bg-amarelo" [style.width.%]="share(summary, rating)"></div>
+          </div>
+          <span class="text-right text-sub-text" [attr.aria-label]="reviewsLabel(summary.counts[rating]) + ' com nota ' + rating">{{ summary.counts[rating] }}</span>
+        </li>
+        }
+      </ul>
+
+      <div class="grid justify-items-center gap-1">
+        <p class="text-5xl font-medium leading-none">{{ formatAverage(summary.average) }}</p>
+        <p class="flex text-xl text-amarelo" [attr.aria-label]="'Média ' + formatAverage(summary.average) + ' de 5'">
+          @for (fill of stars(summary.average); track $index) {
+          <span aria-hidden="true" class="relative inline-block text-light-gray">★<span class="absolute inset-y-0 left-0 overflow-hidden text-amarelo" [style.width.%]="fill * 100">★</span></span>
+          }
+        </p>
+        <p class="text-sm text-sub-text">{{ reviewsLabel(summary.total) }}</p>
+      </div>
+    </div>
+    } @else {
+    <p class="text-base text-sub-text">Este quiosque ainda não recebeu avaliações.</p>
+    }
+    }
+  </div>
+</dialog>
