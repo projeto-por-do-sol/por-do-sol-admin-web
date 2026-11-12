@@ -36,7 +36,7 @@
       <p class="">Cadastrar quiosque</p>
     </a>
     } @else {
-    <div class="flex overflow-x-auto md:grid md:overflow-visible">
+    <div class="flex justify-center-safe overflow-x-auto md:grid md:justify-normal md:overflow-visible">
       @if (permissions.canViewOverview() && !onlyKiosksSection()) {
       <a class="side-bar-link shrink-0" routerLink="/home" fragment="visao-geral" [class.active]="navigation.activeSection() === 'visao-geral'" (click)="scrollToSection('visao-geral')">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">

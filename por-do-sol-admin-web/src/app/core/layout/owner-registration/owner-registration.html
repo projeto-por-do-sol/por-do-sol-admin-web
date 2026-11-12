@@ -9,7 +9,7 @@
   </div>
   }
 
-  <app-return-link [text]="isEditMode ? 'Voltar para home' : 'Voltar para o login'" [pageToReturn]="isEditMode ? '/home' : '/login'" class="relative z-10 hidden md:block mb-4"></app-return-link>
+  <app-return-link [text]="isEditMode ? 'Voltar para home' : 'Voltar para o login'" [pageToReturn]="isEditMode ? '/home' : '/login'" class="relative z-10 mb-4" [class]="isEditMode ? 'hidden md:block' : 'block'"></app-return-link>
 
   <div class="relative z-1 mx-auto w-full max-w-7xl">
 
