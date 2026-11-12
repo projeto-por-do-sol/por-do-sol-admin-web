@@ -221,6 +221,8 @@ export class OrderService {
       change: record.valorTroco ?? undefined,
       needsCardMachine: record.precisaMaquininha,
       reason: record.motivo ?? undefined,
+      rating: record.nota ?? undefined,
+      comment: record.comentario ?? undefined,
       ...this.mapLocation(record),
     }
   }

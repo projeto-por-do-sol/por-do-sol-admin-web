@@ -116,6 +116,10 @@ export class OrderDetailsDialog {
     return orderStatusLabel(status)
   }
 
+  stars(rating: number): boolean[] {
+    return Array.from({ length: 5 }, (_, index) => index < rating)
+  }
+
   paymentMethodLabel(order: Order): string {
     return order.paymentMethod ? PAYMENT_METHOD_LABEL[order.paymentMethod] : 'Não informada'
   }

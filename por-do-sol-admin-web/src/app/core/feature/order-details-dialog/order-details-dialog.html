@@ -95,6 +95,23 @@
           @if (order.reason) {
           <p class="rounded-2xl bg-error-container p-4 text-base text-error"><span class="font-semibold">Motivo:</span> {{ order.reason }}</p>
           }
+
+          @if (order.rating != null) {
+          <h4 id="order-details-rating" class="text-xl font-semibold text-outline">Avaliação do cliente</h4>
+          <div class="grid gap-3 rounded-2xl border border-border bg-surface p-4 sm:p-6" aria-labelledby="order-details-rating">
+            <p class="flex items-center gap-2 text-2xl text-primary" [attr.aria-label]="'Nota ' + order.rating + ' de 5'">
+              @for (filled of stars(order.rating); track $index) {
+              <span aria-hidden="true" [class.opacity-25]="!filled">★</span>
+              }
+              <span class="ml-2 text-base font-medium text-outline">{{ order.rating }}/5</span>
+            </p>
+            @if (order.comment) {
+            <p class="whitespace-pre-line wrap-break-words text-base text-outline">{{ order.comment }}</p>
+            } @else {
+            <p class="text-base text-sub-text">O cliente não deixou comentário.</p>
+            }
+          </div>
+          }
         </section>
       </div>
 

@@ -83,6 +83,8 @@ export class Order {
   change?: number
   needsCardMachine?: boolean
   reason?: string
+  rating?: number
+  comment?: string
   latitude?: number
   longitude?: number
 

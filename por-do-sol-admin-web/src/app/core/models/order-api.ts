@@ -28,6 +28,8 @@ export interface OrderResponse {
   latitudeEntrega?: number
   longitudeEntrega?: number
   motivo?: string | null
+  nota?: number | null
+  comentario?: string | null
   status: OrderStatus
   interno: boolean
 }
