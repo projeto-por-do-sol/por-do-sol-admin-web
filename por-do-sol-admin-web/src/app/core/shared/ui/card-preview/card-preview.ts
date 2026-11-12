@@ -1,5 +1,7 @@
 import { Component, input } from '@angular/core';
 import { UserInitials } from '../../../utils/user-initials';
+import { ApiImagePipe } from '../../pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 export interface PreviewItem {
   label: string;
@@ -10,7 +12,7 @@ export interface PreviewItem {
 
 @Component({
   selector: 'app-card-preview',
-  imports: [],
+  imports: [ApiImagePipe, AsyncPipe],
   templateUrl: './card-preview.html',
   styleUrl: './card-preview.css',
 })

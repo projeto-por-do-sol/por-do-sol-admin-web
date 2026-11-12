@@ -13,10 +13,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CounterOrderItem, OrderService } from '../../services/order-service';
 import { NotificationService } from '../../services/notification-service';
 import { QuantitySelector } from '../quantity-selector/quantity-selector';
+import { ApiImagePipe } from '../../shared/pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-cart-bottom-sheet',
-  imports: [QuantitySelector, Input, Button, ReactiveFormsModule],
+  imports: [QuantitySelector, Input, Button, ReactiveFormsModule, ApiImagePipe, AsyncPipe],
   templateUrl: './cart-bottom-sheet.html',
   host: { class: 'block w-full' },
 })

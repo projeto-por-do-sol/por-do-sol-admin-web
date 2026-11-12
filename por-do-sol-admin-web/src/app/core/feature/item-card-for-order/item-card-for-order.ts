@@ -2,10 +2,12 @@ import { Component, computed, effect, inject, input, signal, untracked } from '@
 import { KioskItem } from '../../models/kiosk-item';
 import { QuantitySelector } from '../quantity-selector/quantity-selector';
 import { ShoppingCart } from '../../services/shopping-cart';
+import { ApiImagePipe } from '../../shared/pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-item-card-for-order',
-  imports: [QuantitySelector],
+  imports: [QuantitySelector, ApiImagePipe, AsyncPipe],
   templateUrl: './item-card-for-order.html',
   styleUrl: './item-card-for-order.css',
 })

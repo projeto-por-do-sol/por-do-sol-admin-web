@@ -5,11 +5,13 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { UserInitials } from '../../../utils/user-initials';
 import { StatusStyle } from '../../../utils/status-style';
 import { OrderStatus, orderStatusLabel } from '../../../models/order';
+import { ApiImagePipe } from '../../pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
   selector: 'app-table',
-  imports: [MatTableModule, MatPaginatorModule, NgClass, NgTemplateOutlet],
+  imports: [MatTableModule, MatPaginatorModule, NgClass, NgTemplateOutlet, ApiImagePipe, AsyncPipe],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })

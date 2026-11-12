@@ -1,9 +1,11 @@
 import { Component, ElementRef, input, Optional, output, Self, viewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ApiImagePipe } from '../../pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-image-input',
-  imports: [],
+  imports: [ApiImagePipe, AsyncPipe],
   templateUrl: './image-input.html',
   styleUrl: './image-input.css',
 })

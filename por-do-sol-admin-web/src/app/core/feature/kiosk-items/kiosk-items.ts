@@ -5,10 +5,12 @@ import { SectionTitle } from '../../shared/ui/section-title/section-title';
 import { TableColumn } from '../../shared/ui/table/table';
 import { TableOrCard } from '../table-or-card/table-or-card';
 import { Router } from '@angular/router';
+import { ApiImagePipe } from '../../shared/pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-kiosk-items',
-  imports: [SectionTitle, TableOrCard],
+  imports: [SectionTitle, TableOrCard, ApiImagePipe, AsyncPipe],
   templateUrl: './kiosk-items.html',
   styleUrl: './kiosk-items.css',
 })

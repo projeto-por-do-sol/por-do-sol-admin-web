@@ -4,10 +4,12 @@ import { KioskModel } from '../../models/kiosk-model';
 import { KioskService } from '../../services/kiosk-service';
 import { CurrencyPipe, NgClass } from '@angular/common';
 import { PermissionService } from '../../services/permission-service';
+import { ApiImagePipe } from '../../shared/pipes/api-image-pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-card-kiosk-info',
-  imports: [CurrencyPipe, NgClass],
+  imports: [CurrencyPipe, NgClass, ApiImagePipe, AsyncPipe],
   templateUrl: './card-kiosk-info.html',
   styleUrl: './card-kiosk-info.css',
 })
