@@ -6,7 +6,7 @@ import { EmployeeApiRole, EmployeeCreatedResponse, EmployeeRequest, EmployeeResp
 import { KioskSelectionService } from './kiosk-selection-service';
 import { KioskService } from './kiosk-service';
 import { API_BASE_URL } from '../config/api';
-import { fromWeekFlags, toWeekFlags } from '../utils/weekdays';
+import { fromWeekFlags, toWeekFlags, weekdayName } from '../utils/weekdays';
 
 @Injectable({
   providedIn: 'root',
@@ -55,7 +55,7 @@ export class TeamService {
     const response = await firstValueFrom(this.http.post<EmployeeCreatedResponse>(
       `${API_BASE_URL}/quiosques/${employee.kioskId}/funcionarios`, this.toRequest(employee)))
     this._team.update(employees => [...employees, {
-      ...employee, id: response.id, name: response.nome, status: this.isOnShift(employee.startShift, employee.finishShift),
+      ...employee, id: response.id, name: response.nome, status: this.isOnShift(employee.startShift, employee.finishShift, employee.daysShift),
     }])
     return response
   }
@@ -64,11 +64,12 @@ export class TeamService {
     const response = await firstValueFrom(this.http.put<EmployeeResponse>(
       `${API_BASE_URL}/quiosques/${changes.kioskId}/funcionarios/${id}`, this.toRequest(changes)))
     const current = this.getEmployee(id)
-    this._team.update(employees => employees.map(employee =>
-      employee.id === id
-        ? { ...this.mapEmployee(response, changes.kioskId!, changes.kioskName!), daysShift: changes.daysShift ?? current?.daysShift }
-        : employee
-    ))
+    this._team.update(employees => employees.map(employee => {
+      if (employee.id !== id) return employee
+      const mapped = this.mapEmployee(response, changes.kioskId!, changes.kioskName!)
+      const daysShift = changes.daysShift ?? current?.daysShift
+      return { ...mapped, daysShift, status: this.isOnShift(mapped.startShift, mapped.finishShift, daysShift) }
+    }))
   }
 
   async removeEmployee(id: string): Promise<void> {
@@ -97,6 +98,7 @@ export class TeamService {
   private mapEmployee(record: EmployeeResponse, kioskId: string, kioskName: string): Employee {
     const startShift = record.startShift?.slice(0, 5)
     const finishShift = record.finishShift?.slice(0, 5)
+    const daysShift = fromWeekFlags(record.diasAtivo)
     return {
       id: record.id,
       name: record.nome,
@@ -104,18 +106,25 @@ export class TeamService {
       phone: record.telefone ?? '',
       role: record.role?.toUpperCase() === 'GERENTE' ? 'Gerente' : 'Funcionário',
       kioskId, kioskName, startShift, finishShift,
-      daysShift: fromWeekFlags(record.diasAtivo),
-      status: this.isOnShift(startShift, finishShift),
+      daysShift,
+      status: this.isOnShift(startShift, finishShift, daysShift),
     }
   }
 
-  private isOnShift(start?: string, finish?: string): boolean {
+  private isOnShift(start?: string, finish?: string, daysShift: string[] = []): boolean {
     if (!start || !finish) return false
     const now = new Date()
     const current = now.getHours() * 60 + now.getMinutes()
     const toMinutes = (value: string) => { const [h, m] = value.split(':').map(Number); return h * 60 + m }
     const from = toMinutes(start), to = toMinutes(finish)
-    return from <= to ? current >= from && current <= to : current >= from || current <= to
+    const crossesMidnight = from > to
+    const inHours = crossesMidnight ? current >= from || current <= to : current >= from && current <= to
+    if (!inHours) return false
+    if (daysShift.length === 0) return true
+    // Na madrugada de um turno que vira a noite, o dia do turno é o anterior.
+    const afterMidnightPart = crossesMidnight && current <= to
+    const shiftDay = weekdayName(now.getDay() - (afterMidnightPart ? 1 : 0))
+    return daysShift.includes(shiftDay)
   }
 
 }
