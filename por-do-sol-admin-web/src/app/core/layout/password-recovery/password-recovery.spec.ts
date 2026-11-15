@@ -11,7 +11,7 @@ describe('PasswordRecovery', () => {
   let fixture: ComponentFixture<PasswordRecovery>
 
   beforeEach(async () => {
-    localStorage.removeItem('password-recovery-state-v3')
+    localStorage.removeItem('password-recovery-sends-v1')
     await TestBed.configureTestingModule({
       imports: [PasswordRecovery],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
@@ -24,7 +24,10 @@ describe('PasswordRecovery', () => {
     fixture.detectChanges()
   })
 
-  afterEach(() => fixture.destroy())
+  afterEach(() => {
+    fixture.destroy()
+    vi.restoreAllMocks()
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy()
@@ -134,55 +137,75 @@ describe('PasswordRecovery', () => {
     expect(navigate).toHaveBeenCalledWith('/passwordReset')
   })
 
-  it('keeps resend blocked right after arriving, even with stale localStorage', () => {
-    localStorage.setItem('password-recovery-state-v3', JSON.stringify({ usedRequests: 0, requestsLockedUntil: 0, resendAvailableAt: 0 }))
-    fixture.destroy()
-    fixture = TestBed.createComponent(PasswordRecovery)
-    component = fixture.componentInstance
-    fixture.detectChanges()
+  it('counts the first send and blocks resend for one minute right after arriving', () => {
+    expect(component.remainingRequests()).toBe(4)
+    expect(component.resendSeconds()).toBeGreaterThan(55)
+    expect(component.resendSeconds()).toBeLessThanOrEqual(60)
 
-    expect(component.resendSeconds()).toBeGreaterThan(290)
     component.requestNewCode()
     TestBed.inject(HttpTestingController).expectNone(r => r.url.endsWith('/auth/forgot-password'))
   })
 
-  it('requests a new code from the API and starts the cooldown', () => {
-    component.resendAvailableAt.set(0)
-    component.now.set(Date.now() - 2_000)
+  it('requests a new code from the API and restarts the cooldown', () => {
+    const clock = Date.now() + 66_000
+    vi.spyOn(Date, 'now').mockReturnValue(clock)
+    component.now.set(clock)
 
     component.requestNewCode()
     const req = TestBed.inject(HttpTestingController).expectOne(r => r.url.endsWith('/auth/forgot-password'))
     expect(req.request.body).toEqual({ email: 'a@b.com', tipoConta: 'QUIOSQUE' })
     req.flush(null)
 
-    expect(component.resendSeconds()).toBe(305)
-    expect(component.remainingRequests()).toBe(4)
+    expect(component.resendSeconds()).toBe(60)
+    expect(component.remainingRequests()).toBe(3)
   })
 
-  it('locks new requests after five requests', () => {
+  it('locks new requests for ten minutes after five sends', () => {
     const http = TestBed.inject(HttpTestingController)
-    for (let request = 0; request < 5; request++) {
-      component.resendAvailableAt.set(0)
+    let clock = Date.now()
+    vi.spyOn(Date, 'now').mockImplementation(() => clock)
+    for (let request = 0; request < 4; request++) {
+      clock += 66_000
+      component.now.set(clock)
       component.requestNewCode()
       http.expectOne(r => r.url.endsWith('/auth/forgot-password')).flush(null)
     }
 
+    expect(component.remainingRequests()).toBe(0)
     expect(component.areRequestsLocked()).toBe(true)
     expect(component.requestLockSeconds()).toBe(600)
+
+    clock += 66_000
+    component.now.set(clock)
+    component.requestNewCode()
+    http.expectNone(r => r.url.endsWith('/auth/forgot-password'))
   })
 
-  it('restores requests after their ten-minute lock expires', () => {
-    localStorage.setItem('password-recovery-state-v3', JSON.stringify({
-      usedRequests: 5,
-      requestsLockedUntil: Date.now() - 1,
-    }))
+  it('does not restart the lock when the same email is requested again', () => {
+    const http = TestBed.inject(HttpTestingController)
+    const recovery = TestBed.inject(PasswordRecoveryService)
+    let clock = Date.now()
+    vi.spyOn(Date, 'now').mockImplementation(() => clock)
+    for (let request = 0; request < 4; request++) {
+      clock += 66_000
+      component.now.set(clock)
+      component.requestNewCode()
+      http.expectOne(r => r.url.endsWith('/auth/forgot-password')).flush(null)
+    }
 
-    fixture.destroy()
-    fixture = TestBed.createComponent(PasswordRecovery)
-    component = fixture.componentInstance
-    fixture.detectChanges()
+    clock += 4 * 60_000
+    recovery.request('a@b.com', 'QUIOSQUE').subscribe()
+    http.expectOne(r => r.url.endsWith('/auth/forgot-password')).flush(null)
+    component.now.set(clock)
+
+    expect(component.requestLockSeconds()).toBe(360)
+  })
+
+  it('restores the five sends after ten minutes without sending', () => {
+    component.now.set(Date.now() + 10 * 60_000)
 
     expect(component.remainingRequests()).toBe(5)
     expect(component.areRequestsLocked()).toBe(false)
+    expect(component.resendSeconds()).toBe(0)
   })
 })
