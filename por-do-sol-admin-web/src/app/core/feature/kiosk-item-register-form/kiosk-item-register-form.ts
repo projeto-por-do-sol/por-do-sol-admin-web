@@ -108,8 +108,8 @@ export class KioskItemRegisterForm {
     image: new FormControl<File | null>(null),
   })
 
-  readonly ingredientDraft = new FormControl('', { nonNullable: true, validators: [Validators.required] })
-  readonly complementNameDraft = new FormControl('', { nonNullable: true, validators: [Validators.required] })
+  readonly ingredientDraft = new FormControl('', { nonNullable: true })
+  readonly complementNameDraft = new FormControl('', { nonNullable: true })
   readonly complementValueDraft = new FormControl('', {
     nonNullable: true,
     validators: [Validators.pattern(/^\d{1,3}(?:\.\d{3})*,\d{2}$/)],
@@ -203,11 +203,7 @@ export class KioskItemRegisterForm {
 
   saveIngredient(showFeedback = true): boolean {
     const name = this.ingredientDraft.value.trim().replace(/\s+/g, ' ')
-    if (!name) {
-      this.ingredientDraft.setErrors({ required: true })
-      this.ingredientDraft.markAsTouched()
-      return false
-    }
+    if (!name) return false
 
     const index = this.editingIngredientIndex()
     if (this.ingredients().some((item, itemIndex) => itemIndex !== index && this.normalizeName(item) === this.normalizeName(name))) {
@@ -243,7 +239,7 @@ export class KioskItemRegisterForm {
 
   saveComplement(showFeedback = true): boolean {
     const name = this.complementNameDraft.value.trim().replace(/\s+/g, ' ')
-    if (!name) this.complementNameDraft.setErrors({ required: true })
+    if (!name) return false
     const index = this.editingComplementIndex()
     if (name && this.complements().some((item, itemIndex) => itemIndex !== index && this.normalizeName(item.name) === this.normalizeName(name))) {
       this.complementNameDraft.setErrors({ duplicate: true })

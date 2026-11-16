@@ -60,7 +60,7 @@
       <h2>Ingredientes</h2>
       <p class="text-sub-text">Adicione os ingredientes que compõem o item.</p>
       <div class="grid sm:grid-cols-[minmax(0,1fr)_14rem] gap-x-4 gap-y-2 sm:items-start">
-        <app-input id="ingredientName" label="Ingrediente" name="ingredientName" [formControl]="ingredientDraft" placeholder="Ex.: Queijo coalho" (keydown.enter)="addOnEnter($event, saveIngredient)"></app-input>
+        <app-input id="ingredientName" label="Ingrediente" name="ingredientName" [isObrigatory]="false" [formControl]="ingredientDraft" placeholder="Ex.: Queijo coalho" (keydown.enter)="addOnEnter($event, saveIngredient)"></app-input>
         <app-button class="sm:mt-8" [labelButton]="editingIngredientIndex() === null ? 'Adicionar ingrediente' : 'Salvar ingrediente'" [fullWidth]="true" (onClickButton)="saveIngredient()"></app-button>
         @if (editingIngredientIndex() !== null) {
         <button type="button" class="item-text-button text-center sm:col-start-2" (click)="cancelIngredientEdit()">Cancelar edição</button>
