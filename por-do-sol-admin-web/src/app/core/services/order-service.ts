@@ -8,6 +8,7 @@ import { FINISHED_ORDER_STATUSES, Order, OrderItem, OrderStatus } from '../model
 import { OrderItemResponse, OrderResponse, OrderStatusResponse } from '../models/order-api';
 import { API_BASE_URL } from '../config/api';
 import { KioskModel } from '../models/kiosk-model';
+import { KioskReview } from '../utils/rating-summary';
 
 export interface CounterOrderItem {
   itemId: number
@@ -72,10 +73,14 @@ export class OrderService {
       order => order.status === status)
   }
 
-  async loadKioskRatings(kioskId: string): Promise<number[]> {
+  // Só nota e comentário: nada que identifique o cliente ou o pedido é exposto.
+  async loadKioskRatings(kioskId: string): Promise<KioskReview[]> {
     const records = await firstValueFrom(
       this.http.get<OrderResponse[]>(`${API_BASE_URL}/quiosques/${kioskId}/pedidos?status=AVALIADO`))
-    return records.flatMap(record => record.nota == null ? [] : [record.nota])
+    return records.flatMap(record => record.nota == null ? [] : [{
+      rating: record.nota,
+      comment: record.comentario?.trim() || undefined,
+    }])
   }
 
   // Busca sem o filtro de quiosque selecionado, para avisos de qualquer quiosque do usuário.

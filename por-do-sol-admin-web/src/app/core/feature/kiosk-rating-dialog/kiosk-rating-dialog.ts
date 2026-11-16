@@ -1,7 +1,7 @@
 import { Component, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { KioskModel } from '../../models/kiosk-model';
 import { OrderService } from '../../services/order-service';
-import { RATING_VALUES, RatingSummary, summarizeRatings } from '../../utils/rating-summary';
+import { KioskReview, RATING_VALUES, RatingSummary, summarizeRatings } from '../../utils/rating-summary';
 
 @Component({
   selector: 'app-kiosk-rating-dialog',
@@ -16,6 +16,7 @@ export class KioskRatingDialog {
 
   readonly ratingValues = RATING_VALUES
   readonly summary = signal<RatingSummary | null>(null)
+  readonly reviews = signal<KioskReview[]>([])
   readonly loading = signal(false)
   readonly error = signal(false)
 
@@ -39,12 +40,16 @@ export class KioskRatingDialog {
   private async load(kioskId: string): Promise<void> {
     const request = ++this.request
     this.summary.set(null)
+    this.reviews.set([])
     this.error.set(false)
     this.loading.set(true)
 
     try {
-      const ratings = await this.orderService.loadKioskRatings(kioskId)
-      if (request === this.request) this.summary.set(summarizeRatings(ratings))
+      const reviews = await this.orderService.loadKioskRatings(kioskId)
+      if (request === this.request) {
+        this.summary.set(summarizeRatings(reviews.map(review => review.rating)))
+        this.reviews.set(reviews.filter(review => review.comment))
+      }
     } catch {
       if (request === this.request) this.error.set(true)
     } finally {

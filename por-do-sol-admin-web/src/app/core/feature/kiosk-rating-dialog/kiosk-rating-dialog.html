@@ -37,6 +37,23 @@
         <p class="text-sm text-sub-text">{{ reviewsLabel(summary.total) }}</p>
       </div>
     </div>
+
+    @if (reviews().length) {
+    <section class="grid gap-3" aria-labelledby="kiosk-comments-title">
+      <h4 id="kiosk-comments-title" class="text-base font-bold">Comentários</h4>
+      <ul class="grid max-h-72 gap-3 overflow-y-auto pr-1">
+        @for (review of reviews(); track $index) {
+        <li class="grid gap-1 rounded-2xl border border-border bg-fundo p-4">
+          <p class="flex items-center gap-2 text-sm text-sub-text">
+            <span>Cliente anônimo</span>
+            <span class="text-amarelo" [attr.aria-label]="'Nota ' + review.rating + ' de 5'">{{ '★'.repeat(review.rating) }}<span class="text-light-gray">{{ '★'.repeat(5 - review.rating) }}</span></span>
+          </p>
+          <p class="whitespace-pre-line break-words text-base">{{ review.comment }}</p>
+        </li>
+        }
+      </ul>
+    </section>
+    }
     } @else {
     <p class="text-base text-sub-text">Este quiosque ainda não recebeu avaliações.</p>
     }

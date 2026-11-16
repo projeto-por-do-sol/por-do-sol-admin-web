@@ -1,5 +1,10 @@
 export const RATING_VALUES = [5, 4, 3, 2, 1] as const
 
+export interface KioskReview {
+  rating: number
+  comment?: string
+}
+
 export interface RatingSummary {
   total: number
   average: number

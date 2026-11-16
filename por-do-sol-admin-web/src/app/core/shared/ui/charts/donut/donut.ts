@@ -62,7 +62,20 @@ export class Donut {
   public chartOptions!: Signal<ChartOptions>
   constructor() {
     this.chartOptions = computed((): ChartOptions => {
-      const categories = this.statisticsService.statistics()?.ordersByCategory.categories ?? []
+      const rawCategories = this.statisticsService.statistics()?.ordersByCategory.categories ?? []
+      // Soma categorias de mesmo nome (ex.: vários quiosques com "Bebidas")
+      const grouped = new Map<string, { categoryName: string; orderCount: number }>()
+      for (const category of rawCategories) {
+        const name = (category.categoryName ?? '').trim()
+        const key = name.toLocaleLowerCase('pt-BR')
+        const existing = grouped.get(key)
+        if (existing) {
+          existing.orderCount += category.orderCount
+        } else {
+          grouped.set(key, { categoryName: name, orderCount: category.orderCount })
+        }
+      }
+      const categories = [...grouped.values()].sort((a, b) => b.orderCount - a.orderCount)
       return {
       series: categories.map(category => category.orderCount),
       chart: {
